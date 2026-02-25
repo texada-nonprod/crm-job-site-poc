@@ -1,0 +1,1074 @@
+# Product Requirements Document: CRM Job Site / Project Management Module
+
+**Version:** 1.0
+**Date:** February 25, 2026
+**Source:** Proof-of-concept application (`crm-job-site-poc`)
+**Purpose:** Define requirements for production implementation based on validated POC
+
+---
+
+## Table of Contents
+
+1. [Overview](#1-overview)
+2. [Goals & Objectives](#2-goals--objectives)
+3. [User Roles](#3-user-roles)
+4. [Information Architecture](#4-information-architecture)
+5. [Data Model](#5-data-model)
+6. [Feature Requirements](#6-feature-requirements)
+   - 6.1 [Project List (Dashboard)](#61-project-list-dashboard)
+   - 6.2 [Project Detail](#62-project-detail)
+   - 6.3 [Opportunity Management](#63-opportunity-management)
+   - 6.4 [Company / Contractor Management](#64-company--contractor-management)
+   - 6.5 [Activity Tracking](#65-activity-tracking)
+   - 6.6 [Notes & Documentation](#66-notes--documentation)
+   - 6.7 [Customer Equipment Tracking](#67-customer-equipment-tracking)
+   - 6.8 [Change Log / Audit Trail](#68-change-log--audit-trail)
+   - 6.9 [Settings & Configuration](#69-settings--configuration)
+7. [Filtering & Search](#7-filtering--search)
+8. [Sorting Behavior](#8-sorting-behavior)
+9. [KPI / Analytics](#9-kpi--analytics)
+10. [UI/UX Specifications](#10-uiux-specifications)
+11. [Reference Data & Lookups](#11-reference-data--lookups)
+12. [API Requirements](#12-api-requirements)
+13. [Authentication & Authorization](#13-authentication--authorization)
+14. [Non-Functional Requirements](#14-non-functional-requirements)
+15. [Appendix: POC Data Samples](#15-appendix-poc-data-samples)
+
+---
+
+## 1. Overview
+
+This module adds **construction project (job site) management** capabilities to the CRM. It allows sales representatives to track construction projects, associate sales/rental opportunities, manage relationships with general contractors and subcontractors, log activities, attach notes, and track customer equipment on job sites — all tied to a comprehensive audit trail.
+
+The POC was built as a standalone React SPA with client-side state. The production version must integrate with existing CRM backend APIs, authentication, and data infrastructure.
+
+---
+
+## 2. Goals & Objectives
+
+| Goal | Description |
+|------|-------------|
+| **Centralize project tracking** | Give sales reps a single view of all construction projects they manage, with pipeline revenue visibility |
+| **Link opportunities to projects** | Associate multiple CRM opportunities (sales, rentals, parts, service) to a single construction project |
+| **Track contractor relationships** | Manage general contractors and subcontractors per project, including multiple contacts per company |
+| **Activity logging** | Record site visits, calls, meetings, and other sales activities tied to projects |
+| **Equipment visibility** | Track customer/competitor equipment on job sites to identify sales opportunities |
+| **Audit trail** | Maintain a complete change history for compliance and team coordination |
+| **Pipeline analytics** | Surface total pipeline revenue and breakdowns by opportunity type |
+
+---
+
+## 3. User Roles
+
+The POC uses a mock user selector. Production should integrate with existing CRM authentication.
+
+| Role | Capabilities |
+|------|-------------|
+| **Sales Representative** | Full CRUD on projects, opportunities, companies, activities, notes, equipment |
+| **Sales Manager** | All sales rep capabilities + view across all reps, manage dropdown configurations |
+| **Administrator** | All capabilities + manage system-level settings (statuses, roles, tags) |
+
+The current user identity is used for:
+- Audit trail attribution (who made each change)
+- Note authorship tracking
+- Activity assignment
+- Default filter context
+
+---
+
+## 4. Information Architecture
+
+### Page Structure
+
+```
+/ (Project List - Dashboard)
+├── KPI Summary Card
+├── Filter Bar
+└── Sortable Project Table
+    └── Click row → /project/:id
+
+/project/:id (Project Detail)
+├── Project Header (name, status, description, contact, address)
+├── Opportunities Section (table with filters + sort)
+├── Companies Section (GC + subcontractors with nested contacts)
+├── Activities Section (sortable table)
+├── Notes Section (tagged, with history)
+└── Customer Equipment Section (searchable, sortable table)
+    └── Link → /project/:id/changelog
+
+/project/:id/changelog (Change Log)
+├── Category Filter Tabs
+└── Paginated Change History Table
+
+/settings/dropdowns (Manage Dropdowns)
+├── Dropdown Selector (sidebar)
+└── Values Editor (table with inline edit, add, delete)
+```
+
+---
+
+## 5. Data Model
+
+### 5.1 Project
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | integer | Yes | Unique identifier |
+| `name` | string | Yes | Project name (e.g., "St. Mary's Hospital - West Wing Expansion") |
+| `description` | string | Yes | Free-text project description |
+| `statusId` | string | Yes | Project status (references configurable dropdown: Active, Planning, On Hold, Completed) |
+| `salesRepIds` | integer[] | Yes | Array of assigned sales representative IDs (supports multiple reps) |
+| `plannedAnnualRate` | number | Yes | Target number of opportunities per year (used for PAR tracking) |
+| `parStartDate` | datetime | No | When PAR tracking began |
+| `projectPrimaryContact` | object | Yes | Primary contact person for the project |
+| `projectPrimaryContact.name` | string | Yes | Contact full name |
+| `projectPrimaryContact.title` | string | Yes | Contact job title |
+| `projectPrimaryContact.phone` | string | Yes | Contact phone |
+| `projectPrimaryContact.email` | string | Yes | Contact email |
+| `address` | object | Yes | Project location |
+| `address.street` | string | Yes | Street address |
+| `address.city` | string | Yes | City |
+| `address.state` | string | Yes | State/Province |
+| `address.zipCode` | string | Yes | ZIP/Postal code |
+| `address.country` | string | Yes | Country |
+| `address.latitude` | number | No | GPS latitude |
+| `address.longitude` | number | No | GPS longitude |
+| `projectCompanies` | ProjectCompany[] | No | Associated companies (GC, subcontractors) |
+| `associatedOpportunities` | OpportunitySummary[] | No | Linked opportunity summaries |
+| `notes` | Note[] | No | Project notes |
+| `activities` | Activity[] | No | Project activities |
+| `customerEquipment` | CustomerEquipment[] | No | Equipment tracked on site |
+
+### 5.2 ProjectCompany
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `companyId` | string | Yes | Company identifier |
+| `companyName` | string | Yes | Company display name |
+| `roleId` | string | Yes | Role code (GC, SUB-EXC, SUB-PAV, etc.) |
+| `roleDescription` | string | Yes | Human-readable role (e.g., "General Contractor") |
+| `isPrimaryContact` | boolean | Yes | Whether this company is the primary project contact |
+| `companyContacts` | CompanyContact[] | Yes | Array of contacts at this company |
+| `primaryContactIndex` | integer | No | Index of the primary contact in the contacts array |
+
+### 5.3 CompanyContact
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | integer | Yes | Contact identifier |
+| `name` | string | Yes | Full name |
+| `title` | string | No | Job title |
+| `phone` | string | Yes | Phone number |
+| `email` | string | Yes | Email address |
+
+### 5.4 Opportunity (linked from existing CRM)
+
+The Opportunity entity comes from the existing CRM. Key fields used by this module:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Opportunity ID |
+| `description` | string | Opportunity description |
+| `typeId` | integer | Opportunity type (Sales, Rental, Parts, Service, etc.) |
+| `stageId` | integer | Current pipeline stage |
+| `phaseId` | integer | Phase grouping for stages |
+| `estimateRevenue` | number | Estimated revenue amount |
+| `estimateDeliveryMonth` | integer | Expected close month (1-12) |
+| `estimateDeliveryYear` | integer | Expected close year |
+| `isUrgent` | boolean | Urgency flag |
+| `salesRepId` | integer | Assigned sales rep |
+| `divisionId` | string | Business division code (G, C, P, R, S, V, X) |
+| `projectId` | integer | FK to Project |
+| `customerId` | string | Customer identifier |
+| `customerName` | string | Customer name |
+| `contactName` | string | Opportunity contact |
+| `contactPhone` | string | Contact phone |
+| `contactEmail` | string | Contact email |
+| `productGroups` | ProductGroup[] | Nested product line items |
+
+### 5.5 OpportunitySummary (denormalized on Project)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Opportunity ID |
+| `type` | string | Type label ("Sale", "Rental", etc.) |
+| `description` | string | Description |
+| `stageId` | integer | Current stage |
+| `revenue` | number | Estimated revenue |
+
+### 5.6 Activity
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | integer | Yes | Unique identifier |
+| `assigneeId` | integer | Yes | Sales rep assigned |
+| `activityType` | string | Yes | One of: Site Visit, Phone Call, Email, Meeting, Follow-up, Proposal, Demo, Other |
+| `date` | string (date) | Yes | Activity date |
+| `description` | string | Yes | Free-text description |
+
+### 5.7 Note
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | integer | Yes | Unique identifier |
+| `content` | string | Yes | Note text content |
+| `createdAt` | datetime | Yes | Creation timestamp (auto-set) |
+| `createdById` | integer | Yes | Author user ID (auto-set to current user) |
+| `tagIds` | string[] | No | Array of tag identifiers |
+| `attachments` | Attachment[] | No | File attachments |
+| `lastModifiedAt` | datetime | No | Last edit timestamp |
+| `lastModifiedById` | integer | No | Last editor user ID |
+| `modificationHistory` | NoteModification[] | No | Full edit history |
+
+### 5.8 NoteModification
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `modifiedAt` | datetime | When the edit occurred |
+| `modifiedById` | integer | Who made the edit |
+| `summary` | string | Auto-generated change summary (e.g., "Content updated", "Tags changed") |
+| `previousContent` | string | Previous note content (if content was changed) |
+| `previousTagIds` | string[] | Previous tag set (if tags were changed) |
+
+### 5.9 Attachment
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Unique identifier |
+| `fileName` | string | Original file name |
+| `fileUrl` | string | Storage URL |
+| `fileType` | string | MIME type |
+| `fileSize` | number | Size in bytes |
+| `uploadedAt` | datetime | Upload timestamp |
+
+### 5.10 NoteTag (configurable)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Tag identifier (e.g., "SAFETY") |
+| `label` | string | Display label (e.g., "Safety") |
+| `displayOrder` | integer | Sort order |
+| `color` | string | Color theme (red, amber, sky, slate, emerald, violet, rose, orange, teal, indigo, pink, lime) |
+
+**Default tags:** Safety (red), Security (amber), Compliance (sky), General (slate)
+
+### 5.11 CustomerEquipment
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | integer | Yes | Unique identifier |
+| `companyId` | string | Yes | Owning company ID |
+| `equipmentType` | string | Yes | Equipment category |
+| `make` | string | Yes | Manufacturer |
+| `model` | string | Yes | Model name/number |
+| `year` | integer | No | Year of manufacture |
+| `serialNumber` | string | No | Serial number |
+| `hours` | number | No | Operating hours |
+
+### 5.12 ChangeLogEntry
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Unique identifier |
+| `projectId` | integer | Associated project |
+| `timestamp` | datetime | When the change occurred |
+| `action` | string | Action code (see below) |
+| `category` | enum | One of: Project, Opportunity, Company, Activity, Note, Equipment |
+| `summary` | string | Human-readable description |
+| `changedById` | integer | User who made the change |
+| `details` | object | Optional structured change details (field-level before/after) |
+
+**Action codes:**
+- `PROJECT_CREATED`, `PROJECT_UPDATED`
+- `OPPORTUNITY_CREATED`, `OPPORTUNITY_ASSOCIATED`, `OPPORTUNITY_UPDATED`
+- `COMPANY_ADDED`, `COMPANY_UPDATED`, `COMPANY_REMOVED`
+- `ACTIVITY_ADDED`, `ACTIVITY_UPDATED`, `ACTIVITY_DELETED`
+- `NOTE_ADDED`, `NOTE_UPDATED`, `NOTE_DELETED`
+- `EQUIPMENT_ADDED`, `EQUIPMENT_UPDATED`, `EQUIPMENT_DELETED`
+
+### 5.13 OpportunityStage (reference data)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `stageid` | integer | Stage identifier |
+| `stagename` | string | Stage name |
+| `phaseid` | integer | Phase grouping |
+| `phase` | string | Phase name |
+| `displayorder` | integer | Sort order |
+| `salesprobability` | number | Sales probability percentage |
+| `marketingprobability` | number | Marketing probability percentage |
+| `readonlyind` | integer | Whether stage is read-only (closed stages) |
+
+### 5.14 OpportunityType (reference data)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `opptypeid` | integer | Type identifier |
+| `opptypecode` | string | Short code |
+| `opptypedesc` | string | Display description |
+| `displayorder` | integer | Sort order |
+
+---
+
+## 6. Feature Requirements
+
+### 6.1 Project List (Dashboard)
+
+The main landing page showing all projects with filtering, sorting, and pipeline KPIs.
+
+#### 6.1.1 Header
+- Page title: "Projects List"
+- Subtitle: "Manage construction projects and opportunities"
+- **"New Project" button** — opens the Create Project modal
+- **Settings gear icon** — opens a popover with:
+  - Current user selector (dropdown of all sales reps)
+  - Link to "Manage Dropdowns" settings page
+
+#### 6.1.2 KPI Summary Card
+- Displays at top of page, above filters
+- Shows **Total Revenue in Pipeline** as a large formatted dollar amount (e.g., `$1,234,567.00`)
+- Alongside the total, shows **revenue breakdown by opportunity type** (e.g., Sales: $500,000 | Rental: $734,567)
+- Revenue breakdown items are separated by vertical dividers
+- Only shows types with revenue > $0
+- Types are sorted by their configured `displayOrder`
+- KPI values respect active filters (only counts revenue from filtered projects)
+
+#### 6.1.3 Filter Bar
+Contained in a card with a "Filters" header. Six filter controls in a responsive grid:
+
+| Filter | Type | Behavior |
+|--------|------|----------|
+| **Sales Rep** | Dropdown | Filter projects where `salesRepIds` includes the selected rep. Options sorted by last name. |
+| **Division** | Dropdown | Filter by opportunity division code. Matches first opportunity's division on each project. Options: G (General Line), C (Compact), P (Paving), R (Heavy Rents), S (Power Systems), V (Rental Services), X (Power Rental) |
+| **Status** | Dropdown | Filter by project `statusId`. Options populated dynamically from existing project statuses. |
+| **General Contractor** | Text input | Free-text search on GC company names (case-insensitive substring match). Only searches companies with `roleId === 'GC'`. |
+| **Behind on PAR only** | Toggle switch | When on, only shows projects where `associatedOpportunities.length < plannedAnnualRate` |
+| **Hide Completed** | Toggle switch | When on, hides projects with `statusId === 'Completed'`. **Default: ON** |
+
+- Filters are persisted to localStorage (key: `crm-filters`) and restored on page load
+- All filters are combined with AND logic
+
+#### 6.1.4 Project Table
+A sortable table displaying filtered projects. Columns:
+
+| Column | Sortable | Sort Logic | Display |
+|--------|----------|------------|---------|
+| **Project Name** | Yes | Alphabetical | Project name text |
+| **Address** | Yes | Alphabetical by "City, State" | City, State format |
+| **Sales Rep** | Yes | Alphabetical by formatted names | "Lastname, Firstname" format; multiple reps separated by semicolons |
+| **Primary Contact** | Yes | Alphabetical | Project primary contact name |
+| **Status** | Yes | By display order (Active=1, Planning=2, On Hold=3, Completed=99) | Color-coded pill badge |
+| **Revenue** | Yes | Numeric | Dollar formatted, right-aligned |
+
+- **Default sort:** Status ascending (Active first)
+- **Sort behavior:** Three-state cycling: ascending → descending → no sort (click same column header)
+- Sort icons appear on hover (hidden when not sorted), solid arrow when active
+- **Row click** navigates to `/project/:id`
+- Empty state: "No projects found matching the current filters."
+
+### 6.2 Project Detail
+
+Comprehensive project view accessed at `/project/:id`.
+
+#### 6.2.1 Header Section
+- **Back button** — returns to project list
+- **Project name** as page title
+- **Status badge** — color-coded pill (configurable colors per status)
+- **Edit button** — opens Edit Project modal
+- **Change Log button** — navigates to `/project/:id/changelog`
+
+#### 6.2.2 Project Information Card
+Displays in a card with two columns:
+
+**Left column — Details:**
+- Description (full text)
+- Sales Rep(s) — formatted as "Lastname, Firstname" separated by semicolons
+
+**Right column — Contact & Location:**
+- Primary Contact: name, title, phone (clickable tel: link), email (clickable mailto: link)
+- Location: toggleable between Address view and Coordinates view
+  - Address view: street, city, state, zip, country
+  - Coordinates view: latitude, longitude
+  - Toggle only shown if both address and coordinates exist
+
+#### 6.2.3 Create Project Modal
+Fields:
+- Project Name (text, required)
+- Description (textarea, required)
+- Status (dropdown from configured statuses, required)
+- Sales Representatives (multi-select dropdown, required, at least one)
+- Planned Annual Rate (number input, required)
+- PAR Start Date (date picker, optional)
+- Primary Contact: Name, Title, Phone, Email (all text, required)
+- Address: Street, City, State, ZIP Code, Country (all text, required)
+- Coordinates: Latitude, Longitude (number, optional)
+
+#### 6.2.4 Edit Project Modal
+Same fields as Create, pre-populated with current values. Updates trigger change log entry with field-level change tracking.
+
+### 6.3 Opportunity Management
+
+#### 6.3.1 Opportunities Table (within Project Detail)
+Displayed in a collapsible section with header showing opportunity count.
+
+**Filter controls above table:**
+
+| Filter | Type | Behavior |
+|--------|------|----------|
+| Stage | Dropdown | Filter by opportunity stage |
+| Division | Dropdown | Filter by division code |
+| Type | Dropdown | Filter by opportunity type |
+| Sales Rep | Dropdown | Filter by assigned sales rep |
+| Show Open Only | Toggle switch | When ON, hides opportunities in closed/read-only stages. **Default: ON** |
+
+**Table columns:**
+
+| Column | Sortable | Display |
+|--------|----------|---------|
+| Type | Yes | Opportunity type name |
+| Description | Yes | Opportunity description text |
+| Division | Yes | Division code |
+| Stage | Yes | Stage name |
+| Sales Rep | Yes | Assigned rep name |
+| Est. Close | Yes | Month/Year format (e.g., "Mar 2026") |
+| Revenue | Yes | Dollar formatted, right-aligned |
+
+- **Default sort:** Stage ascending
+- **Urgent indicator:** Red "URGENT" badge on urgent opportunities
+- **Row click:** Opens Opportunity Detail modal
+- Actions: "Create Opportunity" button, "Associate Existing" button
+
+#### 6.3.2 Create Opportunity Modal
+Fields:
+- Description (text, required)
+- Type (dropdown from OpportunityTypes, required)
+- Stage (dropdown from OpportunityStages, required)
+- Division (dropdown from Divisions, required)
+- Sales Rep (dropdown, required)
+- Customer Name (text)
+- Estimated Revenue (number)
+- Estimated Delivery Month/Year (dropdowns)
+- Urgent flag (checkbox)
+
+Creates a new opportunity record and automatically associates it with the current project.
+
+#### 6.3.3 Associate Existing Opportunity Modal
+- Shows a list of unassociated opportunities (not yet linked to any project)
+- Each row shows: description, type, stage, customer, revenue
+- Click to associate — links the opportunity to the current project
+
+#### 6.3.4 Opportunity Detail Modal
+- Displays all opportunity fields in read-only format
+- Editable fields: Estimated Close Date (month/year dropdowns)
+- Shows product groups with nested product line items (if present)
+- Product details: description, quantity, unit price, rent duration, make, model, stock number
+
+### 6.4 Company / Contractor Management
+
+#### 6.4.1 Companies Table (within Project Detail)
+Expandable table showing all associated companies.
+
+**Table columns:**
+| Column | Display |
+|--------|---------|
+| Company Name | Company name with expand/collapse chevron |
+| Role | Role description badge |
+| Primary Contact | Name of primary contact at that company |
+| Actions | Edit and Remove buttons |
+
+**Expanded row** shows all contacts for that company:
+- Contact name, title, phone (clickable), email (clickable)
+- Primary contact indicator
+- "Manage Contacts" button
+
+**Actions:**
+- "Add General Contractor" button — opens AddGC modal
+- "Add Subcontractor" button — opens AssociateCompany modal
+
+#### 6.4.2 Company Roles (configurable)
+
+| Role ID | Description |
+|---------|-------------|
+| GC | General Contractor |
+| SUB-EXC | Subcontractor - Excavation |
+| SUB-PAV | Subcontractor - Paving |
+| SUB-ELEC | Subcontractor - Electrical |
+| SUB-MECH | Subcontractor - Mechanical |
+| SUB-SPEC | Subcontractor - Specialized |
+| SUB-STEEL | Subcontractor - Steel |
+
+Roles are configurable through the Manage Dropdowns page.
+
+#### 6.4.3 Add General Contractor Modal
+Fields:
+- Company ID (text, required)
+- Company Name (text, required)
+- Contact Name (text, required)
+- Contact Title (text)
+- Contact Phone (text, required)
+- Contact Email (text, required)
+
+Always assigns `roleId: "GC"`.
+
+#### 6.4.4 Associate Subcontractor Modal
+Fields:
+- Company ID (text, required)
+- Company Name (text, required)
+- Role (dropdown from subcontractor roles, required)
+- Contact Name (text, required)
+- Contact Title (text)
+- Contact Phone (text, required)
+- Contact Email (text, required)
+
+#### 6.4.5 Edit Company Modal
+Allows editing company name, role, and primary contact information.
+
+#### 6.4.6 Manage Company Contacts Modal
+- Lists all contacts for a company
+- Add new contacts (name, title, phone, email)
+- Edit existing contacts inline
+- Delete contacts (with confirmation)
+- Set primary contact
+
+#### 6.4.7 Remove Company
+- Confirmation dialog before removal
+- Disassociates the company from the project (does not delete the company record)
+
+### 6.5 Activity Tracking
+
+#### 6.5.1 Activities Table (within Project Detail)
+Sortable table displaying project activities.
+
+**Table columns:**
+
+| Column | Sortable | Display |
+|--------|----------|---------|
+| Assignee | Yes | Sales rep name |
+| Activity Type | Yes | Type label |
+| Date | Yes | Formatted date |
+| Description | Yes | Activity description text |
+| Actions | No | Edit and Delete buttons |
+
+- **Default sort:** Date descending (newest first)
+
+#### 6.5.2 Activity Types
+- Site Visit
+- Phone Call
+- Email
+- Meeting
+- Follow-up
+- Proposal
+- Demo
+- Other
+
+#### 6.5.3 Create/Edit Activity Modal
+Fields:
+- Assignee (dropdown of sales reps, required)
+- Activity Type (dropdown, required)
+- Date (date picker, required)
+- Description (textarea, required)
+
+#### 6.5.4 Associate Activity with Opportunity
+- Modal to link an activity to a specific opportunity on the project
+- Shows list of project opportunities to select from
+
+#### 6.5.5 Delete Activity
+- Confirmation dialog before deletion
+- Logs deletion in change log
+
+### 6.6 Notes & Documentation
+
+#### 6.6.1 Notes Section (within Project Detail)
+Displays all notes for the project with full history tracking.
+
+**Each note card shows:**
+- Note content
+- Tag badges (color-coded)
+- Author name and creation timestamp
+- "Last modified" indicator with editor name and timestamp (if edited)
+- Edit and Delete action buttons
+
+**Collapsible modification history** per note:
+- Shows each edit with: timestamp, editor name, change summary
+- "View previous content" expandable to see what the content was before the edit
+- Previous tag changes shown
+
+#### 6.6.2 Create/Edit Note Modal
+Fields:
+- Content (textarea, required)
+- Tags (multi-select from configured note tags, optional)
+- Attachments (file upload, optional)
+
+When editing:
+- Automatically captures the previous content and tags
+- Creates a modification history entry with auto-generated summary
+- Updates `lastModifiedAt` and `lastModifiedById`
+
+#### 6.6.3 Delete Note
+- Confirmation dialog
+- Removes the note entirely
+
+### 6.7 Customer Equipment Tracking
+
+#### 6.7.1 Equipment Table (within Project Detail)
+Searchable, sortable table of equipment on the job site.
+
+**Search bar:** Free-text search across all equipment fields (type, make, model, serial number).
+
+**Table columns:**
+
+| Column | Sortable | Display |
+|--------|----------|---------|
+| Type | Yes | Equipment type/category |
+| Make | Yes | Manufacturer |
+| Model | Yes | Model name/number |
+| Year | Yes | Year of manufacture |
+| Serial # | Yes | Serial number |
+| Hours | Yes | Operating hours |
+| Actions | No | Edit and Delete buttons |
+
+#### 6.7.2 Add/Edit Equipment Modal
+Fields:
+- Company (dropdown of companies associated with the project, required)
+- Equipment Type (text, required)
+- Make (text, required)
+- Model (text, required)
+- Year (number, optional)
+- Serial Number (text, optional)
+- Hours (number, optional)
+
+#### 6.7.3 Delete Equipment
+- Confirmation dialog
+- Logs removal in change log
+
+### 6.8 Change Log / Audit Trail
+
+Accessible at `/project/:id/changelog` from the project detail page.
+
+#### 6.8.1 Category Filter
+Tab bar across the top with categories:
+- **All** (default)
+- Project
+- Opportunity
+- Company
+- Activity
+- Note
+- Equipment
+
+Each tab filters the log to show only entries of that category.
+
+#### 6.8.2 Change Log Table
+
+| Column | Description |
+|--------|-------------|
+| Date/Time | Formatted as "MMM d, yyyy h:mm a" |
+| Changed By | Sales rep name |
+| Category | Color-coded badge |
+| Summary | Human-readable change description |
+
+**Category badge colors:**
+| Category | Color |
+|----------|-------|
+| Project | Blue |
+| Opportunity | Green |
+| Company | Purple |
+| Activity | Amber |
+| Note | Sky |
+| Equipment | Orange |
+
+#### 6.8.3 Expandable Detail Rows
+- Entries with structured `details` are expandable (click row or chevron)
+- Expanded view shows JSON-formatted field-level changes (before/after values)
+- Non-expandable rows have no chevron indicator
+
+#### 6.8.4 Pagination
+- Configurable rows per page: 10, 15 (default), 25, 50
+- Shows current range (e.g., "1–15 of 34")
+- Previous/Next page buttons
+- Sorted by timestamp descending (newest first)
+
+#### 6.8.5 Change Log Entry Generation
+Changes are automatically logged for all CRUD operations:
+- **Project:** Created, updated (with changed field names)
+- **Opportunity:** Created, associated, updated (with changed field names)
+- **Company:** Added (with role), updated, removed
+- **Activity:** Added (with type), updated, deleted (with type)
+- **Note:** Added, updated, deleted
+- **Equipment:** Added (with make/model), updated, deleted (with make/model)
+
+Each entry records: the current user ID, timestamp, and action context.
+
+### 6.9 Settings & Configuration
+
+#### 6.9.1 Settings Panel (popover from header)
+- **Current User selector** — dropdown of all sales reps, sets the active user for audit trail attribution
+- **Manage Dropdowns link** — navigates to the dropdown configuration page
+
+#### 6.9.2 Manage Dropdowns Page (`/settings/dropdowns`)
+
+**Layout:** Two-panel design
+- Left panel: Dropdown category selector (sidebar)
+- Right panel: Values table with CRUD operations
+
+**Configurable dropdown categories:**
+
+| Category | Has Color | Description |
+|----------|-----------|-------------|
+| Project Status | Yes | Status values used in project status field |
+| Subcontractor Role | No | Company role options (GC, SUB-EXC, etc.) |
+| Note Tags | Yes | Tag options for notes |
+
+**For each dropdown value:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| Label | string | Display text |
+| Color | color picker | Visual color (only for Status and Tags). Available: emerald, sky, amber, slate, violet, rose, red, orange, teal, indigo, pink, lime |
+| Display Order | integer | Sort order |
+
+**Operations:**
+- **View:** Table of current values sorted by display order
+- **Add:** Form to create a new value (label, display order, color if applicable). ID is auto-generated from label.
+- **Edit:** Inline editing mode — all values become editable simultaneously. Save/Cancel actions.
+- **Delete:** Per-item delete with confirmation dialog
+
+**Persistence:**
+- Project status colors persist to localStorage (key: `project-status-colors`)
+- Note tags persist to localStorage (key: `crm-note-tags`) and sync with application context
+- Status color changes propagate to all status badges across the application via a shared hook
+
+---
+
+## 7. Filtering & Search
+
+### 7.1 Project List Filters
+See Section 6.1.3 for full specification.
+
+### 7.2 Opportunity Filters (Project Detail)
+See Section 6.3.1 for full specification.
+
+### 7.3 Equipment Search (Project Detail)
+- Free-text search input
+- Searches across: equipmentType, make, model, serialNumber (case-insensitive)
+- Filters the equipment table in real-time
+
+### 7.4 General Contractor Search (Filter Bar)
+- Free-text input
+- Case-insensitive substring match on company names where `roleId === 'GC'`
+
+---
+
+## 8. Sorting Behavior
+
+All sortable tables follow a consistent three-state sort pattern:
+
+1. **Click unsorted column** → Sort ascending
+2. **Click ascending column** → Sort descending
+3. **Click descending column** → Remove sort (return to default/natural order)
+
+**Visual indicators:**
+- **Unsorted:** ArrowUpDown icon appears on hover only (opacity transition)
+- **Ascending:** ArrowUp icon (solid)
+- **Descending:** ArrowDown icon (solid)
+
+---
+
+## 9. KPI / Analytics
+
+### 9.1 Total Pipeline Revenue
+- Sum of `revenue` from all `associatedOpportunities` across all filtered projects
+- Displayed as formatted currency ($X,XXX.XX)
+- Updates in real-time as filters change
+
+### 9.2 Revenue by Opportunity Type
+- Groups revenue by `OpportunityType`
+- Only shows types with revenue > $0
+- Sorted by `displayOrder`
+- Each type shows: type name and dollar amount
+
+### 9.3 Behind PAR Indicator
+- A project is "behind PAR" when `associatedOpportunities.length < plannedAnnualRate`
+- Used as a filter toggle on the project list
+
+---
+
+## 10. UI/UX Specifications
+
+### 10.1 Layout
+- Full-width pages with container-constrained content (`container mx-auto`)
+- Consistent header with border-bottom across all pages
+- Card-based content sections
+- Responsive grid layouts (1 column mobile → multi-column desktop)
+
+### 10.2 Color System
+
+**Status colors (configurable):**
+
+| Status | Default Color | Background | Text |
+|--------|--------------|------------|------|
+| Active | Emerald | bg-emerald-100 | text-emerald-800 |
+| Planning | Sky | bg-sky-100 | text-sky-800 |
+| On Hold | Amber | bg-amber-100 | text-amber-800 |
+| Completed | Slate | bg-slate-100 | text-slate-800 |
+
+**Available color palette** (12 colors):
+emerald, sky, amber, slate, violet, rose, red, orange, teal, indigo, pink, lime
+
+Each color has: background (bg), text, ring, border, and light/dark mode variants.
+
+**Change log category colors:** (fixed, not configurable)
+- Project: Blue
+- Opportunity: Green
+- Company: Purple
+- Activity: Amber
+- Note: Sky
+- Equipment: Orange
+
+### 10.3 Component Patterns
+- **Modals (Dialogs):** Used for all create/edit operations. Overlay with backdrop, centered on screen.
+- **Confirmation Dialogs (AlertDialog):** Used before all destructive actions (delete, remove)
+- **Toast Notifications:** Success feedback after create/edit/delete operations
+- **Badges:** Pill-shaped indicators for statuses, categories, urgency, tags
+- **Collapsible sections:** Expand/collapse for companies table rows, note history, opportunity details
+- **Tables:** Consistent header styling, hover rows, sortable column headers
+- **Forms:** Label-above-input pattern, consistent spacing, validation feedback
+
+### 10.4 Navigation
+- Client-side routing (no full page reloads)
+- Back buttons in headers for drill-down pages
+- Row click for table-to-detail navigation
+- Settings accessible from main header on every page
+
+### 10.5 Empty States
+Each section should display a meaningful empty state message:
+- Project table: "No projects found matching the current filters."
+- Change log: Icon + "No changes recorded yet" + "Changes to this project and its associated records will appear here."
+- Dropdown values: "No values configured"
+- Settings landing: "Select a dropdown from the list to view and edit its values"
+
+### 10.6 Dark Mode
+The application supports dark mode via CSS custom properties and the `dark:` Tailwind prefix. All color definitions include dark mode variants.
+
+---
+
+## 11. Reference Data & Lookups
+
+### 11.1 Divisions
+
+| Code | Name |
+|------|------|
+| G | General Line |
+| C | Compact |
+| P | Paving |
+| R | Heavy Rents |
+| S | Power Systems |
+| V | Rental Services |
+| X | Power Rental |
+
+### 11.2 Default Project Statuses
+
+| ID | Label | Display Order | Color |
+|----|-------|---------------|-------|
+| Active | Active | 1 | emerald |
+| Planning | Planning | 2 | sky |
+| On Hold | On Hold | 3 | amber |
+| Completed | Completed | 99 | slate |
+
+### 11.3 Default Company Roles
+
+| ID | Label | Display Order |
+|----|-------|---------------|
+| GC | General Contractor | 1 |
+| SUB-EXC | Subcontractor - Excavation | 2 |
+| SUB-PAV | Subcontractor - Paving | 3 |
+| SUB-ELEC | Subcontractor - Electrical | 4 |
+| SUB-MECH | Subcontractor - Mechanical | 5 |
+| SUB-SPEC | Subcontractor - Specialized | 6 |
+| SUB-STEEL | Subcontractor - Steel | 7 |
+
+### 11.4 Default Note Tags
+
+| ID | Label | Display Order | Color |
+|----|-------|---------------|-------|
+| SAFETY | Safety | 1 | red |
+| SECURITY | Security | 2 | amber |
+| COMPLIANCE | Compliance | 3 | sky |
+| GENERAL | General | 4 | slate |
+
+### 11.5 Activity Types
+Site Visit, Phone Call, Email, Meeting, Follow-up, Proposal, Demo, Other
+
+### 11.6 Opportunity Stages
+25+ stages across multiple phases. Key attributes per stage: name, phase, display order, sales probability, marketing probability, read-only indicator. See `OpportunityStages.json` for full reference.
+
+### 11.7 Opportunity Types
+
+| ID | Code | Description | Display Order |
+|----|------|-------------|---------------|
+| 1 | S | Sales | 1 |
+| 2 | R | Rental | 2 |
+| 3 | P | Parts | 3 |
+| 4 | SVC | Service | 4 |
+| 5 | RPO | Rental Purchase Option | 5 |
+| 6 | UC | Used | 6 |
+| 7 | PSE | Power Systems | 7 |
+| 8 | AR | Allied Rental | 8 |
+
+---
+
+## 12. API Requirements
+
+The POC uses client-side state with JSON seed data. Production requires the following API endpoints:
+
+### 12.1 Projects
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/projects` | List projects (supports filter query params) |
+| GET | `/api/projects/:id` | Get single project with all nested data |
+| POST | `/api/projects` | Create a new project |
+| PUT | `/api/projects/:id` | Update project fields |
+
+### 12.2 Project Companies
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/projects/:id/companies` | Add company to project |
+| PUT | `/api/projects/:id/companies/:companyName` | Update company details |
+| DELETE | `/api/projects/:id/companies/:companyName` | Remove company from project |
+
+### 12.3 Company Contacts
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/projects/:id/companies/:companyId/contacts` | List contacts |
+| POST | `/api/projects/:id/companies/:companyId/contacts` | Add contact |
+| PUT | `/api/projects/:id/companies/:companyId/contacts/:contactId` | Update contact |
+| DELETE | `/api/projects/:id/companies/:companyId/contacts/:contactId` | Delete contact |
+
+### 12.4 Opportunities
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/opportunities` | List opportunities (filter by projectId, unassociated) |
+| POST | `/api/opportunities` | Create opportunity |
+| PUT | `/api/opportunities/:id` | Update opportunity |
+| POST | `/api/projects/:id/opportunities/:oppId` | Associate opportunity to project |
+
+### 12.5 Activities
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/projects/:id/activities` | Create activity |
+| PUT | `/api/projects/:id/activities/:activityId` | Update activity |
+| DELETE | `/api/projects/:id/activities/:activityId` | Delete activity |
+
+### 12.6 Notes
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/projects/:id/notes` | Create note |
+| PUT | `/api/projects/:id/notes/:noteId` | Update note (server manages history) |
+| DELETE | `/api/projects/:id/notes/:noteId` | Delete note |
+
+### 12.7 Equipment
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/projects/:id/equipment` | Add equipment |
+| PUT | `/api/projects/:id/equipment/:equipmentId` | Update equipment |
+| DELETE | `/api/projects/:id/equipment/:equipmentId` | Delete equipment |
+
+### 12.8 Change Log
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/projects/:id/changelog` | Get change log entries (supports category filter, pagination) |
+
+### 12.9 Reference Data
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/sales-reps` | List all sales representatives |
+| GET | `/api/opportunity-stages` | List opportunity stages |
+| GET | `/api/opportunity-types` | List opportunity types |
+| GET | `/api/settings/dropdowns/:type` | Get configurable dropdown values |
+| PUT | `/api/settings/dropdowns/:type` | Update dropdown configuration |
+
+### 12.10 KPI / Analytics
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/projects/kpi/pipeline-revenue` | Total pipeline revenue (with filter params) |
+| GET | `/api/projects/kpi/revenue-by-type` | Revenue breakdown by opportunity type |
+
+---
+
+## 13. Authentication & Authorization
+
+### 13.1 POC State (for reference)
+- No authentication — mock user selector from sales rep list
+- Default user ID: 313
+- User ID used solely for audit trail attribution
+
+### 13.2 Production Requirements
+- Integrate with existing CRM authentication system
+- Current user determined from session/token
+- Role-based permissions:
+  - **View:** All authenticated users can view projects
+  - **Edit:** Sales reps can edit their assigned projects; managers can edit any
+  - **Settings:** Admin role required for Manage Dropdowns
+  - **Delete:** Confirmation required; audit trail preserved
+
+---
+
+## 14. Non-Functional Requirements
+
+### 14.1 Performance
+- Project list should load within standard application SLA
+- Filter changes should update the table and KPIs without re-fetching (client-side filtering acceptable for moderate dataset sizes)
+- Change log pagination to handle large entry counts
+
+### 14.2 Data Persistence
+- All data must persist to backend database (POC uses in-memory state that resets on refresh)
+- Filter preferences should persist per-user (POC uses localStorage)
+- Dropdown configurations should persist server-side
+
+### 14.3 Browser Support
+- Same as existing CRM application requirements
+
+### 14.4 Accessibility
+- Keyboard navigation for all interactive elements
+- Proper ARIA labels on interactive components
+- Color is not the sole indicator of state (labels accompany colored badges)
+
+### 14.5 Responsive Design
+- Desktop-first design with responsive grid breakpoints
+- Filter bar collapses to stacked layout on mobile
+- Tables scroll horizontally on small screens
+
+---
+
+## 15. Appendix: POC Data Samples
+
+### 15.1 Sample Projects
+
+The POC includes 5 sample projects demonstrating the data structure:
+
+1. **St. Mary's Hospital - West Wing Expansion** (ID: 500101) — Active, Chicago IL, 2 sales reps, PAR: 24
+2. **Metro Line Extension - Phase 3** (ID: 500102) — Active, Portland OR, 2 sales reps, PAR: 20
+3. **Riverside Commercial Park** (ID: 500103) — Planning, Denver CO, 2 sales reps, PAR: 15
+4. **Industrial District Power Grid Upgrade** (ID: 500104) — Active, Houston TX, 1 sales rep, PAR: 10
+5. **Coastal Highway Bridge Replacement** (ID: 500105) — Completed, San Diego CA, 2 sales reps, PAR: 18
+
+### 15.2 Sample Change Log
+34 seed entries across all projects demonstrating all action types and categories.
+
+### 15.3 Reference Data Counts
+- **Sales Representatives:** 100+ records
+- **Opportunity Stages:** 25+ stages across multiple phases
+- **Opportunity Types:** 8 types
+
+---
+
+*This PRD was generated from the `crm-job-site-poc` proof-of-concept codebase to serve as the specification for production implementation.*
