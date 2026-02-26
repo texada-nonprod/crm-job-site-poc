@@ -9,34 +9,71 @@
 
 ## Table of Contents
 
-1. [Overview](#1-overview)
-2. [Goals & Objectives](#2-goals--objectives)
-3. [User Roles](#3-user-roles)
-4. [Information Architecture](#4-information-architecture)
-5. [Data Model](#5-data-model)
-6. [Feature Requirements](#6-feature-requirements)
-   - 6.1 [Project List (Dashboard)](#61-project-list-dashboard)
-   - 6.2 [Project Detail](#62-project-detail)
-   - 6.3 [Opportunity Management](#63-opportunity-management)
-   - 6.4 [Company / Contractor Management](#64-company--contractor-management)
-   - 6.5 [Activity Tracking](#65-activity-tracking)
-   - 6.6 [Notes & Documentation](#66-notes--documentation)
-   - 6.7 [Customer Equipment Tracking](#67-customer-equipment-tracking)
-   - 6.8 [Change Log / Audit Trail](#68-change-log--audit-trail)
-   - 6.9 [Settings & Configuration](#69-settings--configuration)
-7. [Filtering & Search](#7-filtering--search)
-8. [Sorting Behavior](#8-sorting-behavior)
-9. [KPI / Analytics](#9-kpi--analytics)
-10. [UI/UX Specifications](#10-uiux-specifications)
-11. [Reference Data & Lookups](#11-reference-data--lookups)
-12. [API Requirements](#12-api-requirements)
-13. [Authentication & Authorization](#13-authentication--authorization)
-14. [Non-Functional Requirements](#14-non-functional-requirements)
-15. [Appendix: POC Data Samples](#15-appendix-poc-data-samples)
+1. [Open Decisions / Assumptions](#1-open-decisions--assumptions)
+2. [Overview](#2-overview)
+3. [Goals & Objectives](#3-goals--objectives)
+4. [User Roles](#4-user-roles)
+5. [Information Architecture](#5-information-architecture)
+6. [Data Model](#6-data-model)
+7. [Feature Requirements](#7-feature-requirements)
+   - 7.1 [Project List (Dashboard)](#71-project-list-dashboard)
+   - 7.2 [Project Detail](#72-project-detail)
+   - 7.3 [Opportunity Management](#73-opportunity-management)
+   - 7.4 [Company / Contractor Management](#74-company--contractor-management)
+   - 7.5 [Activity Tracking](#75-activity-tracking)
+   - 7.6 [Notes & Documentation](#76-notes--documentation)
+   - 7.7 [Customer Equipment Tracking](#77-customer-equipment-tracking)
+   - 7.8 [Change Log / Audit Trail](#78-change-log--audit-trail)
+   - 7.9 [Settings & Configuration](#79-settings--configuration)
+8. [Filtering & Search](#8-filtering--search)
+9. [Sorting Behavior](#9-sorting-behavior)
+10. [KPI / Analytics](#10-kpi--analytics)
+11. [UI/UX Specifications](#11-uiux-specifications)
+12. [Reference Data & Lookups](#12-reference-data--lookups)
+13. [API Requirements](#13-api-requirements)
+14. [Authentication & Authorization](#14-authentication--authorization)
+15. [Non-Functional Requirements](#15-non-functional-requirements)
+16. [Appendix: POC Data Samples](#16-appendix-poc-data-samples)
 
 ---
 
-## 1. Overview
+## 1. Open Decisions / Assumptions
+
+The following items were identified during POC analysis and require resolution before or during production implementation.
+
+### Open Decisions
+
+| # | Topic | Question | POC Behavior | Options / Notes |
+|---|-------|----------|-------------|-----------------|
+| OD-1 | **Company data source** | Should companies (GC/subcontractors) be selected from an existing CRM company/customer master, or free-text entered? | Free-text entry (companyId and companyName are manually typed) | Recommend: lookup against existing customer master with option to create new |
+| OD-2 | **Opportunity ownership** | Can an opportunity belong to multiple projects, or is it strictly 1:1? | 1:1 — each opportunity has a single `projectId` | Clarify with business; POC associates by copying summary data onto the project |
+| OD-3 | **Division assignment** | How is a project's division determined? | Inferred from the first associated opportunity's `divisionId` | Consider: explicit project-level division field, or multi-division support |
+| OD-4 | **PAR calculation** | Is "Behind PAR" based on simple opportunity count vs. target, or should it factor in time elapsed since `parStartDate`? | Simple count: `opportunities.length < plannedAnnualRate` | May need time-proportional calculation (e.g., 6 months in → should have ≥ PAR/2) |
+| OD-5 | **Activity-Opportunity linking** | Should activities be linkable to specific opportunities, or only to projects? | UI exists to associate activities with opportunities, but the data model does not persist this link | Decide: add `opportunityId` to Activity model, or remove the association UI |
+| OD-6 | **Note attachments** | What file storage backend will be used for note attachments? | Data model includes `Attachment` with `fileUrl`, but no upload implementation exists | Decide: S3/blob storage, max file size, allowed types |
+| OD-7 | **Dropdown configuration scope** | Are dropdown configurations (statuses, roles, tags) global or per-tenant/per-user? | Global (single set of values) | Likely global, but confirm |
+| OD-8 | **Equipment data source** | Should equipment entries link to an existing equipment/asset master? | Free-text entry for all fields | Recommend: lookup against fleet/asset management system if available |
+| OD-9 | **Revenue calculation** | Should pipeline revenue use `estimateRevenue` directly, or weight it by stage probability? | Direct sum of `estimateRevenue` (no probability weighting) | Consider: weighted pipeline = revenue × salesprobability |
+| OD-10 | **Change log retention** | How long should change log entries be retained? | Indefinite (in-memory, no persistence) | Define retention policy and archival strategy |
+
+### Assumptions
+
+| # | Assumption | Rationale |
+|---|-----------|-----------|
+| A-1 | Sales representatives already exist in the CRM system and can be queried via API | POC loads from static JSON; production needs a sales rep API |
+| A-2 | Opportunity stages and types are managed elsewhere in the CRM and are read-only in this module | POC loads from static JSON; these are not editable in the Manage Dropdowns page |
+| A-3 | The existing CRM authentication system will provide the current user identity | POC uses a mock user selector dropdown |
+| A-4 | Project IDs will be auto-generated by the database (auto-increment or UUID) | POC uses `Math.max(...ids) + 1` |
+| A-5 | Change log entries should be server-generated (not client-submitted) to ensure audit integrity | POC generates entries client-side in the DataContext |
+| A-6 | All monetary values are in a single currency (USD) | POC displays `$` formatting only |
+| A-7 | The "Hide Completed" filter defaults to ON, meaning completed projects are hidden by default | Matches POC behavior; confirm this is desired |
+| A-8 | A project can have multiple sales reps assigned simultaneously | POC supports `salesRepIds` as an array |
+| A-9 | Companies are identified by name for removal operations (not by a unique compound key) | POC uses `companyName` as the identifier for `removeProjectCompany` |
+| A-10 | Note modification history is append-only and cannot be edited or deleted | POC stores history as an immutable array |
+
+---
+
+## 2. Overview
 
 This module adds **construction project (job site) management** capabilities to the CRM. It allows sales representatives to track construction projects, associate sales/rental opportunities, manage relationships with general contractors and subcontractors, log activities, attach notes, and track customer equipment on job sites — all tied to a comprehensive audit trail.
 
@@ -44,7 +81,7 @@ The POC was built as a standalone React SPA with client-side state. The producti
 
 ---
 
-## 2. Goals & Objectives
+## 3. Goals & Objectives
 
 | Goal | Description |
 |------|-------------|
@@ -58,7 +95,7 @@ The POC was built as a standalone React SPA with client-side state. The producti
 
 ---
 
-## 3. User Roles
+## 4. User Roles
 
 The POC uses a mock user selector. Production should integrate with existing CRM authentication.
 
@@ -76,7 +113,7 @@ The current user identity is used for:
 
 ---
 
-## 4. Information Architecture
+## 5. Information Architecture
 
 ### Page Structure
 
@@ -107,9 +144,9 @@ The current user identity is used for:
 
 ---
 
-## 5. Data Model
+## 6. Data Model
 
-### 5.1 Project
+### 6.1 Project
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -139,7 +176,7 @@ The current user identity is used for:
 | `activities` | Activity[] | No | Project activities |
 | `customerEquipment` | CustomerEquipment[] | No | Equipment tracked on site |
 
-### 5.2 ProjectCompany
+### 6.2 ProjectCompany
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -151,7 +188,7 @@ The current user identity is used for:
 | `companyContacts` | CompanyContact[] | Yes | Array of contacts at this company |
 | `primaryContactIndex` | integer | No | Index of the primary contact in the contacts array |
 
-### 5.3 CompanyContact
+### 6.3 CompanyContact
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -161,7 +198,7 @@ The current user identity is used for:
 | `phone` | string | Yes | Phone number |
 | `email` | string | Yes | Email address |
 
-### 5.4 Opportunity (linked from existing CRM)
+### 6.4 Opportunity (linked from existing CRM)
 
 The Opportunity entity comes from the existing CRM. Key fields used by this module:
 
@@ -186,7 +223,7 @@ The Opportunity entity comes from the existing CRM. Key fields used by this modu
 | `contactEmail` | string | Contact email |
 | `productGroups` | ProductGroup[] | Nested product line items |
 
-### 5.5 OpportunitySummary (denormalized on Project)
+### 6.5 OpportunitySummary (denormalized on Project)
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -196,7 +233,7 @@ The Opportunity entity comes from the existing CRM. Key fields used by this modu
 | `stageId` | integer | Current stage |
 | `revenue` | number | Estimated revenue |
 
-### 5.6 Activity
+### 6.6 Activity
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -206,7 +243,7 @@ The Opportunity entity comes from the existing CRM. Key fields used by this modu
 | `date` | string (date) | Yes | Activity date |
 | `description` | string | Yes | Free-text description |
 
-### 5.7 Note
+### 6.7 Note
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -220,7 +257,7 @@ The Opportunity entity comes from the existing CRM. Key fields used by this modu
 | `lastModifiedById` | integer | No | Last editor user ID |
 | `modificationHistory` | NoteModification[] | No | Full edit history |
 
-### 5.8 NoteModification
+### 6.8 NoteModification
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -230,7 +267,7 @@ The Opportunity entity comes from the existing CRM. Key fields used by this modu
 | `previousContent` | string | Previous note content (if content was changed) |
 | `previousTagIds` | string[] | Previous tag set (if tags were changed) |
 
-### 5.9 Attachment
+### 6.9 Attachment
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -241,7 +278,7 @@ The Opportunity entity comes from the existing CRM. Key fields used by this modu
 | `fileSize` | number | Size in bytes |
 | `uploadedAt` | datetime | Upload timestamp |
 
-### 5.10 NoteTag (configurable)
+### 6.10 NoteTag (configurable)
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -252,7 +289,7 @@ The Opportunity entity comes from the existing CRM. Key fields used by this modu
 
 **Default tags:** Safety (red), Security (amber), Compliance (sky), General (slate)
 
-### 5.11 CustomerEquipment
+### 6.11 CustomerEquipment
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -265,7 +302,7 @@ The Opportunity entity comes from the existing CRM. Key fields used by this modu
 | `serialNumber` | string | No | Serial number |
 | `hours` | number | No | Operating hours |
 
-### 5.12 ChangeLogEntry
+### 6.12 ChangeLogEntry
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -286,7 +323,7 @@ The Opportunity entity comes from the existing CRM. Key fields used by this modu
 - `NOTE_ADDED`, `NOTE_UPDATED`, `NOTE_DELETED`
 - `EQUIPMENT_ADDED`, `EQUIPMENT_UPDATED`, `EQUIPMENT_DELETED`
 
-### 5.13 OpportunityStage (reference data)
+### 6.13 OpportunityStage (reference data)
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -299,7 +336,7 @@ The Opportunity entity comes from the existing CRM. Key fields used by this modu
 | `marketingprobability` | number | Marketing probability percentage |
 | `readonlyind` | integer | Whether stage is read-only (closed stages) |
 
-### 5.14 OpportunityType (reference data)
+### 6.14 OpportunityType (reference data)
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -310,13 +347,13 @@ The Opportunity entity comes from the existing CRM. Key fields used by this modu
 
 ---
 
-## 6. Feature Requirements
+## 7. Feature Requirements
 
-### 6.1 Project List (Dashboard)
+### 7.1 Project List (Dashboard)
 
 The main landing page showing all projects with filtering, sorting, and pipeline KPIs.
 
-#### 6.1.1 Header
+#### 7.1.1 Header
 - Page title: "Projects List"
 - Subtitle: "Manage construction projects and opportunities"
 - **"New Project" button** — opens the Create Project modal
@@ -324,7 +361,7 @@ The main landing page showing all projects with filtering, sorting, and pipeline
   - Current user selector (dropdown of all sales reps)
   - Link to "Manage Dropdowns" settings page
 
-#### 6.1.2 KPI Summary Card
+#### 7.1.2 KPI Summary Card
 - Displays at top of page, above filters
 - Shows **Total Revenue in Pipeline** as a large formatted dollar amount (e.g., `$1,234,567.00`)
 - Alongside the total, shows **revenue breakdown by opportunity type** (e.g., Sales: $500,000 | Rental: $734,567)
@@ -333,7 +370,7 @@ The main landing page showing all projects with filtering, sorting, and pipeline
 - Types are sorted by their configured `displayOrder`
 - KPI values respect active filters (only counts revenue from filtered projects)
 
-#### 6.1.3 Filter Bar
+#### 7.1.3 Filter Bar
 Contained in a card with a "Filters" header. Six filter controls in a responsive grid:
 
 | Filter | Type | Behavior |
@@ -348,7 +385,7 @@ Contained in a card with a "Filters" header. Six filter controls in a responsive
 - Filters are persisted to localStorage (key: `crm-filters`) and restored on page load
 - All filters are combined with AND logic
 
-#### 6.1.4 Project Table
+#### 7.1.4 Project Table
 A sortable table displaying filtered projects. Columns:
 
 | Column | Sortable | Sort Logic | Display |
@@ -366,18 +403,18 @@ A sortable table displaying filtered projects. Columns:
 - **Row click** navigates to `/project/:id`
 - Empty state: "No projects found matching the current filters."
 
-### 6.2 Project Detail
+### 7.2 Project Detail
 
 Comprehensive project view accessed at `/project/:id`.
 
-#### 6.2.1 Header Section
+#### 7.2.1 Header Section
 - **Back button** — returns to project list
 - **Project name** as page title
 - **Status badge** — color-coded pill (configurable colors per status)
 - **Edit button** — opens Edit Project modal
 - **Change Log button** — navigates to `/project/:id/changelog`
 
-#### 6.2.2 Project Information Card
+#### 7.2.2 Project Information Card
 Displays in a card with two columns:
 
 **Left column — Details:**
@@ -391,7 +428,7 @@ Displays in a card with two columns:
   - Coordinates view: latitude, longitude
   - Toggle only shown if both address and coordinates exist
 
-#### 6.2.3 Create Project Modal
+#### 7.2.3 Create Project Modal
 Fields:
 - Project Name (text, required)
 - Description (textarea, required)
@@ -403,12 +440,12 @@ Fields:
 - Address: Street, City, State, ZIP Code, Country (all text, required)
 - Coordinates: Latitude, Longitude (number, optional)
 
-#### 6.2.4 Edit Project Modal
+#### 7.2.4 Edit Project Modal
 Same fields as Create, pre-populated with current values. Updates trigger change log entry with field-level change tracking.
 
-### 6.3 Opportunity Management
+### 7.3 Opportunity Management
 
-#### 6.3.1 Opportunities Table (within Project Detail)
+#### 7.3.1 Opportunities Table (within Project Detail)
 Displayed in a collapsible section with header showing opportunity count.
 
 **Filter controls above table:**
@@ -438,7 +475,7 @@ Displayed in a collapsible section with header showing opportunity count.
 - **Row click:** Opens Opportunity Detail modal
 - Actions: "Create Opportunity" button, "Associate Existing" button
 
-#### 6.3.2 Create Opportunity Modal
+#### 7.3.2 Create Opportunity Modal
 Fields:
 - Description (text, required)
 - Type (dropdown from OpportunityTypes, required)
@@ -452,20 +489,20 @@ Fields:
 
 Creates a new opportunity record and automatically associates it with the current project.
 
-#### 6.3.3 Associate Existing Opportunity Modal
+#### 7.3.3 Associate Existing Opportunity Modal
 - Shows a list of unassociated opportunities (not yet linked to any project)
 - Each row shows: description, type, stage, customer, revenue
 - Click to associate — links the opportunity to the current project
 
-#### 6.3.4 Opportunity Detail Modal
+#### 7.3.4 Opportunity Detail Modal
 - Displays all opportunity fields in read-only format
 - Editable fields: Estimated Close Date (month/year dropdowns)
 - Shows product groups with nested product line items (if present)
 - Product details: description, quantity, unit price, rent duration, make, model, stock number
 
-### 6.4 Company / Contractor Management
+### 7.4 Company / Contractor Management
 
-#### 6.4.1 Companies Table (within Project Detail)
+#### 7.4.1 Companies Table (within Project Detail)
 Expandable table showing all associated companies.
 
 **Table columns:**
@@ -485,7 +522,7 @@ Expandable table showing all associated companies.
 - "Add General Contractor" button — opens AddGC modal
 - "Add Subcontractor" button — opens AssociateCompany modal
 
-#### 6.4.2 Company Roles (configurable)
+#### 7.4.2 Company Roles (configurable)
 
 | Role ID | Description |
 |---------|-------------|
@@ -499,7 +536,7 @@ Expandable table showing all associated companies.
 
 Roles are configurable through the Manage Dropdowns page.
 
-#### 6.4.3 Add General Contractor Modal
+#### 7.4.3 Add General Contractor Modal
 Fields:
 - Company ID (text, required)
 - Company Name (text, required)
@@ -510,7 +547,7 @@ Fields:
 
 Always assigns `roleId: "GC"`.
 
-#### 6.4.4 Associate Subcontractor Modal
+#### 7.4.4 Associate Subcontractor Modal
 Fields:
 - Company ID (text, required)
 - Company Name (text, required)
@@ -520,23 +557,23 @@ Fields:
 - Contact Phone (text, required)
 - Contact Email (text, required)
 
-#### 6.4.5 Edit Company Modal
+#### 7.4.5 Edit Company Modal
 Allows editing company name, role, and primary contact information.
 
-#### 6.4.6 Manage Company Contacts Modal
+#### 7.4.6 Manage Company Contacts Modal
 - Lists all contacts for a company
 - Add new contacts (name, title, phone, email)
 - Edit existing contacts inline
 - Delete contacts (with confirmation)
 - Set primary contact
 
-#### 6.4.7 Remove Company
+#### 7.4.7 Remove Company
 - Confirmation dialog before removal
 - Disassociates the company from the project (does not delete the company record)
 
-### 6.5 Activity Tracking
+### 7.5 Activity Tracking
 
-#### 6.5.1 Activities Table (within Project Detail)
+#### 7.5.1 Activities Table (within Project Detail)
 Sortable table displaying project activities.
 
 **Table columns:**
@@ -551,7 +588,7 @@ Sortable table displaying project activities.
 
 - **Default sort:** Date descending (newest first)
 
-#### 6.5.2 Activity Types
+#### 7.5.2 Activity Types
 - Site Visit
 - Phone Call
 - Email
@@ -561,24 +598,24 @@ Sortable table displaying project activities.
 - Demo
 - Other
 
-#### 6.5.3 Create/Edit Activity Modal
+#### 7.5.3 Create/Edit Activity Modal
 Fields:
 - Assignee (dropdown of sales reps, required)
 - Activity Type (dropdown, required)
 - Date (date picker, required)
 - Description (textarea, required)
 
-#### 6.5.4 Associate Activity with Opportunity
+#### 7.5.4 Associate Activity with Opportunity
 - Modal to link an activity to a specific opportunity on the project
 - Shows list of project opportunities to select from
 
-#### 6.5.5 Delete Activity
+#### 7.5.5 Delete Activity
 - Confirmation dialog before deletion
 - Logs deletion in change log
 
-### 6.6 Notes & Documentation
+### 7.6 Notes & Documentation
 
-#### 6.6.1 Notes Section (within Project Detail)
+#### 7.6.1 Notes Section (within Project Detail)
 Displays all notes for the project with full history tracking.
 
 **Each note card shows:**
@@ -593,7 +630,7 @@ Displays all notes for the project with full history tracking.
 - "View previous content" expandable to see what the content was before the edit
 - Previous tag changes shown
 
-#### 6.6.2 Create/Edit Note Modal
+#### 7.6.2 Create/Edit Note Modal
 Fields:
 - Content (textarea, required)
 - Tags (multi-select from configured note tags, optional)
@@ -604,13 +641,13 @@ When editing:
 - Creates a modification history entry with auto-generated summary
 - Updates `lastModifiedAt` and `lastModifiedById`
 
-#### 6.6.3 Delete Note
+#### 7.6.3 Delete Note
 - Confirmation dialog
 - Removes the note entirely
 
-### 6.7 Customer Equipment Tracking
+### 7.7 Customer Equipment Tracking
 
-#### 6.7.1 Equipment Table (within Project Detail)
+#### 7.7.1 Equipment Table (within Project Detail)
 Searchable, sortable table of equipment on the job site.
 
 **Search bar:** Free-text search across all equipment fields (type, make, model, serial number).
@@ -627,7 +664,7 @@ Searchable, sortable table of equipment on the job site.
 | Hours | Yes | Operating hours |
 | Actions | No | Edit and Delete buttons |
 
-#### 6.7.2 Add/Edit Equipment Modal
+#### 7.7.2 Add/Edit Equipment Modal
 Fields:
 - Company (dropdown of companies associated with the project, required)
 - Equipment Type (text, required)
@@ -637,15 +674,15 @@ Fields:
 - Serial Number (text, optional)
 - Hours (number, optional)
 
-#### 6.7.3 Delete Equipment
+#### 7.7.3 Delete Equipment
 - Confirmation dialog
 - Logs removal in change log
 
-### 6.8 Change Log / Audit Trail
+### 7.8 Change Log / Audit Trail
 
 Accessible at `/project/:id/changelog` from the project detail page.
 
-#### 6.8.1 Category Filter
+#### 7.8.1 Category Filter
 Tab bar across the top with categories:
 - **All** (default)
 - Project
@@ -657,7 +694,7 @@ Tab bar across the top with categories:
 
 Each tab filters the log to show only entries of that category.
 
-#### 6.8.2 Change Log Table
+#### 7.8.2 Change Log Table
 
 | Column | Description |
 |--------|-------------|
@@ -676,18 +713,18 @@ Each tab filters the log to show only entries of that category.
 | Note | Sky |
 | Equipment | Orange |
 
-#### 6.8.3 Expandable Detail Rows
+#### 7.8.3 Expandable Detail Rows
 - Entries with structured `details` are expandable (click row or chevron)
 - Expanded view shows JSON-formatted field-level changes (before/after values)
 - Non-expandable rows have no chevron indicator
 
-#### 6.8.4 Pagination
+#### 7.8.4 Pagination
 - Configurable rows per page: 10, 15 (default), 25, 50
 - Shows current range (e.g., "1–15 of 34")
 - Previous/Next page buttons
 - Sorted by timestamp descending (newest first)
 
-#### 6.8.5 Change Log Entry Generation
+#### 7.8.5 Change Log Entry Generation
 Changes are automatically logged for all CRUD operations:
 - **Project:** Created, updated (with changed field names)
 - **Opportunity:** Created, associated, updated (with changed field names)
@@ -698,13 +735,13 @@ Changes are automatically logged for all CRUD operations:
 
 Each entry records: the current user ID, timestamp, and action context.
 
-### 6.9 Settings & Configuration
+### 7.9 Settings & Configuration
 
-#### 6.9.1 Settings Panel (popover from header)
+#### 7.9.1 Settings Panel (popover from header)
 - **Current User selector** — dropdown of all sales reps, sets the active user for audit trail attribution
 - **Manage Dropdowns link** — navigates to the dropdown configuration page
 
-#### 6.9.2 Manage Dropdowns Page (`/settings/dropdowns`)
+#### 7.9.2 Manage Dropdowns Page (`/settings/dropdowns`)
 
 **Layout:** Two-panel design
 - Left panel: Dropdown category selector (sidebar)
@@ -739,26 +776,26 @@ Each entry records: the current user ID, timestamp, and action context.
 
 ---
 
-## 7. Filtering & Search
+## 8. Filtering & Search
 
-### 7.1 Project List Filters
-See Section 6.1.3 for full specification.
+### 8.1 Project List Filters
+See Section 7.1.3 for full specification.
 
-### 7.2 Opportunity Filters (Project Detail)
-See Section 6.3.1 for full specification.
+### 8.2 Opportunity Filters (Project Detail)
+See Section 7.3.1 for full specification.
 
-### 7.3 Equipment Search (Project Detail)
+### 8.3 Equipment Search (Project Detail)
 - Free-text search input
 - Searches across: equipmentType, make, model, serialNumber (case-insensitive)
 - Filters the equipment table in real-time
 
-### 7.4 General Contractor Search (Filter Bar)
+### 8.4 General Contractor Search (Filter Bar)
 - Free-text input
 - Case-insensitive substring match on company names where `roleId === 'GC'`
 
 ---
 
-## 8. Sorting Behavior
+## 9. Sorting Behavior
 
 All sortable tables follow a consistent three-state sort pattern:
 
@@ -773,34 +810,34 @@ All sortable tables follow a consistent three-state sort pattern:
 
 ---
 
-## 9. KPI / Analytics
+## 10. KPI / Analytics
 
-### 9.1 Total Pipeline Revenue
+### 10.1 Total Pipeline Revenue
 - Sum of `revenue` from all `associatedOpportunities` across all filtered projects
 - Displayed as formatted currency ($X,XXX.XX)
 - Updates in real-time as filters change
 
-### 9.2 Revenue by Opportunity Type
+### 10.2 Revenue by Opportunity Type
 - Groups revenue by `OpportunityType`
 - Only shows types with revenue > $0
 - Sorted by `displayOrder`
 - Each type shows: type name and dollar amount
 
-### 9.3 Behind PAR Indicator
+### 10.3 Behind PAR Indicator
 - A project is "behind PAR" when `associatedOpportunities.length < plannedAnnualRate`
 - Used as a filter toggle on the project list
 
 ---
 
-## 10. UI/UX Specifications
+## 11. UI/UX Specifications
 
-### 10.1 Layout
+### 11.1 Layout
 - Full-width pages with container-constrained content (`container mx-auto`)
 - Consistent header with border-bottom across all pages
 - Card-based content sections
 - Responsive grid layouts (1 column mobile → multi-column desktop)
 
-### 10.2 Color System
+### 11.2 Color System
 
 **Status colors (configurable):**
 
@@ -824,7 +861,7 @@ Each color has: background (bg), text, ring, border, and light/dark mode variant
 - Note: Sky
 - Equipment: Orange
 
-### 10.3 Component Patterns
+### 11.3 Component Patterns
 - **Modals (Dialogs):** Used for all create/edit operations. Overlay with backdrop, centered on screen.
 - **Confirmation Dialogs (AlertDialog):** Used before all destructive actions (delete, remove)
 - **Toast Notifications:** Success feedback after create/edit/delete operations
@@ -833,27 +870,27 @@ Each color has: background (bg), text, ring, border, and light/dark mode variant
 - **Tables:** Consistent header styling, hover rows, sortable column headers
 - **Forms:** Label-above-input pattern, consistent spacing, validation feedback
 
-### 10.4 Navigation
+### 11.4 Navigation
 - Client-side routing (no full page reloads)
 - Back buttons in headers for drill-down pages
 - Row click for table-to-detail navigation
 - Settings accessible from main header on every page
 
-### 10.5 Empty States
+### 11.5 Empty States
 Each section should display a meaningful empty state message:
 - Project table: "No projects found matching the current filters."
 - Change log: Icon + "No changes recorded yet" + "Changes to this project and its associated records will appear here."
 - Dropdown values: "No values configured"
 - Settings landing: "Select a dropdown from the list to view and edit its values"
 
-### 10.6 Dark Mode
+### 11.6 Dark Mode
 The application supports dark mode via CSS custom properties and the `dark:` Tailwind prefix. All color definitions include dark mode variants.
 
 ---
 
-## 11. Reference Data & Lookups
+## 12. Reference Data & Lookups
 
-### 11.1 Divisions
+### 12.1 Divisions
 
 | Code | Name |
 |------|------|
@@ -865,7 +902,7 @@ The application supports dark mode via CSS custom properties and the `dark:` Tai
 | V | Rental Services |
 | X | Power Rental |
 
-### 11.2 Default Project Statuses
+### 12.2 Default Project Statuses
 
 | ID | Label | Display Order | Color |
 |----|-------|---------------|-------|
@@ -874,7 +911,7 @@ The application supports dark mode via CSS custom properties and the `dark:` Tai
 | On Hold | On Hold | 3 | amber |
 | Completed | Completed | 99 | slate |
 
-### 11.3 Default Company Roles
+### 12.3 Default Company Roles
 
 | ID | Label | Display Order |
 |----|-------|---------------|
@@ -886,7 +923,7 @@ The application supports dark mode via CSS custom properties and the `dark:` Tai
 | SUB-SPEC | Subcontractor - Specialized | 6 |
 | SUB-STEEL | Subcontractor - Steel | 7 |
 
-### 11.4 Default Note Tags
+### 12.4 Default Note Tags
 
 | ID | Label | Display Order | Color |
 |----|-------|---------------|-------|
@@ -895,13 +932,13 @@ The application supports dark mode via CSS custom properties and the `dark:` Tai
 | COMPLIANCE | Compliance | 3 | sky |
 | GENERAL | General | 4 | slate |
 
-### 11.5 Activity Types
+### 12.5 Activity Types
 Site Visit, Phone Call, Email, Meeting, Follow-up, Proposal, Demo, Other
 
-### 11.6 Opportunity Stages
+### 12.6 Opportunity Stages
 25+ stages across multiple phases. Key attributes per stage: name, phase, display order, sales probability, marketing probability, read-only indicator. See `OpportunityStages.json` for full reference.
 
-### 11.7 Opportunity Types
+### 12.7 Opportunity Types
 
 | ID | Code | Description | Display Order |
 |----|------|-------------|---------------|
@@ -916,11 +953,11 @@ Site Visit, Phone Call, Email, Meeting, Follow-up, Proposal, Demo, Other
 
 ---
 
-## 12. API Requirements
+## 13. API Requirements
 
 The POC uses client-side state with JSON seed data. Production requires the following API endpoints:
 
-### 12.1 Projects
+### 13.1 Projects
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -929,7 +966,7 @@ The POC uses client-side state with JSON seed data. Production requires the foll
 | POST | `/api/projects` | Create a new project |
 | PUT | `/api/projects/:id` | Update project fields |
 
-### 12.2 Project Companies
+### 13.2 Project Companies
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -937,7 +974,7 @@ The POC uses client-side state with JSON seed data. Production requires the foll
 | PUT | `/api/projects/:id/companies/:companyName` | Update company details |
 | DELETE | `/api/projects/:id/companies/:companyName` | Remove company from project |
 
-### 12.3 Company Contacts
+### 13.3 Company Contacts
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -946,7 +983,7 @@ The POC uses client-side state with JSON seed data. Production requires the foll
 | PUT | `/api/projects/:id/companies/:companyId/contacts/:contactId` | Update contact |
 | DELETE | `/api/projects/:id/companies/:companyId/contacts/:contactId` | Delete contact |
 
-### 12.4 Opportunities
+### 13.4 Opportunities
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -955,7 +992,7 @@ The POC uses client-side state with JSON seed data. Production requires the foll
 | PUT | `/api/opportunities/:id` | Update opportunity |
 | POST | `/api/projects/:id/opportunities/:oppId` | Associate opportunity to project |
 
-### 12.5 Activities
+### 13.5 Activities
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -963,7 +1000,7 @@ The POC uses client-side state with JSON seed data. Production requires the foll
 | PUT | `/api/projects/:id/activities/:activityId` | Update activity |
 | DELETE | `/api/projects/:id/activities/:activityId` | Delete activity |
 
-### 12.6 Notes
+### 13.6 Notes
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -971,7 +1008,7 @@ The POC uses client-side state with JSON seed data. Production requires the foll
 | PUT | `/api/projects/:id/notes/:noteId` | Update note (server manages history) |
 | DELETE | `/api/projects/:id/notes/:noteId` | Delete note |
 
-### 12.7 Equipment
+### 13.7 Equipment
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -979,13 +1016,13 @@ The POC uses client-side state with JSON seed data. Production requires the foll
 | PUT | `/api/projects/:id/equipment/:equipmentId` | Update equipment |
 | DELETE | `/api/projects/:id/equipment/:equipmentId` | Delete equipment |
 
-### 12.8 Change Log
+### 13.8 Change Log
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/projects/:id/changelog` | Get change log entries (supports category filter, pagination) |
 
-### 12.9 Reference Data
+### 13.9 Reference Data
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -995,7 +1032,7 @@ The POC uses client-side state with JSON seed data. Production requires the foll
 | GET | `/api/settings/dropdowns/:type` | Get configurable dropdown values |
 | PUT | `/api/settings/dropdowns/:type` | Update dropdown configuration |
 
-### 12.10 KPI / Analytics
+### 13.10 KPI / Analytics
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -1004,14 +1041,14 @@ The POC uses client-side state with JSON seed data. Production requires the foll
 
 ---
 
-## 13. Authentication & Authorization
+## 14. Authentication & Authorization
 
-### 13.1 POC State (for reference)
+### 14.1 POC State (for reference)
 - No authentication — mock user selector from sales rep list
 - Default user ID: 313
 - User ID used solely for audit trail attribution
 
-### 13.2 Production Requirements
+### 14.2 Production Requirements
 - Integrate with existing CRM authentication system
 - Current user determined from session/token
 - Role-based permissions:
@@ -1022,36 +1059,36 @@ The POC uses client-side state with JSON seed data. Production requires the foll
 
 ---
 
-## 14. Non-Functional Requirements
+## 15. Non-Functional Requirements
 
-### 14.1 Performance
+### 15.1 Performance
 - Project list should load within standard application SLA
 - Filter changes should update the table and KPIs without re-fetching (client-side filtering acceptable for moderate dataset sizes)
 - Change log pagination to handle large entry counts
 
-### 14.2 Data Persistence
+### 15.2 Data Persistence
 - All data must persist to backend database (POC uses in-memory state that resets on refresh)
 - Filter preferences should persist per-user (POC uses localStorage)
 - Dropdown configurations should persist server-side
 
-### 14.3 Browser Support
+### 15.3 Browser Support
 - Same as existing CRM application requirements
 
-### 14.4 Accessibility
+### 15.4 Accessibility
 - Keyboard navigation for all interactive elements
 - Proper ARIA labels on interactive components
 - Color is not the sole indicator of state (labels accompany colored badges)
 
-### 14.5 Responsive Design
+### 15.5 Responsive Design
 - Desktop-first design with responsive grid breakpoints
 - Filter bar collapses to stacked layout on mobile
 - Tables scroll horizontally on small screens
 
 ---
 
-## 15. Appendix: POC Data Samples
+## 16. Appendix: POC Data Samples
 
-### 15.1 Sample Projects
+### 16.1 Sample Projects
 
 The POC includes 5 sample projects demonstrating the data structure:
 
@@ -1061,10 +1098,10 @@ The POC includes 5 sample projects demonstrating the data structure:
 4. **Industrial District Power Grid Upgrade** (ID: 500104) — Active, Houston TX, 1 sales rep, PAR: 10
 5. **Coastal Highway Bridge Replacement** (ID: 500105) — Completed, San Diego CA, 2 sales reps, PAR: 18
 
-### 15.2 Sample Change Log
+### 16.2 Sample Change Log
 34 seed entries across all projects demonstrating all action types and categories.
 
-### 15.3 Reference Data Counts
+### 16.3 Reference Data Counts
 - **Sales Representatives:** 100+ records
 - **Opportunity Stages:** 25+ stages across multiple phases
 - **Opportunity Types:** 8 types
