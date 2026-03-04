@@ -24,6 +24,7 @@ import { NotesSection } from '@/components/NotesSection';
 import { ProjectCompaniesTable } from '@/components/ProjectCompaniesTable';
 import { AddCustomerEquipmentModal } from '@/components/AddCustomerEquipmentModal';
 import { Input } from '@/components/ui/input';
+import { MultiSelectFilter } from '@/components/MultiSelectFilter';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import { ArrowLeft, MapPin, User, Phone, Mail, Building2, Plus, Link as LinkIcon, X, Pencil, Calendar, Wrench, Search, ChevronRight, ArrowUpDown, ArrowUp, ArrowDown, History } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -67,11 +68,11 @@ const ProjectDetail = () => {
   const [oppSortDirection, setOppSortDirection] = useState<'asc' | 'desc' | null>('asc');
 
   // Filter state for Opportunities table
-  const [oppFilterStage, setOppFilterStage] = useState('all');
-  const [oppFilterDivision, setOppFilterDivision] = useState('all');
-  const [oppFilterType, setOppFilterType] = useState('all');
-  const [oppFilterSalesRep, setOppFilterSalesRep] = useState('all');
-  const [oppFilterCompany, setOppFilterCompany] = useState('all');
+  const [oppFilterStage, setOppFilterStage] = useState<string[]>([]);
+  const [oppFilterDivision, setOppFilterDivision] = useState<string[]>([]);
+  const [oppFilterType, setOppFilterType] = useState<string[]>([]);
+  const [oppFilterSalesRep, setOppFilterSalesRep] = useState<string[]>([]);
+  const [oppFilterCompany, setOppFilterCompany] = useState<string[]>([]);
   const [oppShowOpenOnly, setOppShowOpenOnly] = useState(true);
 
   // Sort state for Activities table
@@ -238,17 +239,17 @@ const ProjectDetail = () => {
   const filteredOpportunities = project.associatedOpportunities.filter(opp => {
     const stage = getStage(opp.stageId);
     if (oppShowOpenOnly && stage && (stage.phaseid === 3 || stage.phaseid === 4)) return false;
-    if (oppFilterStage !== 'all' && opp.stageId !== Number(oppFilterStage)) return false;
-    if (oppFilterType !== 'all' && opp.type !== oppFilterType) return false;
+    if (oppFilterStage.length > 0 && !oppFilterStage.includes(String(opp.stageId))) return false;
+    if (oppFilterType.length > 0 && !oppFilterType.includes(opp.type)) return false;
     const fullOpp = opportunities.find(o => o.id === opp.id);
-    if (oppFilterDivision !== 'all') {
-      if (fullOpp?.divisionId !== oppFilterDivision) return false;
+    if (oppFilterDivision.length > 0) {
+      if (!fullOpp || !oppFilterDivision.includes(fullOpp.divisionId)) return false;
     }
-    if (oppFilterSalesRep !== 'all') {
-      if (!fullOpp || getSalesRepName(fullOpp.salesRepId) !== oppFilterSalesRep) return false;
+    if (oppFilterSalesRep.length > 0) {
+      if (!fullOpp || !oppFilterSalesRep.includes(getSalesRepName(fullOpp.salesRepId))) return false;
     }
-    if (oppFilterCompany !== 'all') {
-      if (!fullOpp || fullOpp.customerName !== oppFilterCompany) return false;
+    if (oppFilterCompany.length > 0) {
+      if (!fullOpp || !oppFilterCompany.includes(fullOpp.customerName)) return false;
     }
     return true;
   });
@@ -589,61 +590,41 @@ const ProjectDetail = () => {
           ) : (
             <>
               <div className="flex gap-3 mb-4 flex-wrap">
-                <Select value={oppFilterStage} onValueChange={setOppFilterStage}>
-                  <SelectTrigger className="w-[160px]">
-                    <SelectValue placeholder="Stage" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Stages</SelectItem>
-                    {uniqueStages.map(([stageId, stageName]) => (
-                      <SelectItem key={stageId as number} value={String(stageId)}>{stageName as string}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select value={oppFilterDivision} onValueChange={setOppFilterDivision}>
-                  <SelectTrigger className="w-[160px]">
-                    <SelectValue placeholder="Division" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Divisions</SelectItem>
-                    {uniqueDivisions.map((d: string) => (
-                      <SelectItem key={d} value={d}>{d}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select value={oppFilterType} onValueChange={setOppFilterType}>
-                  <SelectTrigger className="w-[160px]">
-                    <SelectValue placeholder="Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Types</SelectItem>
-                    {uniqueTypes.map((t: string) => (
-                      <SelectItem key={t} value={t}>{t}</SelectItem>
-                    ))}
-                  </SelectContent>
-              </Select>
-                <Select value={oppFilterSalesRep} onValueChange={setOppFilterSalesRep}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Sales Rep" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Sales Reps</SelectItem>
-                    {uniqueOppSalesReps.map((r: string) => (
-                      <SelectItem key={r} value={r}>{r}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select value={oppFilterCompany} onValueChange={setOppFilterCompany}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Company" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Companies</SelectItem>
-                    {uniqueOppCompanies.map((c: string) => (
-                      <SelectItem key={c} value={c}>{c}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <MultiSelectFilter
+                  label="Stages"
+                  options={uniqueStages.map(([stageId, stageName]) => ({ value: String(stageId), label: stageName as string }))}
+                  selected={oppFilterStage}
+                  onSelectionChange={setOppFilterStage}
+                  className="w-[160px]"
+                />
+                <MultiSelectFilter
+                  label="Divisions"
+                  options={uniqueDivisions.map((d: string) => ({ value: d, label: d }))}
+                  selected={oppFilterDivision}
+                  onSelectionChange={setOppFilterDivision}
+                  className="w-[160px]"
+                />
+                <MultiSelectFilter
+                  label="Types"
+                  options={uniqueTypes.map((t: string) => ({ value: t, label: t }))}
+                  selected={oppFilterType}
+                  onSelectionChange={setOppFilterType}
+                  className="w-[160px]"
+                />
+                <MultiSelectFilter
+                  label="Sales Reps"
+                  options={uniqueOppSalesReps.map((r: string) => ({ value: r, label: r }))}
+                  selected={oppFilterSalesRep}
+                  onSelectionChange={setOppFilterSalesRep}
+                  className="w-[180px]"
+                />
+                <MultiSelectFilter
+                  label="Companies"
+                  options={uniqueOppCompanies.map((c: string) => ({ value: c, label: c }))}
+                  selected={oppFilterCompany}
+                  onSelectionChange={setOppFilterCompany}
+                  className="w-[180px]"
+                />
                 <div className="flex items-center space-x-2 ml-auto">
                   <Switch
                     id="oppShowOpenOnly"
