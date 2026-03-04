@@ -688,7 +688,7 @@ const ProjectDetail = () => {
                             : '-'}
                         </TableCell>
                         <TableCell className="text-right font-medium">
-                          ${opp.revenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                          ${opp.revenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}
                         </TableCell>
                       </TableRow>
                     );
@@ -698,7 +698,7 @@ const ProjectDetail = () => {
                   <TableRow>
                     <TableCell colSpan={6} className="text-right font-bold">Total</TableCell>
                     <TableCell className="text-right font-bold">
-                      ${sortedOpportunities.reduce((sum, o) => sum + (o.revenue || 0), 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      ${sortedOpportunities.reduce((sum, o) => sum + (o.revenue || 0), 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}
                     </TableCell>
                   </TableRow>
                 </TableFooter>
