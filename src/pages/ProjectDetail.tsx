@@ -4,7 +4,7 @@ import { useData } from '@/contexts/DataContext';
 import { useStatusColors, STATUS_COLORS } from '@/hooks/useStatusColors';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -71,6 +71,7 @@ const ProjectDetail = () => {
   const [oppFilterDivision, setOppFilterDivision] = useState('all');
   const [oppFilterType, setOppFilterType] = useState('all');
   const [oppFilterSalesRep, setOppFilterSalesRep] = useState('all');
+  const [oppFilterCompany, setOppFilterCompany] = useState('all');
   const [oppShowOpenOnly, setOppShowOpenOnly] = useState(true);
 
   // Sort state for Activities table
@@ -246,6 +247,9 @@ const ProjectDetail = () => {
     if (oppFilterSalesRep !== 'all') {
       if (!fullOpp || getSalesRepName(fullOpp.salesRepId) !== oppFilterSalesRep) return false;
     }
+    if (oppFilterCompany !== 'all') {
+      if (!fullOpp || fullOpp.customerName !== oppFilterCompany) return false;
+    }
     return true;
   });
 
@@ -258,6 +262,10 @@ const ProjectDetail = () => {
   const uniqueOppSalesReps = [...new Set(project.associatedOpportunities.map(o => {
     const full = opportunities.find(f => f.id === o.id);
     return full ? getSalesRepName(full.salesRepId) : '';
+  }).filter(Boolean))].sort();
+  const uniqueOppCompanies = [...new Set(project.associatedOpportunities.map(o => {
+    const full = opportunities.find(f => f.id === o.id);
+    return full?.customerName || '';
   }).filter(Boolean))].sort();
 
   const sortedOpportunities = [...filteredOpportunities].sort((a, b) => {
@@ -625,6 +633,17 @@ const ProjectDetail = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                <Select value={oppFilterCompany} onValueChange={setOppFilterCompany}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Company" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Companies</SelectItem>
+                    {uniqueOppCompanies.map((c: string) => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <div className="flex items-center space-x-2 ml-auto">
                   <Switch
                     id="oppShowOpenOnly"
@@ -694,6 +713,14 @@ const ProjectDetail = () => {
                     );
                   })}
                 </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-right font-bold">Total</TableCell>
+                    <TableCell className="text-right font-bold">
+                      ${sortedOpportunities.reduce((sum, o) => sum + (o.revenue || 0), 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    </TableCell>
+                  </TableRow>
+                </TableFooter>
               </Table>
             </>
           )}
