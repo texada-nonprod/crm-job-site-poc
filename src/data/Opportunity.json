@@ -120,7 +120,7 @@
         {
             "estimateDeliveryMonth": 7,
             "isUrgent": false,
-            "typeId": 32,
+            "typeId": 1,
             "probabilityOfClosingId": "High",
             "estimateDeliveryYear": 2013,
             "stageId": 32,
@@ -193,7 +193,7 @@
         {
             "estimateDeliveryMonth": 7,
             "isUrgent": false,
-            "typeId": 16,
+            "typeId": 2,
             "probabilityOfClosingId": "Medium",
             "estimateDeliveryYear": 2013,
             "stageId": 64,
@@ -471,7 +471,7 @@
         {
             "estimateDeliveryMonth": 10,
             "isUrgent": false,
-            "typeId": 16,
+            "typeId": 2,
             "probabilityOfClosingId": "Low",
             "estimateDeliveryYear": 2013,
             "stageId": 64,
@@ -735,7 +735,7 @@
         {
             "estimateDeliveryMonth": 1,
             "isUrgent": false,
-            "typeId": 32,
+            "typeId": 1,
             "probabilityOfClosingId": "Low",
             "estimateDeliveryYear": 2014,
             "stageId": 2,
@@ -779,7 +779,7 @@
         {
             "estimateDeliveryMonth": 10,
             "isUrgent": true,
-            "typeId": 16,
+            "typeId": 2,
             "probabilityOfClosingId": "Medium",
             "estimateDeliveryYear": 2013,
             "stageId": 32,
@@ -907,7 +907,7 @@
             "additionalSourceIds": [], "productGroups": [], "notes": []
         },
         {
-            "estimateDeliveryMonth": 9, "isUrgent": false, "typeId": 16,
+            "estimateDeliveryMonth": 9, "isUrgent": false, "typeId": 2,
             "probabilityOfClosingId": "Medium", "estimateDeliveryYear": 2013,
             "stageId": 8, "phaseId": 2, "stageIdEnteredAt": 4,
             "id": 300003, "jobSiteId": 500101, "salesRepId": 313,
@@ -970,7 +970,7 @@
             "additionalSourceIds": [], "productGroups": [], "notes": []
         },
         {
-            "estimateDeliveryMonth": 11, "isUrgent": false, "typeId": 32,
+            "estimateDeliveryMonth": 11, "isUrgent": false, "typeId": 1,
             "probabilityOfClosingId": "High", "estimateDeliveryYear": 2013,
             "stageId": 16, "phaseId": 3, "stageIdEnteredAt": 8,
             "id": 300006, "jobSiteId": 500102, "salesRepId": 305,
@@ -1012,7 +1012,7 @@
             "additionalSourceIds": [], "productGroups": [], "notes": []
         },
         {
-            "estimateDeliveryMonth": 8, "isUrgent": false, "typeId": 16,
+"estimateDeliveryMonth": 8, "isUrgent": false, "typeId": 2,
             "probabilityOfClosingId": "Medium", "estimateDeliveryYear": 2013,
             "stageId": 32, "phaseId": 3, "stageIdEnteredAt": 8,
             "id": 300008, "jobSiteId": 500103, "salesRepId": 303,
@@ -1285,7 +1285,7 @@
             "additionalSourceIds": [], "productGroups": [], "notes": []
         },
         {
-            "estimateDeliveryMonth": 1, "isUrgent": false, "typeId": 32,
+            "estimateDeliveryMonth": 1, "isUrgent": false, "typeId": 1,
             "probabilityOfClosingId": "Low", "estimateDeliveryYear": 2014,
             "stageId": 1, "phaseId": 1, "stageIdEnteredAt": 1,
             "id": 300021, "jobSiteId": 500107, "salesRepId": 260,
@@ -1390,7 +1390,7 @@
             "additionalSourceIds": [], "productGroups": [], "notes": []
         },
         {
-            "estimateDeliveryMonth": 8, "isUrgent": false, "typeId": 16,
+            "estimateDeliveryMonth": 8, "isUrgent": false, "typeId": 2,
             "probabilityOfClosingId": "Medium", "estimateDeliveryYear": 2013,
             "stageId": 8, "phaseId": 2, "stageIdEnteredAt": 4,
             "id": 300026, "jobSiteId": 500109, "salesRepId": 313,
@@ -1474,7 +1474,7 @@
             "additionalSourceIds": [], "productGroups": [], "notes": []
         },
         {
-            "estimateDeliveryMonth": 2, "isUrgent": false, "typeId": 32,
+            "estimateDeliveryMonth": 2, "isUrgent": false, "typeId": 1,
             "probabilityOfClosingId": "Low", "estimateDeliveryYear": 2014,
             "stageId": 2, "phaseId": 2, "stageIdEnteredAt": 1,
             "id": 300030, "jobSiteId": 500110, "salesRepId": 305,

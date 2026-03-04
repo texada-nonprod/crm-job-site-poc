@@ -3,8 +3,6 @@
     { "opptypeid": 1, "opptypecode": "S", "opptypedesc": "Sales", "displayorder": 1, "multiproductitemind": 1, "allprimaryproductitemind": 0, "languageid": 1 },
     { "opptypeid": 2, "opptypecode": "R", "opptypedesc": "Rent", "displayorder": 2, "multiproductitemind": 1, "allprimaryproductitemind": 0, "languageid": 1 },
     { "opptypeid": 4, "opptypecode": "P", "opptypedesc": "Parts", "displayorder": 3, "multiproductitemind": 0, "allprimaryproductitemind": 1, "languageid": 1 },
-    { "opptypeid": 8, "opptypecode": "L", "opptypedesc": "Service", "displayorder": 4, "multiproductitemind": 0, "allprimaryproductitemind": 1, "languageid": 1 },
-    { "opptypeid": 16, "opptypecode": "N", "opptypedesc": "Rental Service", "displayorder": 5, "multiproductitemind": 1, "allprimaryproductitemind": 0, "languageid": 1 },
-    { "opptypeid": 32, "opptypecode": "E", "opptypedesc": "Lease", "displayorder": 6, "multiproductitemind": 1, "allprimaryproductitemind": 0, "languageid": 1 }
+    { "opptypeid": 8, "opptypecode": "L", "opptypedesc": "Service", "displayorder": 4, "multiproductitemind": 0, "allprimaryproductitemind": 1, "languageid": 1 }
   ]
 }
