@@ -86,8 +86,6 @@ export interface Project {
   description: string;
   statusId: string;
   salesRepIds: number[];
-  plannedAnnualRate: number;
-  parStartDate?: string;
   projectPrimaryContact: {
     name: string;
     title: string;
@@ -216,7 +214,6 @@ export interface Filters {
   salesRepId: string;
   division: string;
   generalContractor: string;
-  showBehindPAR: boolean;
   status: string;
   hideCompleted: boolean;
 }

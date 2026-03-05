@@ -6,13 +6,13 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { Calendar } from '@/components/ui/calendar';
+
 import { useData } from '@/contexts/DataContext';
 import { useToast } from '@/hooks/use-toast';
 import { Project } from '@/types';
-import { Plus, X, Check, ChevronsUpDown, CalendarIcon } from 'lucide-react';
+import { Plus, X, Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
+
 
 type LocationType = 'address' | 'coordinates';
 
@@ -28,9 +28,6 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
 
   const [salesRepIds, setSalesRepIds] = useState<number[]>(project.salesRepIds);
   const [salesRepOpen, setSalesRepOpen] = useState(false);
-  const [plannedAnnualRate, setPlannedAnnualRate] = useState(project.plannedAnnualRate.toString());
-  const [parStartDate, setParStartDate] = useState<Date | undefined>(project.parStartDate ? new Date(project.parStartDate) : undefined);
-  const [parStartDateOpen, setParStartDateOpen] = useState(false);
   const [description, setDescription] = useState(project.description);
   const [contactName, setContactName] = useState(project.projectPrimaryContact.name);
   const [contactTitle, setContactTitle] = useState(project.projectPrimaryContact.title);
@@ -48,8 +45,6 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
   useEffect(() => {
     if (open) {
       setSalesRepIds(project.salesRepIds);
-      setPlannedAnnualRate(project.plannedAnnualRate.toString());
-      setParStartDate(project.parStartDate ? new Date(project.parStartDate) : undefined);
       setDescription(project.description);
       setContactName(project.projectPrimaryContact.name);
       setContactTitle(project.projectPrimaryContact.title);
@@ -82,18 +77,12 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
         toast({ title: "Error", description: "Please enter valid coordinates.", variant: "destructive" }); return;
       }
     }
-    const parsedRate = parseFloat(plannedAnnualRate);
-    if (isNaN(parsedRate) || parsedRate < 0) {
-      toast({ title: "Error", description: "Please enter a valid planned annual rate.", variant: "destructive" }); return;
-    }
     if (salesRepIds.length === 0) {
       toast({ title: "Error", description: "Please select at least one sales rep.", variant: "destructive" }); return;
     }
 
     updateProject(project.id, {
       salesRepIds,
-      plannedAnnualRate: parseFloat(plannedAnnualRate),
-      parStartDate: parStartDate ? parStartDate.toISOString() : undefined,
       description: description.trim(),
       address: {
         street: locationType === 'address' ? street.trim() : '',
@@ -155,24 +144,6 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
                         </CommandGroup>
                       </CommandList>
                     </Command>
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="plannedAnnualRate">Planned Annual Rate *</Label>
-                <Input id="plannedAnnualRate" type="number" min="0" step="0.01" value={plannedAnnualRate} onChange={(e) => setPlannedAnnualRate(e.target.value)} placeholder="0.00" required />
-              </div>
-              <div className="space-y-2">
-                <Label>PAR Start Date</Label>
-                <Popover open={parStartDateOpen} onOpenChange={setParStartDateOpen}>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !parStartDate && "text-muted-foreground")}>
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {parStartDate ? format(parStartDate, "PPP") : <span>Pick a date</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar mode="single" selected={parStartDate} onSelect={(date) => { setParStartDate(date); setParStartDateOpen(false); }} initialFocus className={cn("p-3 pointer-events-auto")} />
                   </PopoverContent>
                 </Popover>
               </div>

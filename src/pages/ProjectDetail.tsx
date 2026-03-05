@@ -472,14 +472,6 @@ const ProjectDetail = () => {
                   <p className="font-medium">{getSalesRepNames(project.salesRepIds)}</p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Planned Annual Rate</span>
-                  <p className="font-medium">{project.plannedAnnualRate} sales activities/year</p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">PAR Start Date</span>
-                  <p className="font-medium">{project.parStartDate ? new Date(project.parStartDate).toLocaleDateString() : 'Not set'}</p>
-                </div>
-                <div>
                   <span className="text-muted-foreground">Current Opportunities</span>
                   <p className="font-medium">{project.associatedOpportunities.length}</p>
                 </div>

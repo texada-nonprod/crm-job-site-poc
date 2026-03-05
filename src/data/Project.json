@@ -6,8 +6,7 @@
             "description": "Construction of a new 4-story wing for the cardiology department, including underground parking structure.",
             "statusId": "Active",
             "salesRepIds": [313, 305],
-            "plannedAnnualRate": 24,
-            "parStartDate": "2025-01-15T00:00:00.000Z",
+            
             "projectPrimaryContact": {
                 "name": "Sarah Jenkins",
                 "title": "Senior Project Manager",
@@ -81,7 +80,6 @@
             "description": "Complete resurfacing of playing field and installation of new structural seating.",
             "statusId": "Planning",
             "salesRepIds": [305],
-            "plannedAnnualRate": 12,
             "projectPrimaryContact": {
                 "name": "David Ortiz",
                 "title": "Facilities Director",
@@ -151,8 +149,7 @@
             "description": "Night work only. Asphalt removal and resurfacing of southbound lanes.",
             "statusId": "Active",
             "salesRepIds": [303],
-            "plannedAnnualRate": 6,
-            "parStartDate": "2025-03-01T00:00:00.000Z",
+            
             "projectPrimaryContact": {
                 "name": "State Dept of Transportation",
                 "title": "District Engineer",
@@ -223,7 +220,6 @@
             "description": "Updating exterior landscaping, tree removal, and new retaining walls.",
             "statusId": "Completed",
             "salesRepIds": [292],
-            "plannedAnnualRate": 2,
             "projectPrimaryContact": {
                 "name": "Karen Fields",
                 "title": "Property Manager",
@@ -291,8 +287,6 @@
             "description": "Ground-up construction of 800,000 sq ft distribution warehouse.",
             "statusId": "Active",
             "salesRepIds": [305, 313, 292],
-            "plannedAnnualRate": 48,
-            "parStartDate": "2024-11-01T00:00:00.000Z",
             "projectPrimaryContact": {
                 "name": "Jeff Bezos (Proxy)",
                 "title": "Regional Construction Lead",
@@ -381,8 +375,6 @@
             "description": "Installation of new filtration pumps and backup power systems.",
             "statusId": "Active",
             "salesRepIds": [304],
-            "plannedAnnualRate": 8,
-            "parStartDate": "2025-06-01T00:00:00.000Z",
             "projectPrimaryContact": {
                 "name": "City of Springfield",
                 "title": "Public Works Director",
@@ -457,7 +449,6 @@
             "description": "Phase 2 development: Grading and utility installation for 50 new single-family homes.",
             "statusId": "Planning",
             "salesRepIds": [260, 304],
-            "plannedAnnualRate": 18,
             "projectPrimaryContact": {
                 "name": "Tom Builders",
                 "title": "Development Manager",
@@ -528,8 +519,6 @@
             "description": "Structural steel repairs and repainting of the main street bridge.",
             "statusId": "Active",
             "salesRepIds": [292],
-            "plannedAnnualRate": 4,
-            "parStartDate": "2025-09-15T00:00:00.000Z",
             "projectPrimaryContact": {
                 "name": "Civil Eng Corp",
                 "title": "Chief Engineer",
@@ -599,7 +588,6 @@
             "description": "New 3-story mixed-use office and lab space.",
             "statusId": "Planning",
             "salesRepIds": [313],
-            "plannedAnnualRate": 10,
             "projectPrimaryContact": {
                 "name": "Dr. Alan Grant",
                 "title": "University Liaison",
@@ -667,7 +655,6 @@
             "description": "Stripping overburden to access new aggregate veins.",
             "statusId": "Active",
             "salesRepIds": [305, 303],
-            "plannedAnnualRate": 20,
             "projectPrimaryContact": {
                 "name": "Fred Flint",
                 "title": "Quarry Manager",
