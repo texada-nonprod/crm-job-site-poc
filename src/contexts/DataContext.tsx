@@ -137,7 +137,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     salesRepId: '',
     division: '',
     generalContractor: '',
-    showBehindPAR: false,
     status: '',
     hideCompleted: true,
   });
@@ -165,7 +164,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     { id: 15, projectId: 500102, timestamp: '2025-11-01T14:00:00Z', action: 'OPPORTUNITY_CREATED', category: 'Opportunity', summary: 'Opportunity "Excavator fleet for foundation work" created', changedById: 303 },
     { id: 16, projectId: 500102, timestamp: '2025-11-10T16:20:00Z', action: 'ACTIVITY_ADDED', category: 'Activity', summary: 'Activity "Phone Call" added', changedById: 262 },
     { id: 17, projectId: 500102, timestamp: '2025-11-20T10:10:00Z', action: 'EQUIPMENT_ADDED', category: 'Equipment', summary: 'Equipment "Volvo EC220E" added', changedById: 303 },
-    { id: 18, projectId: 500102, timestamp: '2025-12-02T13:45:00Z', action: 'PROJECT_UPDATED', category: 'Project', summary: 'Project details updated (description, plannedAnnualRate)', changedById: 262 },
+    { id: 18, projectId: 500102, timestamp: '2025-12-02T13:45:00Z', action: 'PROJECT_UPDATED', category: 'Project', summary: 'Project details updated (description)', changedById: 262 },
 
     { id: 19, projectId: 500103, timestamp: '2025-09-15T08:30:00Z', action: 'PROJECT_CREATED', category: 'Project', summary: 'Project "Riverside Commercial Park" created', changedById: 304 },
     { id: 20, projectId: 500103, timestamp: '2025-09-20T12:00:00Z', action: 'OPPORTUNITY_CREATED', category: 'Opportunity', summary: 'Opportunity "Paving equipment package" created', changedById: 304 },
@@ -308,10 +307,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           company => company.roleId === 'GC' && company.companyName.toLowerCase().includes(filters.generalContractor.toLowerCase())
         );
         if (!hasMatchingGC) return false;
-      }
-      if (filters.showBehindPAR) {
-        const oppCount = project.associatedOpportunities.length;
-        if (oppCount >= project.plannedAnnualRate) return false;
       }
       return true;
     });

@@ -13,7 +13,7 @@ export const FilterBar = () => {
   return (
     <Card className="p-6 mb-6">
       <h2 className="text-lg font-semibold mb-4">Filters</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="space-y-2">
           <Label htmlFor="salesRep">Sales Rep</Label>
           <Select value={filters.salesRepId || "all"} onValueChange={(value) => setFilters({ ...filters, salesRepId: value === "all" ? "" : value })}>
@@ -38,10 +38,6 @@ export const FilterBar = () => {
         <div className="space-y-2">
           <Label htmlFor="gc">General Contractor</Label>
           <Input id="gc" placeholder="Search GC name..." value={filters.generalContractor} onChange={(e) => setFilters({ ...filters, generalContractor: e.target.value })} />
-        </div>
-        <div className="space-y-2">
-          <Label className="opacity-0">PAR</Label>
-          <div className="flex items-center space-x-2 h-10"><Switch id="parStatus" checked={filters.showBehindPAR} onCheckedChange={(checked) => setFilters({ ...filters, showBehindPAR: checked })} /><Label htmlFor="parStatus" className="text-sm font-normal cursor-pointer">Behind on PAR only</Label></div>
         </div>
         <div className="space-y-2">
           <Label className="opacity-0">Completed</Label>
