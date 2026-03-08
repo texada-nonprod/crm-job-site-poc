@@ -10,6 +10,7 @@ import ProjectDetail from "./pages/ProjectDetail";
 import ProjectChangeLog from "./pages/ProjectChangeLog";
 import ManageDropdowns from "./pages/ManageDropdowns";
 import NotFound from "./pages/NotFound";
+import DodgeMappings from "./pages/DodgeMappings";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
