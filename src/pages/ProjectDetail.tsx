@@ -931,7 +931,7 @@ const ProjectDetail = () => {
           onAddNote={(noteData) => addNote(project.id, noteData)}
           onUpdateNote={(noteId, noteData) => updateNote(project.id, noteId, noteData)}
           onDeleteNote={(noteId) => deleteNote(project.id, noteId)}
-          getSalesRepName={getSalesRepName}
+          getSalesRepName={getUserName}
           projectId={project.id}
         />
       </main>

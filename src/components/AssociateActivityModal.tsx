@@ -50,7 +50,7 @@ export const AssociateActivityModal = ({ projectId, currentActivityIds, open, on
                   <TableRow key={`${sourceProjectId}-${activity.id}`} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedActivity({ activity, sourceProjectId })}>
                     <TableCell><input type="radio" checked={selectedActivity?.activity.id === activity.id && selectedActivity?.sourceProjectId === sourceProjectId} onChange={() => setSelectedActivity({ activity, sourceProjectId })} className="cursor-pointer" /></TableCell>
                     <TableCell className="text-sm max-w-[200px] truncate" title={sourceProjectName}>{sourceProjectName}</TableCell>
-                    <TableCell className="font-medium">{getSalesRepName(activity.assigneeId)}</TableCell>
+                    <TableCell className="font-medium">{getUserName(activity.assigneeId)}</TableCell>
                     <TableCell><Badge variant="outline">{activity.activityType}</Badge></TableCell>
                     <TableCell className="text-sm">{new Date(activity.date).toLocaleDateString()}</TableCell>
                     <TableCell className="text-sm max-w-[200px] truncate" title={activity.description}>{activity.description}</TableCell>
