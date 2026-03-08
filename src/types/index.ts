@@ -218,7 +218,7 @@ export interface OpportunityType {
 }
 
 export interface Filters {
-  salesRepId: string;
+  assigneeId: string;
   division: string;
   generalContractor: string;
   status: string;
