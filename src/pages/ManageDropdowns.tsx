@@ -98,7 +98,7 @@ const ManageDropdowns = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { statusColors, updateAllStatusColors } = useStatusColors();
-  const { noteTags, setNoteTags } = useData();
+  const { noteTags, setNoteTags, primaryStages, setPrimaryStages, primaryProjectTypes, setPrimaryProjectTypes, ownershipTypes, setOwnershipTypes } = useData();
   const [selectedDropdown, setSelectedDropdown] = useState<DropdownType | null>(null);
   const [dropdowns, setDropdowns] = useState<Record<DropdownType, DropdownOption[]>>(() => {
     // Initialize project status with saved colors from localStorage
