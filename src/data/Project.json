@@ -7,8 +7,8 @@
             "statusId": "Active",
             "assigneeIds": [313, 305],
             "projectOwner": {
-                "companyId": "998810",
-                "contactIds": [1, 2]
+                "companyId": "OWN-STMARYS",
+                "contactIds": [1]
             },
             "address": {
                 "street": "1200 Medical Center Dr",
@@ -20,6 +20,18 @@
                 "longitude": -87.665
             },
             "siteCompanies": [
+                {
+                    "companyId": "OWN-STMARYS",
+                    "companyName": "St. Mary's Medical Center",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "Sarah Jenkins", "title": "Senior Project Manager", "phone": "312-555-0101", "email": "sjenkins@stmarysprojects.com" },
+                        { "id": 2, "name": "Dr. Raymond Park", "title": "Chief of Facilities", "phone": "312-555-0102", "email": "rpark@stmarysmed.com" }
+                    ],
+                    "primaryContactIndex": 0
+                },
                 {
                     "companyId": "998810",
                     "companyName": "Turner Construction Company",
@@ -78,8 +90,8 @@
             "statusId": "Planning",
             "assigneeIds": [305],
             "projectOwner": {
-                "companyId": "1067200",
-                "contactIds": [1, 2]
+                "companyId": "OWN-RVRFRNT",
+                "contactIds": [1]
             },
             "address": {
                 "street": null,
@@ -91,6 +103,18 @@
                 "longitude": -87.6167
             },
             "siteCompanies": [
+                {
+                    "companyId": "OWN-RVRFRNT",
+                    "companyName": "Riverfront Stadium Authority",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "David Ortiz", "title": "Facilities Director", "phone": "312-555-9988", "email": "dortiz@riverfrontstadium.com" },
+                        { "id": 2, "name": "Maria Chen", "title": "Operations Manager", "phone": "312-555-9989", "email": "mchen@riverfrontstadium.com" }
+                    ],
+                    "primaryContactIndex": 0
+                },
                 {
                     "companyId": "1067200",
                     "companyName": "Mortenson Construction",
@@ -145,8 +169,8 @@
             "statusId": "Active",
             "assigneeIds": [303],
             "projectOwner": {
-                "companyId": "NON-DBS",
-                "contactIds": [1, 2]
+                "companyId": "OWN-IDOT",
+                "contactIds": [1]
             },
             "address": {
                 "street": "I-55 Southbound",
@@ -158,6 +182,18 @@
                 "longitude": -88.068
             },
             "siteCompanies": [
+                {
+                    "companyId": "OWN-IDOT",
+                    "companyName": "Illinois Department of Transportation",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "Richard Hale", "title": "District Engineer", "phone": "217-555-0000", "email": "dist3@idot.gov" },
+                        { "id": 2, "name": "Patricia Nguyen", "title": "Project Liaison", "phone": "217-555-0001", "email": "p.nguyen@idot.gov" }
+                    ],
+                    "primaryContactIndex": 0
+                },
                 {
                     "companyId": "NON-DBS",
                     "companyName": "Gallagher Asphalt Corporation",
@@ -213,7 +249,7 @@
             "statusId": "Completed",
             "assigneeIds": [292],
             "projectOwner": {
-                "companyId": "1764465",
+                "companyId": "OWN-FXVLY",
                 "contactIds": [1]
             },
             "address": {
@@ -226,6 +262,18 @@
                 "longitude": -88.214
             },
             "siteCompanies": [
+                {
+                    "companyId": "OWN-FXVLY",
+                    "companyName": "Centennial Real Estate",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "Karen Fields", "title": "Property Manager", "phone": "630-555-1234", "email": "kfields@centennialre.com" },
+                        { "id": 2, "name": "James Whitfield", "title": "VP of Facilities", "phone": "630-555-1235", "email": "jwhitfield@centennialre.com" }
+                    ],
+                    "primaryContactIndex": 0
+                },
                 {
                     "companyId": "1764465",
                     "companyName": "Christy Webber Landscapes",
@@ -278,8 +326,8 @@
             "statusId": "Active",
             "assigneeIds": [305, 313, 292],
             "projectOwner": {
-                "companyId": "1067200",
-                "contactIds": [4, 5]
+                "companyId": "OWN-AMZN",
+                "contactIds": [1]
             },
             "address": {
                 "street": "3000 Duke Parkway",
@@ -291,6 +339,18 @@
                 "longitude": -88.250
             },
             "siteCompanies": [
+                {
+                    "companyId": "OWN-AMZN",
+                    "companyName": "Amazon.com Services LLC",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "Greg Harmon", "title": "Regional Construction Lead", "phone": "206-555-9999", "email": "construction-ord5@amazon.com" },
+                        { "id": 2, "name": "Priya Patel", "title": "Facilities Program Manager", "phone": "206-555-9998", "email": "ppatel@amazon.com" }
+                    ],
+                    "primaryContactIndex": 0
+                },
                 {
                     "companyId": "1140350",
                     "companyName": "Rosendin Electric",
@@ -364,7 +424,7 @@
             "statusId": "Active",
             "assigneeIds": [304],
             "projectOwner": {
-                "companyId": "1293500",
+                "companyId": "OWN-SPRFLD",
                 "contactIds": [1]
             },
             "address": {
@@ -377,6 +437,18 @@
                 "longitude": -89.643
             },
             "siteCompanies": [
+                {
+                    "companyId": "OWN-SPRFLD",
+                    "companyName": "City of Springfield - Public Works",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "Harold Meyers", "title": "Public Works Director", "phone": "217-555-1122", "email": "publicworks@springfield.il.us" },
+                        { "id": 2, "name": "Linda Torres", "title": "Water Utilities Superintendent", "phone": "217-555-1123", "email": "ltorres@springfield.il.us" }
+                    ],
+                    "primaryContactIndex": 0
+                },
                 {
                     "companyId": "1293500",
                     "companyName": "Layne Christensen Company",
@@ -436,8 +508,8 @@
             "statusId": "Planning",
             "assigneeIds": [260, 304],
             "projectOwner": {
-                "companyId": "1174395",
-                "contactIds": [1, 2]
+                "companyId": "OWN-WLCRK",
+                "contactIds": [1]
             },
             "address": {
                 "street": "Willow Creek Dr & Route 20",
@@ -449,6 +521,18 @@
                 "longitude": -89.064
             },
             "siteCompanies": [
+                {
+                    "companyId": "OWN-WLCRK",
+                    "companyName": "Willow Creek Development Group",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "Tom Builders", "title": "Development Manager", "phone": "815-555-7788", "email": "tom@willowcreekdev.com" },
+                        { "id": 2, "name": "Sandra Kowalski", "title": "Land Acquisition VP", "phone": "815-555-7789", "email": "s.kowalski@willowcreekdev.com" }
+                    ],
+                    "primaryContactIndex": 0
+                },
                 {
                     "companyId": "1174395",
                     "companyName": "Ryan Companies US Inc",
@@ -504,8 +588,8 @@
             "statusId": "Active",
             "assigneeIds": [292],
             "projectOwner": {
-                "companyId": "$000313",
-                "contactIds": [1, 2]
+                "companyId": "OWN-BLOOM",
+                "contactIds": [1]
             },
             "address": {
                 "street": "Main St Bridge",
@@ -517,6 +601,18 @@
                 "longitude": -88.993
             },
             "siteCompanies": [
+                {
+                    "companyId": "OWN-BLOOM",
+                    "companyName": "City of Bloomington - Engineering Dept",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "Margaret Sinclair", "title": "Chief Engineer", "phone": "309-555-4433", "email": "eng@cityblm.org" },
+                        { "id": 2, "name": "Dennis Cole", "title": "Bridge Program Manager", "phone": "309-555-4434", "email": "dcole@cityblm.org" }
+                    ],
+                    "primaryContactIndex": 0
+                },
                 {
                     "companyId": "$000313",
                     "companyName": "Stupp Bridge Company",
@@ -571,8 +667,8 @@
             "statusId": "Planning",
             "assigneeIds": [313],
             "projectOwner": {
-                "companyId": "1174395",
-                "contactIds": [3, 4]
+                "companyId": "OWN-UIUC",
+                "contactIds": [1]
             },
             "address": {
                 "street": "1800 Research Park Dr",
@@ -584,6 +680,18 @@
                 "longitude": -88.243
             },
             "siteCompanies": [
+                {
+                    "companyId": "OWN-UIUC",
+                    "companyName": "University of Illinois Research Park",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "Dr. Alan Grant", "title": "University Liaison", "phone": "217-555-3993", "email": "agrant@university.edu" },
+                        { "id": 2, "name": "Susan Cho", "title": "Director of Capital Programs", "phone": "217-555-3994", "email": "scho@university.edu" }
+                    ],
+                    "primaryContactIndex": 0
+                },
                 {
                     "companyId": "1764465",
                     "companyName": "Christy Webber Landscapes",
@@ -636,8 +744,8 @@
             "statusId": "Active",
             "assigneeIds": [305, 303],
             "projectOwner": {
-                "companyId": "1067200",
-                "contactIds": [6]
+                "companyId": "OWN-RKSLD",
+                "contactIds": [1]
             },
             "address": {
                 "street": "5500 Quarry Rd",
@@ -649,6 +757,18 @@
                 "longitude": -88.081
             },
             "siteCompanies": [
+                {
+                    "companyId": "OWN-RKSLD",
+                    "companyName": "Rock Solid Materials Inc",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "Fred Flint", "title": "Quarry Manager", "phone": "815-555-0011", "email": "fred@rocksolidmaterials.com" },
+                        { "id": 2, "name": "Barney Stone", "title": "Operations Director", "phone": "815-555-0012", "email": "bstone@rocksolidmaterials.com" }
+                    ],
+                    "primaryContactIndex": 0
+                },
                 {
                     "companyId": "1067200",
                     "companyName": "Mortenson Construction",
