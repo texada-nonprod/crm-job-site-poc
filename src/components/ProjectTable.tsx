@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { Project } from '@/types';
 
-type SortColumn = 'name' | 'address' | 'assignee' | 'contact' | 'status' | 'revenue';
+type SortColumn = 'name' | 'address' | 'assignee' | 'owner' | 'status' | 'revenue';
 type SortDirection = 'asc' | 'desc' | null;
 
 // Status display order mapping (matches ManageDropdowns configuration)
