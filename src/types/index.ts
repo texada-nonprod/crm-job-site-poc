@@ -216,10 +216,10 @@ export interface OpportunityType {
 }
 
 export interface Filters {
-  assigneeId: string;
-  division: string;
+  assigneeIds: string[];
+  divisions: string[];
   generalContractor: string;
-  status: string;
+  statuses: string[];
   hideCompleted: boolean;
 }
 

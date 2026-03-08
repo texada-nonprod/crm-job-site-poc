@@ -352,14 +352,14 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const getFilteredProjects = (): Project[] => {
     return projects.filter(project => {
       if (filters.hideCompleted && project.statusId === 'Completed') return false;
-      if (filters.assigneeId && !project.assigneeIds.includes(parseInt(filters.assigneeId))) return false;
-      if (filters.status && project.statusId !== filters.status) return false;
-      if (filters.division) {
+      if (filters.assigneeIds.length > 0 && !project.assigneeIds.some(id => filters.assigneeIds.includes(id.toString()))) return false;
+      if (filters.statuses.length > 0 && !filters.statuses.includes(project.statusId)) return false;
+      if (filters.divisions.length > 0) {
         const projectOpps = project.associatedOpportunities
           .map(ao => opportunities.find(o => o.id === ao.id))
           .filter(Boolean) as Opportunity[];
         const division = projectOpps.length > 0 ? projectOpps[0].divisionId : 'E';
-        if (division !== filters.division) return false;
+        if (!filters.divisions.includes(division)) return false;
       }
       if (filters.generalContractor) {
         const hasMatchingGC = project.projectCompanies.some(
