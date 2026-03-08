@@ -182,6 +182,12 @@
             "description": "Night work only. Asphalt removal and resurfacing of southbound lanes.",
             "statusId": "Active",
             "assigneeIds": [303],
+            "valuation": 12000000,
+            "primaryStageId": "UNDER_CONSTRUCTION",
+            "primaryProjectTypeId": "INFRASTRUCTURE",
+            "ownershipTypeId": "GOVERNMENTAL",
+            "targetStartDate": "2025-03-01",
+            "targetCompletionDate": "2025-11-30",
             "projectOwner": {
                 "companyId": "OWN-IDOT",
                 "contactIds": [1]
