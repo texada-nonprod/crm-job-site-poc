@@ -20,14 +20,14 @@ interface CreateProjectModalProps {
 }
 
 export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalProps) => {
-  const { createProject, salesReps, getSalesRepName, getSalesRepNames } = useData();
+  const { createProject, users, getUserName } = useData();
   const { toast } = useToast();
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [statusId, setStatusId] = useState('Active');
-  const [salesRepIds, setSalesRepIds] = useState<number[]>([]);
-  const [salesRepOpen, setSalesRepOpen] = useState(false);
+  const [assigneeIds, setAssigneeIds] = useState<number[]>([]);
+  const [assigneeOpen, setAssigneeOpen] = useState(false);
   const [contactName, setContactName] = useState('');
   const [contactTitle, setContactTitle] = useState('');
   const [contactPhone, setContactPhone] = useState('');
@@ -45,7 +45,7 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
     setName('');
     setDescription('');
     setStatusId('Active');
-    setSalesRepIds([]);
+    setAssigneeIds([]);
     setContactName('');
     setContactTitle('');
     setContactPhone('');
@@ -68,8 +68,8 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
       return;
     }
 
-    if (salesRepIds.length === 0) {
-      toast({ title: "Error", description: "Please select at least one sales rep.", variant: "destructive" });
+    if (assigneeIds.length === 0) {
+      toast({ title: "Error", description: "Please select at least one assignee.", variant: "destructive" });
       return;
     }
 
@@ -97,7 +97,7 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
       name: name.trim(),
       description: description.trim(),
       statusId,
-      salesRepIds,
+      assigneeIds,
       projectPrimaryContact: {
         name: contactName.trim(),
         title: contactTitle.trim(),
@@ -147,33 +147,33 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="salesRep">Assigned Sales Rep(s) *</Label>
-                <Popover open={salesRepOpen} onOpenChange={setSalesRepOpen}>
+                <Label htmlFor="assignee">Assignee(s) *</Label>
+                <Popover open={assigneeOpen} onOpenChange={setAssigneeOpen}>
                   <PopoverTrigger asChild>
-                    <Button variant="outline" role="combobox" aria-expanded={salesRepOpen} className="w-full justify-between h-auto min-h-10">
+                    <Button variant="outline" role="combobox" aria-expanded={assigneeOpen} className="w-full justify-between h-auto min-h-10">
                       <div className="flex flex-wrap gap-1">
-                        {salesRepIds.length > 0
-                          ? salesRepIds.map(id => (
+                        {assigneeIds.length > 0
+                          ? assigneeIds.map(id => (
                               <span key={id} className="inline-flex items-center gap-1 rounded-md bg-secondary px-2 py-0.5 text-xs font-medium">
-                                {getSalesRepName(id)}
-                                <X className="h-3 w-3 cursor-pointer hover:text-destructive" onClick={(e) => { e.stopPropagation(); setSalesRepIds(prev => prev.filter(r => r !== id)); }} />
+                                {getUserName(id)}
+                                <X className="h-3 w-3 cursor-pointer hover:text-destructive" onClick={(e) => { e.stopPropagation(); setAssigneeIds(prev => prev.filter(r => r !== id)); }} />
                               </span>
                             ))
-                          : <span className="text-muted-foreground">Select sales reps...</span>}
+                          : <span className="text-muted-foreground">Select assignees...</span>}
                       </div>
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-full p-0" align="start">
                     <Command>
-                      <CommandInput placeholder="Search sales rep..." />
+                      <CommandInput placeholder="Search user..." />
                       <CommandList>
-                        <CommandEmpty>No sales rep found.</CommandEmpty>
+                        <CommandEmpty>No user found.</CommandEmpty>
                         <CommandGroup>
-                          {salesReps.map((rep) => (
-                            <CommandItem key={rep.salesrepid} value={`${rep.firstname} ${rep.lastname}`} onSelect={() => { setSalesRepIds(prev => prev.includes(rep.salesrepid) ? prev.filter(id => id !== rep.salesrepid) : [...prev, rep.salesrepid]); }}>
-                              <Check className={cn("mr-2 h-4 w-4", salesRepIds.includes(rep.salesrepid) ? "opacity-100" : "opacity-0")} />
-                              {rep.firstname} {rep.lastname}
+                          {users.map((user) => (
+                            <CommandItem key={user.id} value={`${user.firstName} ${user.lastName}`} onSelect={() => { setAssigneeIds(prev => prev.includes(user.id) ? prev.filter(id => id !== user.id) : [...prev, user.id]); }}>
+                              <Check className={cn("mr-2 h-4 w-4", assigneeIds.includes(user.id) ? "opacity-100" : "opacity-0")} />
+                              {user.firstName} {user.lastName}
                             </CommandItem>
                           ))}
                         </CommandGroup>

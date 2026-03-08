@@ -75,7 +75,7 @@ const ProjectChangeLog = () => {
           ) : (
             <>
               <Table><TableHeader><TableRow><TableHead className="w-[180px]">Date/Time</TableHead><TableHead className="w-[160px]">Changed By</TableHead><TableHead className="w-[120px]">Category</TableHead><TableHead>Summary</TableHead></TableRow></TableHeader>
-              <TableBody>{paginated.map(entry => (<ExpandableRow key={entry.id} entry={entry} changedByName={getSalesRepName(entry.changedById)} />))}</TableBody></Table>
+              <TableBody>{paginated.map(entry => (<ExpandableRow key={entry.id} entry={entry} changedByName={getUserName(entry.changedById)} />))}</TableBody></Table>
               <div className="flex items-center justify-between pt-4">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground"><span>Rows per page</span>
                   <Select value={String(pageSize)} onValueChange={(v) => { setPageSize(Number(v)); setCurrentPage(1); }}><SelectTrigger className="h-8 w-[70px]"><SelectValue /></SelectTrigger><SelectContent>{[10, 15, 25, 50].map(size => (<SelectItem key={size} value={String(size)}>{size}</SelectItem>))}</SelectContent></Select>

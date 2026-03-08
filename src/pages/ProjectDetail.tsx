@@ -465,11 +465,11 @@ const ProjectDetail = () => {
 
           <div className="space-y-6">
             <Card className="p-6">
-              <h3 className="font-semibold mb-3">Sales Information</h3>
+              <h3 className="font-semibold mb-3">Assignment</h3>
               <div className="space-y-3 text-sm">
                 <div>
-                <span className="text-muted-foreground">Sales Rep{project.salesRepIds.length > 1 ? 's' : ''}</span>
-                  <p className="font-medium">{getSalesRepNames(project.salesRepIds)}</p>
+                <span className="text-muted-foreground">Assignee{project.assigneeIds.length > 1 ? 's' : ''}</span>
+                  <p className="font-medium">{getUserNames(project.assigneeIds)}</p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Current Opportunities</span>

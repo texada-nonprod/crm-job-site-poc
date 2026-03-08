@@ -13,7 +13,7 @@ import { useData } from '@/contexts/DataContext';
 export const SettingsPanel = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const { salesReps, currentUserId, setCurrentUserId, getSalesRepName } = useData();
+  const { users, currentUserId, setCurrentUserId, getUserName } = useData();
 
   const handleManageDropdowns = () => {
     setOpen(false);
@@ -38,9 +38,9 @@ export const SettingsPanel = () => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {salesReps.map(rep => (
-                <SelectItem key={rep.salesrepid} value={String(rep.salesrepid)}>
-                  {rep.lastname}, {rep.firstname}
+              {users.map(user => (
+                <SelectItem key={user.id} value={String(user.id)}>
+                  {user.lastName}, {user.firstName}
                 </SelectItem>
               ))}
             </SelectContent>
