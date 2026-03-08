@@ -148,7 +148,7 @@
             "name": "I-55 Highway Resurfacing (Mile Marker 20-35)",
             "description": "Night work only. Asphalt removal and resurfacing of southbound lanes.",
             "statusId": "Active",
-            "salesRepIds": [303],
+            "assigneeIds": [303],
             
             "projectPrimaryContact": {
                 "name": "State Dept of Transportation",
