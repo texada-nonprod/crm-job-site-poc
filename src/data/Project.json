@@ -448,7 +448,7 @@
             "name": "Willow Creek Residential Subdivision",
             "description": "Phase 2 development: Grading and utility installation for 50 new single-family homes.",
             "statusId": "Planning",
-            "salesRepIds": [260, 304],
+            "assigneeIds": [260, 304],
             "projectPrimaryContact": {
                 "name": "Tom Builders",
                 "title": "Development Manager",
