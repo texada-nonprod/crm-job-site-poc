@@ -79,7 +79,7 @@
             "name": "Riverfront Stadium Renovation",
             "description": "Complete resurfacing of playing field and installation of new structural seating.",
             "statusId": "Planning",
-            "salesRepIds": [305],
+            "assigneeIds": [305],
             "projectPrimaryContact": {
                 "name": "David Ortiz",
                 "title": "Facilities Director",
