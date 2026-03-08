@@ -20,6 +20,11 @@ export const SettingsPanel = () => {
     navigate('/settings/dropdowns');
   };
 
+  const handleDodgeMappings = () => {
+    setOpen(false);
+    navigate('/settings/dodge-mappings');
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
