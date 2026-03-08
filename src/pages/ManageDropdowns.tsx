@@ -116,7 +116,10 @@ const ManageDropdowns = () => {
     return {
       ...initialDropdowns,
       projectStatus: projectStatusWithColors,
-      noteTags: noteTagsFromContext.length > 0 ? noteTagsFromContext : initialDropdowns.noteTags
+      noteTags: noteTagsFromContext.length > 0 ? noteTagsFromContext : initialDropdowns.noteTags,
+      primaryStage: primaryStages.map(s => ({ id: s.id, label: s.label, displayOrder: s.displayOrder })),
+      primaryProjectType: primaryProjectTypes.map(t => ({ id: t.id, label: t.label, displayOrder: t.displayOrder })),
+      ownershipType: ownershipTypes.map(o => ({ id: o.id, label: o.label, displayOrder: o.displayOrder })),
     };
   });
   const [isEditing, setIsEditing] = useState(false);
