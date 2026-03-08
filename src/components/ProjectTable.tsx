@@ -62,8 +62,12 @@ export const ProjectTable = () => {
       case 'assignee':
         comparison = getUserNames(a.assigneeIds).localeCompare(getUserNames(b.assigneeIds));
         break;
-      case 'contact':
-        comparison = a.projectPrimaryContact.name.localeCompare(b.projectPrimaryContact.name);
+      case 'owner': {
+        const ownerA = a.projectOwner?.companyId ? getCompanyById(a.projectOwner.companyId)?.companyName || '' : '';
+        const ownerB = b.projectOwner?.companyId ? getCompanyById(b.projectOwner.companyId)?.companyName || '' : '';
+        comparison = ownerA.localeCompare(ownerB);
+        break;
+      }
         break;
       case 'status':
         comparison = getStatusOrder(a.statusId) - getStatusOrder(b.statusId);
