@@ -18,7 +18,7 @@ export const KPICard = () => {
           <div>
             <p className="text-sm text-muted-foreground">Total Revenue in Pipeline</p>
             <p className="text-3xl font-bold">
-              ${revenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              ${Math.round(revenue).toLocaleString('en-US')}
             </p>
           </div>
         </div>

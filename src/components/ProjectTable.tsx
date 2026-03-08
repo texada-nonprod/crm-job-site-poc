@@ -175,7 +175,7 @@ export const ProjectTable = () => {
                   </span>
                 </TableCell>
                 <TableCell className="text-right font-medium">
-                  ${calculateProjectRevenue(project).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  ${Math.round(calculateProjectRevenue(project)).toLocaleString('en-US')}
                 </TableCell>
               </TableRow>
             ))
