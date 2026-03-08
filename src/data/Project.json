@@ -96,6 +96,13 @@
             "description": "Complete resurfacing of playing field and installation of new structural seating.",
             "statusId": "Planning",
             "assigneeIds": [305],
+            "valuation": 28000000,
+            "primaryStageId": "BIDDING",
+            "primaryProjectTypeId": "COMMERCIAL",
+            "ownershipTypeId": "PRIVATE",
+            "bidDate": "2025-04-01",
+            "targetStartDate": "2025-07-01",
+            "targetCompletionDate": "2027-03-31",
             "projectOwner": {
                 "companyId": "OWN-RVRFRNT",
                 "contactIds": [1]
