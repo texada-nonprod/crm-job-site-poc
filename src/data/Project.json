@@ -6,6 +6,13 @@
             "description": "Construction of a new 4-story wing for the cardiology department, including underground parking structure.",
             "statusId": "Active",
             "assigneeIds": [313, 305],
+            "valuation": 45000000,
+            "primaryStageId": "UNDER_CONSTRUCTION",
+            "primaryProjectTypeId": "INSTITUTIONAL",
+            "ownershipTypeId": "PRIVATE",
+            "bidDate": "2024-06-15",
+            "targetStartDate": "2024-09-01",
+            "targetCompletionDate": "2026-12-31",
             "projectOwner": {
                 "companyId": "OWN-STMARYS",
                 "contactIds": [1]
@@ -89,6 +96,13 @@
             "description": "Complete resurfacing of playing field and installation of new structural seating.",
             "statusId": "Planning",
             "assigneeIds": [305],
+            "valuation": 28000000,
+            "primaryStageId": "BIDDING",
+            "primaryProjectTypeId": "COMMERCIAL",
+            "ownershipTypeId": "PRIVATE",
+            "bidDate": "2025-04-01",
+            "targetStartDate": "2025-07-01",
+            "targetCompletionDate": "2027-03-31",
             "projectOwner": {
                 "companyId": "OWN-RVRFRNT",
                 "contactIds": [1]
@@ -168,6 +182,12 @@
             "description": "Night work only. Asphalt removal and resurfacing of southbound lanes.",
             "statusId": "Active",
             "assigneeIds": [303],
+            "valuation": 12000000,
+            "primaryStageId": "UNDER_CONSTRUCTION",
+            "primaryProjectTypeId": "INFRASTRUCTURE",
+            "ownershipTypeId": "GOVERNMENTAL",
+            "targetStartDate": "2025-03-01",
+            "targetCompletionDate": "2025-11-30",
             "projectOwner": {
                 "companyId": "OWN-IDOT",
                 "contactIds": [1]

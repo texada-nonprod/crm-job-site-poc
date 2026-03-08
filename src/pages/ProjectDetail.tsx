@@ -35,7 +35,7 @@ type LocationViewType = 'address' | 'coordinates';
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { projects, getSalesRepName, getSalesRepNames, getUserName, getUserNames, opportunities, getStageName, getStage, removeProjectCompany, updateProject, deleteActivity, noteTags, addNote, updateNote, deleteNote, addCustomerEquipment, updateCustomerEquipment, deleteCustomerEquipment, getCompanyById } = useData();
+  const { projects, getSalesRepName, getSalesRepNames, getUserName, getUserNames, opportunities, getStageName, getStage, removeProjectCompany, updateProject, deleteActivity, noteTags, addNote, updateNote, deleteNote, addCustomerEquipment, updateCustomerEquipment, deleteCustomerEquipment, getCompanyById, getLookupLabel } = useData();
   const { statusColors, getStatusColorClasses } = useStatusColors();
   const { toast } = useToast();
   const [selectedOpportunity, setSelectedOpportunity] = useState<any>(null);
@@ -481,6 +481,60 @@ const ProjectDetail = () => {
                 <p className="font-medium mb-2">Description</p>
                 <p className="text-sm text-muted-foreground">{project.description}</p>
               </div>
+
+              {/* Project Details fields */}
+              {(project.valuation || project.primaryStageId || project.primaryProjectTypeId || project.ownershipTypeId || project.bidDate || project.targetStartDate || project.targetCompletionDate) && (
+                <>
+                  <Separator />
+                  <div>
+                    <p className="font-medium mb-3">Project Details</p>
+                    <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                      {project.valuation != null && (
+                        <div>
+                          <span className="text-muted-foreground">Valuation</span>
+                          <p className="font-medium">${Math.round(project.valuation).toLocaleString('en-US')}</p>
+                        </div>
+                      )}
+                      {project.ownershipTypeId && (
+                        <div>
+                          <span className="text-muted-foreground">Ownership Type</span>
+                          <p className="font-medium">{getLookupLabel('ownershipType', project.ownershipTypeId)}</p>
+                        </div>
+                      )}
+                      {project.primaryStageId && (
+                        <div>
+                          <span className="text-muted-foreground">Primary Stage</span>
+                          <p className="font-medium">{getLookupLabel('primaryStage', project.primaryStageId)}</p>
+                        </div>
+                      )}
+                      {project.primaryProjectTypeId && (
+                        <div>
+                          <span className="text-muted-foreground">Primary Project Type</span>
+                          <p className="font-medium">{getLookupLabel('primaryProjectType', project.primaryProjectTypeId)}</p>
+                        </div>
+                      )}
+                      {project.bidDate && (
+                        <div>
+                          <span className="text-muted-foreground">Bid Date</span>
+                          <p className="font-medium">{new Date(project.bidDate + 'T00:00:00').toLocaleDateString('en-US')}</p>
+                        </div>
+                      )}
+                      {project.targetStartDate && (
+                        <div>
+                          <span className="text-muted-foreground">Target Start Date</span>
+                          <p className="font-medium">{new Date(project.targetStartDate + 'T00:00:00').toLocaleDateString('en-US')}</p>
+                        </div>
+                      )}
+                      {project.targetCompletionDate && (
+                        <div>
+                          <span className="text-muted-foreground">Target Completion Date</span>
+                          <p className="font-medium">{new Date(project.targetCompletionDate + 'T00:00:00').toLocaleDateString('en-US')}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </Card>
 

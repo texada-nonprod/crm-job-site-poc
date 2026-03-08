@@ -10,6 +10,7 @@ import ProjectDetail from "./pages/ProjectDetail";
 import ProjectChangeLog from "./pages/ProjectChangeLog";
 import ManageDropdowns from "./pages/ManageDropdowns";
 import NotFound from "./pages/NotFound";
+import DodgeMappings from "./pages/DodgeMappings";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -26,6 +27,7 @@ const App = () => {
               <Route path="/project/:id" element={<ProjectDetail />} />
               <Route path="/project/:id/changelog" element={<ProjectChangeLog />} />
               <Route path="/settings/dropdowns" element={<ManageDropdowns />} />
+              <Route path="/settings/dodge-mappings" element={<DodgeMappings />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

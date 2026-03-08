@@ -20,6 +20,11 @@ export const SettingsPanel = () => {
     navigate('/settings/dropdowns');
   };
 
+  const handleDodgeMappings = () => {
+    setOpen(false);
+    navigate('/settings/dodge-mappings');
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -52,6 +57,14 @@ export const SettingsPanel = () => {
           onClick={handleManageDropdowns}
         >
           Manage dropdowns
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          className="w-full justify-between"
+          onClick={handleDodgeMappings}
+        >
+          Dodge project mappings
           <ChevronRight className="h-4 w-4" />
         </Button>
       </PopoverContent>

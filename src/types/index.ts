@@ -87,6 +87,17 @@ export interface User {
   email: string | null;
 }
 
+export interface LookupOption {
+  id: string;
+  label: string;
+  displayOrder: number;
+}
+
+export interface DodgeMapping {
+  externalValue: string;
+  internalId: string;
+}
+
 export interface Project {
   id: number;
   name: string;
@@ -117,6 +128,13 @@ export interface Project {
   notes: Note[];
   activities: Activity[];
   customerEquipment: CustomerEquipment[];
+  valuation?: number;
+  primaryStageId?: string;
+  primaryProjectTypeId?: string;
+  ownershipTypeId?: string;
+  bidDate?: string;
+  targetStartDate?: string;
+  targetCompletionDate?: string;
 }
 
 export interface SalesRep {

@@ -8,11 +8,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Calendar } from '@/components/ui/calendar';
 
 import { useData } from '@/contexts/DataContext';
 import { useToast } from '@/hooks/use-toast';
-import { Check, ChevronsUpDown, X, Building2 } from 'lucide-react';
+import { Check, ChevronsUpDown, X, Building2, CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
 
 interface CreateProjectModalProps {
@@ -21,7 +23,7 @@ interface CreateProjectModalProps {
 }
 
 export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalProps) => {
-  const { createProject, users, getUserName, getAllKnownCompanies, getCompanyById } = useData();
+  const { createProject, users, getUserName, getAllKnownCompanies, getCompanyById, primaryStages, primaryProjectTypes, ownershipTypes } = useData();
   const { toast } = useToast();
 
   const [name, setName] = useState('');
@@ -41,6 +43,18 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
 
+  // New optional fields
+  const [valuation, setValuation] = useState('');
+  const [primaryStageId, setPrimaryStageId] = useState('');
+  const [primaryProjectTypeId, setPrimaryProjectTypeId] = useState('');
+  const [ownershipTypeId, setOwnershipTypeId] = useState('');
+  const [bidDate, setBidDate] = useState<Date | undefined>(undefined);
+  const [targetStartDate, setTargetStartDate] = useState<Date | undefined>(undefined);
+  const [targetCompletionDate, setTargetCompletionDate] = useState<Date | undefined>(undefined);
+  const [bidDateOpen, setBidDateOpen] = useState(false);
+  const [targetStartOpen, setTargetStartOpen] = useState(false);
+  const [targetCompletionOpen, setTargetCompletionOpen] = useState(false);
+
   const allCompanies = getAllKnownCompanies();
   const selectedOwnerCompany = ownerCompanyId ? getCompanyById(ownerCompanyId) : undefined;
 
@@ -59,6 +73,13 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
     setCountry('USA');
     setLatitude('');
     setLongitude('');
+    setValuation('');
+    setPrimaryStageId('');
+    setPrimaryProjectTypeId('');
+    setOwnershipTypeId('');
+    setBidDate(undefined);
+    setTargetStartDate(undefined);
+    setTargetCompletionDate(undefined);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -93,6 +114,8 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
       }
     }
 
+    const parsedValuation = valuation ? parseFloat(valuation.replace(/,/g, '')) : undefined;
+
     createProject({
       name: name.trim(),
       description: description.trim(),
@@ -109,7 +132,14 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
       associatedOpportunities: [],
       notes: [],
       activities: [],
-      customerEquipment: []
+      customerEquipment: [],
+      valuation: parsedValuation,
+      primaryStageId: primaryStageId && primaryStageId !== '__none__' ? primaryStageId : undefined,
+      primaryProjectTypeId: primaryProjectTypeId && primaryProjectTypeId !== '__none__' ? primaryProjectTypeId : undefined,
+      ownershipTypeId: ownershipTypeId && ownershipTypeId !== '__none__' ? ownershipTypeId : undefined,
+      bidDate: bidDate ? format(bidDate, 'yyyy-MM-dd') : undefined,
+      targetStartDate: targetStartDate ? format(targetStartDate, 'yyyy-MM-dd') : undefined,
+      targetCompletionDate: targetCompletionDate ? format(targetCompletionDate, 'yyyy-MM-dd') : undefined,
     });
 
     toast({ title: "Success", description: `Project "${name.trim()}" created successfully.` });
@@ -215,6 +245,100 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Enter project description..." rows={4} />
+          </div>
+
+          {/* Project Details */}
+          <div className="space-y-4 pb-4 border-b">
+            <h3 className="font-semibold">Project Details</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="create-valuation">Valuation ($)</Label>
+                <Input id="create-valuation" type="number" min="0" step="1" value={valuation} onChange={(e) => setValuation(e.target.value)} placeholder="e.g. 5000000" />
+              </div>
+              <div className="space-y-2">
+                <Label>Ownership Type</Label>
+                <Select value={ownershipTypeId} onValueChange={setOwnershipTypeId}>
+                  <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">None</SelectItem>
+                    {ownershipTypes.sort((a, b) => a.displayOrder - b.displayOrder).map(o => (
+                      <SelectItem key={o.id} value={o.id}>{o.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Primary Stage</Label>
+                <Select value={primaryStageId} onValueChange={setPrimaryStageId}>
+                  <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">None</SelectItem>
+                    {primaryStages.sort((a, b) => a.displayOrder - b.displayOrder).map(s => (
+                      <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Primary Project Type</Label>
+                <Select value={primaryProjectTypeId} onValueChange={setPrimaryProjectTypeId}>
+                  <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">None</SelectItem>
+                    {primaryProjectTypes.sort((a, b) => a.displayOrder - b.displayOrder).map(t => (
+                      <SelectItem key={t.id} value={t.id}>{t.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label>Bid Date</Label>
+                <Popover open={bidDateOpen} onOpenChange={setBidDateOpen}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !bidDate && "text-muted-foreground")}>
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {bidDate ? format(bidDate, 'MM/dd/yyyy') : 'Select date'}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar mode="single" selected={bidDate} onSelect={(d) => { setBidDate(d); setBidDateOpen(false); }} initialFocus />
+                  </PopoverContent>
+                </Popover>
+                {bidDate && <Button type="button" variant="ghost" size="sm" className="h-6 text-xs" onClick={() => setBidDate(undefined)}>Clear</Button>}
+              </div>
+              <div className="space-y-2">
+                <Label>Target Start Date</Label>
+                <Popover open={targetStartOpen} onOpenChange={setTargetStartOpen}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !targetStartDate && "text-muted-foreground")}>
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {targetStartDate ? format(targetStartDate, 'MM/dd/yyyy') : 'Select date'}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar mode="single" selected={targetStartDate} onSelect={(d) => { setTargetStartDate(d); setTargetStartOpen(false); }} initialFocus />
+                  </PopoverContent>
+                </Popover>
+                {targetStartDate && <Button type="button" variant="ghost" size="sm" className="h-6 text-xs" onClick={() => setTargetStartDate(undefined)}>Clear</Button>}
+              </div>
+              <div className="space-y-2">
+                <Label>Target Completion</Label>
+                <Popover open={targetCompletionOpen} onOpenChange={setTargetCompletionOpen}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !targetCompletionDate && "text-muted-foreground")}>
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {targetCompletionDate ? format(targetCompletionDate, 'MM/dd/yyyy') : 'Select date'}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar mode="single" selected={targetCompletionDate} onSelect={(d) => { setTargetCompletionDate(d); setTargetCompletionOpen(false); }} initialFocus />
+                  </PopoverContent>
+                </Popover>
+                {targetCompletionDate && <Button type="button" variant="ghost" size="sm" className="h-6 text-xs" onClick={() => setTargetCompletionDate(undefined)}>Clear</Button>}
+              </div>
+            </div>
           </div>
 
           <div className="space-y-4 pt-4 border-t">

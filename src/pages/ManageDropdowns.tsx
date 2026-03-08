@@ -9,8 +9,9 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 import { useStatusColors, STATUS_COLORS } from '@/hooks/useStatusColors';
 import { useData } from '@/contexts/DataContext';
+import { LookupOption } from '@/types';
 
-type DropdownType = 'projectStatus' | 'subcontractorRole' | 'noteTags';
+type DropdownType = 'projectStatus' | 'subcontractorRole' | 'noteTags' | 'primaryStage' | 'primaryProjectType' | 'ownershipType';
 
 interface DropdownOption {
   id: string;
@@ -19,85 +20,55 @@ interface DropdownOption {
   color?: string; // Only used for projectStatus
 }
 
-// Initial dropdown data
 const initialDropdowns: Record<DropdownType, DropdownOption[]> = {
   projectStatus: [{
-    id: 'Active',
-    label: 'Active',
-    displayOrder: 1,
-    color: 'emerald'
+    id: 'Active', label: 'Active', displayOrder: 1, color: 'emerald'
   }, {
-    id: 'Planning',
-    label: 'Planning',
-    displayOrder: 2,
-    color: 'sky'
+    id: 'Planning', label: 'Planning', displayOrder: 2, color: 'sky'
   }, {
-    id: 'On Hold',
-    label: 'On Hold',
-    displayOrder: 3,
-    color: 'amber'
+    id: 'On Hold', label: 'On Hold', displayOrder: 3, color: 'amber'
   }, {
-    id: 'Completed',
-    label: 'Completed',
-    displayOrder: 99,
-    color: 'slate'
+    id: 'Completed', label: 'Completed', displayOrder: 99, color: 'slate'
   }],
-  subcontractorRole: [{
-    id: 'GC',
-    label: 'General Contractor',
-    displayOrder: 1
-  }, {
-    id: 'SUB-EXC',
-    label: 'Subcontractor - Excavation',
-    displayOrder: 2
-  }, {
-    id: 'SUB-PAV',
-    label: 'Subcontractor - Paving',
-    displayOrder: 3
-  }, {
-    id: 'SUB-ELEC',
-    label: 'Subcontractor - Electrical',
-    displayOrder: 4
-  }, {
-    id: 'SUB-MECH',
-    label: 'Subcontractor - Mechanical',
-    displayOrder: 5
-  }, {
-    id: 'SUB-SPEC',
-    label: 'Subcontractor - Specialized',
-    displayOrder: 6
-  }, {
-    id: 'SUB-STEEL',
-    label: 'Subcontractor - Steel',
-    displayOrder: 7
-  }],
-  noteTags: [{
-    id: 'SAFETY',
-    label: 'Safety',
-    displayOrder: 1,
-    color: 'red'
-  }, {
-    id: 'SECURITY',
-    label: 'Security',
-    displayOrder: 2,
-    color: 'amber'
-  }, {
-    id: 'COMPLIANCE',
-    label: 'Compliance',
-    displayOrder: 3,
-    color: 'sky'
-  }, {
-    id: 'GENERAL',
-    label: 'General',
-    displayOrder: 4,
-    color: 'slate'
-  }]
+  subcontractorRole: [
+    { id: 'GC', label: 'General Contractor', displayOrder: 1 },
+    { id: 'SUB-EXC', label: 'Subcontractor - Excavation', displayOrder: 2 },
+    { id: 'SUB-PAV', label: 'Subcontractor - Paving', displayOrder: 3 },
+    { id: 'SUB-ELEC', label: 'Subcontractor - Electrical', displayOrder: 4 },
+    { id: 'SUB-MECH', label: 'Subcontractor - Mechanical', displayOrder: 5 },
+    { id: 'SUB-SPEC', label: 'Subcontractor - Specialized', displayOrder: 6 },
+    { id: 'SUB-STEEL', label: 'Subcontractor - Steel', displayOrder: 7 },
+  ],
+  noteTags: [
+    { id: 'SAFETY', label: 'Safety', displayOrder: 1, color: 'red' },
+    { id: 'SECURITY', label: 'Security', displayOrder: 2, color: 'amber' },
+    { id: 'COMPLIANCE', label: 'Compliance', displayOrder: 3, color: 'sky' },
+    { id: 'GENERAL', label: 'General', displayOrder: 4, color: 'slate' },
+  ],
+  primaryStage: [
+    { id: 'PRE_CONSTRUCTION', label: 'Pre-Construction', displayOrder: 1 },
+    { id: 'BIDDING', label: 'Bidding', displayOrder: 2 },
+    { id: 'AWARDED', label: 'Awarded', displayOrder: 3 },
+    { id: 'UNDER_CONSTRUCTION', label: 'Under Construction', displayOrder: 4 },
+    { id: 'COMPLETED', label: 'Completed', displayOrder: 5 },
+  ],
+  primaryProjectType: [
+    { id: 'COMMERCIAL', label: 'Commercial', displayOrder: 1 },
+    { id: 'RESIDENTIAL', label: 'Residential', displayOrder: 2 },
+    { id: 'INDUSTRIAL', label: 'Industrial', displayOrder: 3 },
+    { id: 'INFRASTRUCTURE', label: 'Infrastructure', displayOrder: 4 },
+    { id: 'INSTITUTIONAL', label: 'Institutional', displayOrder: 5 },
+  ],
+  ownershipType: [
+    { id: 'GOVERNMENTAL', label: 'Governmental', displayOrder: 1 },
+    { id: 'PRIVATE', label: 'Private', displayOrder: 2 },
+  ],
 };
 const ManageDropdowns = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { statusColors, updateAllStatusColors } = useStatusColors();
-  const { noteTags, setNoteTags } = useData();
+  const { noteTags, setNoteTags, primaryStages, setPrimaryStages, primaryProjectTypes, setPrimaryProjectTypes, ownershipTypes, setOwnershipTypes } = useData();
   const [selectedDropdown, setSelectedDropdown] = useState<DropdownType | null>(null);
   const [dropdowns, setDropdowns] = useState<Record<DropdownType, DropdownOption[]>>(() => {
     // Initialize project status with saved colors from localStorage
@@ -115,7 +86,10 @@ const ManageDropdowns = () => {
     return {
       ...initialDropdowns,
       projectStatus: projectStatusWithColors,
-      noteTags: noteTagsFromContext.length > 0 ? noteTagsFromContext : initialDropdowns.noteTags
+      noteTags: noteTagsFromContext.length > 0 ? noteTagsFromContext : initialDropdowns.noteTags,
+      primaryStage: primaryStages.map(s => ({ id: s.id, label: s.label, displayOrder: s.displayOrder })),
+      primaryProjectType: primaryProjectTypes.map(t => ({ id: t.id, label: t.label, displayOrder: t.displayOrder })),
+      ownershipType: ownershipTypes.map(o => ({ id: o.id, label: o.label, displayOrder: o.displayOrder })),
     };
   });
   const [isEditing, setIsEditing] = useState(false);
@@ -149,6 +123,15 @@ const ManageDropdowns = () => {
   }, {
     key: 'noteTags',
     label: 'Note Tags'
+  }, {
+    key: 'primaryStage',
+    label: 'Primary Stage'
+  }, {
+    key: 'primaryProjectType',
+    label: 'Primary Project Type'
+  }, {
+    key: 'ownershipType',
+    label: 'Ownership Type'
   }];
   const sortByDisplayOrder = (items: DropdownOption[]) => {
     return [...items].sort((a, b) => a.displayOrder - b.displayOrder);
@@ -194,6 +177,17 @@ const ManageDropdowns = () => {
           displayOrder: item.displayOrder,
           color: item.color || 'slate'
         })));
+      }
+
+      // Sync lookup types to context
+      if (selectedDropdown === 'primaryStage') {
+        setPrimaryStages(editedValues.map(item => ({ id: item.id, label: item.label, displayOrder: item.displayOrder })));
+      }
+      if (selectedDropdown === 'primaryProjectType') {
+        setPrimaryProjectTypes(editedValues.map(item => ({ id: item.id, label: item.label, displayOrder: item.displayOrder })));
+      }
+      if (selectedDropdown === 'ownershipType') {
+        setOwnershipTypes(editedValues.map(item => ({ id: item.id, label: item.label, displayOrder: item.displayOrder })));
       }
       
       setIsEditing(false);
@@ -306,6 +300,17 @@ const ManageDropdowns = () => {
             displayOrder: item.displayOrder,
             color: item.color || 'slate'
           })));
+        }
+
+        // Sync lookup additions
+        if (selectedDropdown === 'primaryStage') {
+          setPrimaryStages([...dropdowns.primaryStage, newOption].map(i => ({ id: i.id, label: i.label, displayOrder: i.displayOrder })));
+        }
+        if (selectedDropdown === 'primaryProjectType') {
+          setPrimaryProjectTypes([...dropdowns.primaryProjectType, newOption].map(i => ({ id: i.id, label: i.label, displayOrder: i.displayOrder })));
+        }
+        if (selectedDropdown === 'ownershipType') {
+          setOwnershipTypes([...dropdowns.ownershipType, newOption].map(i => ({ id: i.id, label: i.label, displayOrder: i.displayOrder })));
         }
       }
       setNewItem({
