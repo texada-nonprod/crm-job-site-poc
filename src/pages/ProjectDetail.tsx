@@ -732,14 +732,14 @@ const ProjectDetail = () => {
               Associate Existing
             </Button>
           </div>
-          {project.projectCompanies.length === 0 ? (
+          {project.projectCompanies.filter(c => c.roleId !== 'OWNER').length === 0 ? (
             <p className="text-center text-muted-foreground py-8">
               No companies associated with this project yet.
             </p>
           ) : (
             <ProjectCompaniesTable
               projectId={project.id}
-              companies={project.projectCompanies}
+              companies={project.projectCompanies.filter(c => c.roleId !== 'OWNER')}
               onRemoveCompany={initiateRemoveCompany}
             />
           )}
