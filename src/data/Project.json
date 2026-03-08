@@ -286,7 +286,7 @@
             "name": "Amazon Fulfillment Center #ORD5",
             "description": "Ground-up construction of 800,000 sq ft distribution warehouse.",
             "statusId": "Active",
-            "salesRepIds": [305, 313, 292],
+            "assigneeIds": [305, 313, 292],
             "projectPrimaryContact": {
                 "name": "Jeff Bezos (Proxy)",
                 "title": "Regional Construction Lead",
