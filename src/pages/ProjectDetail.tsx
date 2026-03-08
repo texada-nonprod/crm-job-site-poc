@@ -300,7 +300,7 @@ const ProjectDetail = () => {
     if (!actSortColumn || !actSortDirection) return 0;
     let cmp = 0;
     switch (actSortColumn) {
-      case 'assignee': cmp = getSalesRepName(a.assigneeId).localeCompare(getSalesRepName(b.assigneeId)); break;
+      case 'assignee': cmp = getUserName(a.assigneeId).localeCompare(getUserName(b.assigneeId)); break;
       case 'activityType': cmp = (a.activityType || '').localeCompare(b.activityType || ''); break;
       case 'date': cmp = new Date(a.date).getTime() - new Date(b.date).getTime(); break;
       case 'description': cmp = (a.description || '').localeCompare(b.description || ''); break;
