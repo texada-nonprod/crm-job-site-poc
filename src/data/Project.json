@@ -5,7 +5,7 @@
             "name": "St. Mary's Hospital - West Wing Expansion",
             "description": "Construction of a new 4-story wing for the cardiology department, including underground parking structure.",
             "statusId": "Active",
-            "salesRepIds": [313, 305],
+            "assigneeIds": [313, 305],
             
             "projectPrimaryContact": {
                 "name": "Sarah Jenkins",
