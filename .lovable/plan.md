@@ -1,66 +1,39 @@
 
 
-# Replace Sales Rep Assignment with General Users/Assignees
+# Remove PAR (Planned Annual Rate) from Projects
 
-## Overview
-Create a new Users data source separate from Sales Reps. Projects will have `assigneeIds` (referencing Users) instead of `salesRepIds`. All labels change from "Sales Rep" to "Assignee." Sales Reps remain in the system for opportunity-level fields (e.g., opportunity `salesRepId`).
+PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
 
-## Data Changes
+## Changes
 
-### 1. New file: `src/data/Users.json`
-- Create a users list with fields: `id`, `firstName`, `lastName`, `email`
-- Seed with the existing Sales Rep entries (converted) plus a few additional non-sales users to differentiate the lists
+### 1. `src/types/index.ts`
+- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
+- Remove `showBehindPAR` from `Filters` interface
 
-### 2. `src/types/index.ts`
-- Add `User` interface: `{ id: number; firstName: string; lastName: string; email: string | null }`
-- In `Project` interface: rename `salesRepIds` → `assigneeIds`
-- In `Filters` interface: rename `salesRepId` → `assigneeId`
+### 2. `src/data/Project.json`
+- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
 
-### 3. `src/data/Project.json`
-- Rename `salesRepIds` → `assigneeIds` in every record (same numeric values)
+### 3. `src/contexts/DataContext.tsx`
+- Remove `showBehindPAR: false` from default filters
+- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
+- Remove changelog entry referencing `plannedAnnualRate` (id 18)
 
-## Context & Component Changes
+### 4. `src/components/FilterBar.tsx`
+- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
 
-### 4. `src/contexts/DataContext.tsx`
-- Import `Users.json` and expose `users: User[]`
-- Add `getUserName(id)` and `getUserNames(ids)` helpers
-- Keep `salesReps` and `getSalesRepName`/`getSalesRepNames` for opportunity-related usage
-- Update `getFilteredProjects` to check `assigneeIds` with `filters.assigneeId`
-- Update `currentUserId` to reference user IDs
-- Rename filter default from `salesRepId: ''` to `assigneeId: ''`
+### 5. `src/components/EditProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove their reset in `useEffect`
+- Remove the PAR validation check
+- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
+- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
 
-### 5. `src/components/FilterBar.tsx`
-- Change "Sales Rep" label → "Assignee"
-- Populate dropdown from `users` instead of `salesReps`
-- Use `filters.assigneeId` instead of `filters.salesRepId`
+### 6. `src/components/CreateProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove PAR validation
+- Remove `plannedAnnualRate` and `parStartDate` from new project object
+- Remove the Planned Annual Rate input and PAR Start Date picker from the form
 
-### 6. `src/components/CreateProjectModal.tsx` & `src/components/EditProjectModal.tsx`
-- Rename `salesRepIds` state → `assigneeIds`
-- Label: "Assigned Sales Rep(s)" → "Assignee(s)"
-- Populate multi-select from `users` instead of `salesReps`
-- Use `getUserName` for display
-
-### 7. `src/components/ProjectTable.tsx`
-- Column header: "Sales Rep" → "Assignee"
-- Use `getUserNames(project.assigneeIds)`
-
-### 8. `src/pages/ProjectDetail.tsx`
-- Display label: "Sales Rep(s)" → "Assignee(s)"
-- Use `getUserNames` for display
-- Opportunity filter for "Sales Rep" on opportunities stays as-is (still references opp-level salesRepId)
-
-### 9. `src/components/SettingsPanel.tsx`
-- "Current User" dropdown populates from `users`
-
-### 10. `src/components/NotesSection.tsx` & `src/components/NoteModal.tsx`
-- Note author display uses `getUserName` instead of `getSalesRepName`
-
-### 11. `src/components/ActivityModal.tsx`
-- Assignee dropdown populates from `users` instead of `salesReps`
-
-### 12. `src/pages/ProjectChangeLog.tsx`
-- `changedByName` uses `getUserName`
-
-## Files touched
-`src/data/Users.json` (new), `src/types/index.ts`, `src/data/Project.json`, `src/contexts/DataContext.tsx`, `src/components/FilterBar.tsx`, `src/components/CreateProjectModal.tsx`, `src/components/EditProjectModal.tsx`, `src/components/ProjectTable.tsx`, `src/pages/ProjectDetail.tsx`, `src/components/SettingsPanel.tsx`, `src/components/NotesSection.tsx`, `src/components/NoteModal.tsx`, `src/components/ActivityModal.tsx`, `src/pages/ProjectChangeLog.tsx`
+### 7. `src/pages/ProjectDetail.tsx`
+- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
 

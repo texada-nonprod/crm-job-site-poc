@@ -34,7 +34,7 @@ interface ActivityModalProps {
 }
 
 export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode }: ActivityModalProps) => {
-  const { salesReps, addActivity, updateActivity } = useData();
+  const { users, addActivity, updateActivity } = useData();
   const { toast } = useToast();
 
   const [assigneeId, setAssigneeId] = useState<string>('');
@@ -106,9 +106,9 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode }:
                 <SelectValue placeholder="Select assignee" />
               </SelectTrigger>
               <SelectContent>
-                {salesReps.map(rep => (
-                  <SelectItem key={rep.salesrepid} value={rep.salesrepid.toString()}>
-                    {rep.lastname}, {rep.firstname}
+                {users.map(user => (
+                  <SelectItem key={user.id} value={user.id.toString()}>
+                    {user.lastName}, {user.firstName}
                   </SelectItem>
                 ))}
               </SelectContent>

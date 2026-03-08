@@ -6,8 +6,8 @@ import { Switch } from '@/components/ui/switch';
 import { Card } from '@/components/ui/card';
 
 export const FilterBar = () => {
-  const { filters, setFilters, salesReps, projects } = useData();
-  const sortedSalesReps = [...salesReps].sort((a, b) => a.lastname.localeCompare(b.lastname));
+  const { filters, setFilters, users, projects } = useData();
+  const sortedUsers = [...users].sort((a, b) => a.lastName.localeCompare(b.lastName));
   const uniqueStatuses = Array.from(new Set(projects.map(p => p.statusId))).sort();
 
   return (
@@ -15,10 +15,10 @@ export const FilterBar = () => {
       <h2 className="text-lg font-semibold mb-4">Filters</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="salesRep">Sales Rep</Label>
-          <Select value={filters.salesRepId || "all"} onValueChange={(value) => setFilters({ ...filters, salesRepId: value === "all" ? "" : value })}>
-            <SelectTrigger id="salesRep"><SelectValue placeholder="All Sales Reps" /></SelectTrigger>
-            <SelectContent><SelectItem value="all">All Sales Reps</SelectItem>{sortedSalesReps.map(rep => (<SelectItem key={rep.salesrepid} value={rep.salesrepid.toString()}>{rep.lastname}, {rep.firstname}</SelectItem>))}</SelectContent>
+          <Label htmlFor="assignee">Assignee</Label>
+          <Select value={filters.assigneeId || "all"} onValueChange={(value) => setFilters({ ...filters, assigneeId: value === "all" ? "" : value })}>
+            <SelectTrigger id="assignee"><SelectValue placeholder="All Assignees" /></SelectTrigger>
+            <SelectContent><SelectItem value="all">All Assignees</SelectItem>{sortedUsers.map(user => (<SelectItem key={user.id} value={user.id.toString()}>{user.lastName}, {user.firstName}</SelectItem>))}</SelectContent>
           </Select>
         </div>
         <div className="space-y-2">

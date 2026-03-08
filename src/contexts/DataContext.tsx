@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
-import { Project, SalesRep, Opportunity, OpportunityStage, OpportunityType, Filters, Activity, Note, NoteTag, ProjectCompany, CompanyContact, CustomerEquipment, ChangeLogEntry } from '@/types';
+import { Project, SalesRep, User, Opportunity, OpportunityStage, OpportunityType, Filters, Activity, Note, NoteTag, ProjectCompany, CompanyContact, CustomerEquipment, ChangeLogEntry } from '@/types';
 import projectsData from '@/data/Project.json';
 import salesRepsData from '@/data/SalesReps.json';
+import usersData from '@/data/Users.json';
 import opportunitiesData from '@/data/Opportunity.json';
 import opportunityStagesData from '@/data/OpportunityStages.json';
 import opportunityTypesData from '@/data/OpportunityTypes.json';
@@ -25,6 +26,7 @@ export const getDivisionName = (code: string): string => {
 interface DataContextType {
   projects: Project[];
   salesReps: SalesRep[];
+  users: User[];
   opportunities: Opportunity[];
   opportunityStages: OpportunityStage[];
   noteTags: NoteTag[];
@@ -53,6 +55,8 @@ interface DataContextType {
   setNoteTags: (tags: NoteTag[]) => void;
   getSalesRepName: (id: number) => string;
   getSalesRepNames: (ids: number[]) => string;
+  getUserName: (id: number) => string;
+  getUserNames: (ids: number[]) => string;
   getStageName: (id: number) => string;
   getStage: (id: number) => OpportunityStage | undefined;
   getTypeName: (typeId: number) => string;
@@ -129,12 +133,13 @@ const migrateProjectCompanies = (companies: any[]): ProjectCompany[] => {
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [salesReps, setSalesReps] = useState<SalesRep[]>([]);
+  const [users] = useState<User[]>(usersData.content as User[]);
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [opportunityStages, setOpportunityStages] = useState<OpportunityStage[]>([]);
   const [opportunityTypes] = useState<OpportunityType[]>(opportunityTypesData.content as OpportunityType[]);
   const [noteTags, setNoteTagsState] = useState<NoteTag[]>([]);
   const [filters, setFilters] = useState<Filters>({
-    salesRepId: '',
+    assigneeId: '',
     division: '',
     generalContractor: '',
     status: '',
@@ -219,6 +224,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const projectsWithMigratedData = projectsData.content.map(p => ({
       ...p,
+      assigneeIds: (p as any).assigneeIds || (p as any).salesRepIds || [],
       activities: (p as any).activities || [],
       notes: migrateNotes((p as any).notes || []),
       projectCompanies: migrateProjectCompanies((p as any).siteCompanies || (p as any).projectCompanies || []),
@@ -247,7 +253,13 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const savedFilters = localStorage.getItem(FILTERS_STORAGE_KEY);
     if (savedFilters) {
       try {
-        setFilters(JSON.parse(savedFilters));
+        const parsed = JSON.parse(savedFilters);
+        // Migrate old salesRepId to assigneeId
+        if ('salesRepId' in parsed && !('assigneeId' in parsed)) {
+          parsed.assigneeId = parsed.salesRepId;
+          delete parsed.salesRepId;
+        }
+        setFilters(parsed);
       } catch (e) {
         console.error('Failed to parse saved filters', e);
       }
@@ -272,6 +284,15 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return ids.map(id => getSalesRepName(id)).join('; ');
   };
 
+  const getUserName = (id: number): string => {
+    const user = users.find(u => u.id === id);
+    return user ? `${user.lastName}, ${user.firstName}` : 'Unknown';
+  };
+
+  const getUserNames = (ids: number[]): string => {
+    return ids.map(id => getUserName(id)).join('; ');
+  };
+
   const getStageName = (id: number): string => {
     const stage = opportunityStages.find(s => s.stageid === id);
     return stage ? stage.stagename : 'Unknown';
@@ -293,7 +314,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const getFilteredProjects = (): Project[] => {
     return projects.filter(project => {
       if (filters.hideCompleted && project.statusId === 'Completed') return false;
-      if (filters.salesRepId && !project.salesRepIds.includes(parseInt(filters.salesRepId))) return false;
+      if (filters.assigneeId && !project.assigneeIds.includes(parseInt(filters.assigneeId))) return false;
       if (filters.status && project.statusId !== filters.status) return false;
       if (filters.division) {
         const projectOpps = project.associatedOpportunities
@@ -332,7 +353,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const type = opportunityTypes.find(t => t.opptypeid === typeId);
         return { typeId, typeName: type ? type.opptypedesc : 'Unknown', revenue, displayOrder: type ? type.displayorder : 999 };
       })
-      .sort((a, b) => a.displayOrder - b.displayOrder)
+      .sort((a: any, b: any) => a.displayOrder - b.displayOrder)
       .map(({ typeId, typeName, revenue }) => ({ typeId, typeName, revenue }));
   };
 
@@ -601,6 +622,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       value={{
         projects,
         salesReps,
+        users,
         opportunities,
         opportunityStages,
         noteTags,
@@ -629,6 +651,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setNoteTags,
         getSalesRepName,
         getSalesRepNames,
+        getUserName,
+        getUserNames,
         getStageName,
         getStage,
         getTypeName,

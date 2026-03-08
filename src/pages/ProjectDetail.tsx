@@ -35,7 +35,7 @@ type LocationViewType = 'address' | 'coordinates';
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { projects, getSalesRepName, getSalesRepNames, opportunities, getStageName, getStage, removeProjectCompany, updateProject, deleteActivity, noteTags, addNote, updateNote, deleteNote, addCustomerEquipment, updateCustomerEquipment, deleteCustomerEquipment } = useData();
+  const { projects, getSalesRepName, getSalesRepNames, getUserName, getUserNames, opportunities, getStageName, getStage, removeProjectCompany, updateProject, deleteActivity, noteTags, addNote, updateNote, deleteNote, addCustomerEquipment, updateCustomerEquipment, deleteCustomerEquipment } = useData();
   const { statusColors, getStatusColorClasses } = useStatusColors();
   const { toast } = useToast();
   const [selectedOpportunity, setSelectedOpportunity] = useState<any>(null);
@@ -300,7 +300,7 @@ const ProjectDetail = () => {
     if (!actSortColumn || !actSortDirection) return 0;
     let cmp = 0;
     switch (actSortColumn) {
-      case 'assignee': cmp = getSalesRepName(a.assigneeId).localeCompare(getSalesRepName(b.assigneeId)); break;
+      case 'assignee': cmp = getUserName(a.assigneeId).localeCompare(getUserName(b.assigneeId)); break;
       case 'activityType': cmp = (a.activityType || '').localeCompare(b.activityType || ''); break;
       case 'date': cmp = new Date(a.date).getTime() - new Date(b.date).getTime(); break;
       case 'description': cmp = (a.description || '').localeCompare(b.description || ''); break;
@@ -465,11 +465,11 @@ const ProjectDetail = () => {
 
           <div className="space-y-6">
             <Card className="p-6">
-              <h3 className="font-semibold mb-3">Sales Information</h3>
+              <h3 className="font-semibold mb-3">Assignment</h3>
               <div className="space-y-3 text-sm">
                 <div>
-                <span className="text-muted-foreground">Sales Rep{project.salesRepIds.length > 1 ? 's' : ''}</span>
-                  <p className="font-medium">{getSalesRepNames(project.salesRepIds)}</p>
+                <span className="text-muted-foreground">Assignee{project.assigneeIds.length > 1 ? 's' : ''}</span>
+                  <p className="font-medium">{getUserNames(project.assigneeIds)}</p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Current Opportunities</span>
@@ -769,7 +769,7 @@ const ProjectDetail = () => {
               <TableBody>
                 {sortedActivities.map(activity => (
                   <TableRow key={activity.id}>
-                    <TableCell className="font-medium">{getSalesRepName(activity.assigneeId)}</TableCell>
+                    <TableCell className="font-medium">{getUserName(activity.assigneeId)}</TableCell>
                     <TableCell>
                       <Badge variant="outline">{activity.activityType}</Badge>
                     </TableCell>
@@ -931,7 +931,7 @@ const ProjectDetail = () => {
           onAddNote={(noteData) => addNote(project.id, noteData)}
           onUpdateNote={(noteId, noteData) => updateNote(project.id, noteId, noteData)}
           onDeleteNote={(noteId) => deleteNote(project.id, noteId)}
-          getSalesRepName={getSalesRepName}
+          getSalesRepName={getUserName}
           projectId={project.id}
         />
       </main>

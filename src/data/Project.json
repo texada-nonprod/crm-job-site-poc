@@ -5,7 +5,7 @@
             "name": "St. Mary's Hospital - West Wing Expansion",
             "description": "Construction of a new 4-story wing for the cardiology department, including underground parking structure.",
             "statusId": "Active",
-            "salesRepIds": [313, 305],
+            "assigneeIds": [313, 305],
             
             "projectPrimaryContact": {
                 "name": "Sarah Jenkins",
@@ -79,7 +79,7 @@
             "name": "Riverfront Stadium Renovation",
             "description": "Complete resurfacing of playing field and installation of new structural seating.",
             "statusId": "Planning",
-            "salesRepIds": [305],
+            "assigneeIds": [305],
             "projectPrimaryContact": {
                 "name": "David Ortiz",
                 "title": "Facilities Director",
@@ -148,7 +148,7 @@
             "name": "I-55 Highway Resurfacing (Mile Marker 20-35)",
             "description": "Night work only. Asphalt removal and resurfacing of southbound lanes.",
             "statusId": "Active",
-            "salesRepIds": [303],
+            "assigneeIds": [303],
             
             "projectPrimaryContact": {
                 "name": "State Dept of Transportation",
@@ -219,7 +219,7 @@
             "name": "Fox Valley Mall - Landscaping Refurbishment",
             "description": "Updating exterior landscaping, tree removal, and new retaining walls.",
             "statusId": "Completed",
-            "salesRepIds": [292],
+            "assigneeIds": [292],
             "projectPrimaryContact": {
                 "name": "Karen Fields",
                 "title": "Property Manager",
@@ -286,7 +286,7 @@
             "name": "Amazon Fulfillment Center #ORD5",
             "description": "Ground-up construction of 800,000 sq ft distribution warehouse.",
             "statusId": "Active",
-            "salesRepIds": [305, 313, 292],
+            "assigneeIds": [305, 313, 292],
             "projectPrimaryContact": {
                 "name": "Jeff Bezos (Proxy)",
                 "title": "Regional Construction Lead",
@@ -374,7 +374,7 @@
             "name": "City Water Treatment Plant Upgrade",
             "description": "Installation of new filtration pumps and backup power systems.",
             "statusId": "Active",
-            "salesRepIds": [304],
+            "assigneeIds": [304],
             "projectPrimaryContact": {
                 "name": "City of Springfield",
                 "title": "Public Works Director",
@@ -448,7 +448,7 @@
             "name": "Willow Creek Residential Subdivision",
             "description": "Phase 2 development: Grading and utility installation for 50 new single-family homes.",
             "statusId": "Planning",
-            "salesRepIds": [260, 304],
+            "assigneeIds": [260, 304],
             "projectPrimaryContact": {
                 "name": "Tom Builders",
                 "title": "Development Manager",
@@ -518,7 +518,7 @@
             "name": "Downtown Bridge Rehabilitation",
             "description": "Structural steel repairs and repainting of the main street bridge.",
             "statusId": "Active",
-            "salesRepIds": [292],
+            "assigneeIds": [292],
             "projectPrimaryContact": {
                 "name": "Civil Eng Corp",
                 "title": "Chief Engineer",
@@ -587,7 +587,7 @@
             "name": "University Tech Park - Incubator Building",
             "description": "New 3-story mixed-use office and lab space.",
             "statusId": "Planning",
-            "salesRepIds": [313],
+            "assigneeIds": [313],
             "projectPrimaryContact": {
                 "name": "Dr. Alan Grant",
                 "title": "University Liaison",
@@ -654,7 +654,7 @@
             "name": "Limestone Quarry - South Face Expansion",
             "description": "Stripping overburden to access new aggregate veins.",
             "statusId": "Active",
-            "salesRepIds": [305, 303],
+            "assigneeIds": [305, 303],
             "projectPrimaryContact": {
                 "name": "Fred Flint",
                 "title": "Quarry Manager",
