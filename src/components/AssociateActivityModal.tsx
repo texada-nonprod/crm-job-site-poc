@@ -14,7 +14,7 @@ interface AssociateActivityModalProps {
 }
 
 export const AssociateActivityModal = ({ projectId, currentActivityIds, open, onOpenChange }: AssociateActivityModalProps) => {
-  const { projects, getSalesRepName, addActivity } = useData();
+  const { projects, getUserName, addActivity } = useData();
   const [selectedActivity, setSelectedActivity] = useState<{ activity: Activity; sourceProjectId: number } | null>(null);
 
   const availableActivities: { activity: Activity; sourceProjectName: string; sourceProjectId: number }[] = [];
