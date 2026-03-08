@@ -93,11 +93,9 @@ export interface Project {
   description: string;
   statusId: string;
   assigneeIds: number[];
-  projectPrimaryContact: {
-    name: string;
-    title: string;
-    phone: string;
-    email: string;
+  projectOwner: {
+    companyId: string;
+    contactIds: number[];
   };
   address: {
     street: string;
