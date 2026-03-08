@@ -9,6 +9,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 import { useStatusColors, STATUS_COLORS } from '@/hooks/useStatusColors';
 import { useData } from '@/contexts/DataContext';
+import { LookupOption } from '@/types';
 
 type DropdownType = 'projectStatus' | 'subcontractorRole' | 'noteTags';
 
