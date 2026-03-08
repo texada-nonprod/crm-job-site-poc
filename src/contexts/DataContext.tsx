@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
-import { Project, SalesRep, User, Opportunity, OpportunityStage, OpportunityType, Filters, Activity, Note, NoteTag, ProjectCompany, CompanyContact, CustomerEquipment, ChangeLogEntry } from '@/types';
+import { Project, SalesRep, User, Opportunity, OpportunityStage, OpportunityType, Filters, Activity, Note, NoteTag, ProjectCompany, CompanyContact, CustomerEquipment, ChangeLogEntry, LookupOption, DodgeMapping } from '@/types';
 import projectsData from '@/data/Project.json';
 import salesRepsData from '@/data/SalesReps.json';
 import usersData from '@/data/Users.json';
 import opportunitiesData from '@/data/Opportunity.json';
 import opportunityStagesData from '@/data/OpportunityStages.json';
 import opportunityTypesData from '@/data/OpportunityTypes.json';
+import lookupsData from '@/data/Lookups.json';
 
 // Division constants
 export const DIVISIONS = [
@@ -66,12 +67,25 @@ interface DataContextType {
   getRevenueByType: () => { typeId: number; typeName: string; revenue: number }[];
   getCompanyById: (companyId: string) => ProjectCompany | undefined;
   getAllKnownCompanies: () => ProjectCompany[];
+  // Lookups
+  primaryStages: LookupOption[];
+  setPrimaryStages: (items: LookupOption[]) => void;
+  primaryProjectTypes: LookupOption[];
+  setPrimaryProjectTypes: (items: LookupOption[]) => void;
+  ownershipTypes: LookupOption[];
+  setOwnershipTypes: (items: LookupOption[]) => void;
+  getLookupLabel: (type: 'primaryStage' | 'primaryProjectType' | 'ownershipType', id: string) => string;
+  // Dodge Mappings
+  dodgeMappings: Record<string, DodgeMapping[]>;
+  setDodgeMappings: (type: string, mappings: DodgeMapping[]) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 const FILTERS_STORAGE_KEY = 'crm-filters';
 const NOTE_TAGS_STORAGE_KEY = 'crm-note-tags';
+const LOOKUPS_STORAGE_KEY = 'crm-lookups';
+const DODGE_MAPPINGS_STORAGE_KEY = 'crm-dodge-mappings';
 
 // Default note tags
 const defaultNoteTags: NoteTag[] = [
@@ -148,6 +162,12 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     hideCompleted: true,
   });
 
+  // Lookups state
+  const [primaryStages, setPrimaryStagesState] = useState<LookupOption[]>(lookupsData.primaryStages);
+  const [primaryProjectTypes, setPrimaryProjectTypesState] = useState<LookupOption[]>(lookupsData.primaryProjectTypes);
+  const [ownershipTypes, setOwnershipTypesState] = useState<LookupOption[]>(lookupsData.ownershipTypes);
+  const [dodgeMappings, setDodgeMappingsState] = useState<Record<string, DodgeMapping[]>>({});
+
   // Current user and change log
   const [currentUserId, setCurrentUserId] = useState<number>(313);
 
@@ -165,26 +185,22 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     { id: 10, projectId: 500101, timestamp: '2025-12-05T10:30:00Z', action: 'EQUIPMENT_DELETED', category: 'Equipment', summary: 'Equipment "Komatsu PC210" removed', changedById: 260 },
     { id: 11, projectId: 500101, timestamp: '2025-12-10T14:15:00Z', action: 'COMPANY_REMOVED', category: 'Company', summary: 'Company "Rosendin Electric" disassociated', changedById: 313 },
     { id: 12, projectId: 500101, timestamp: '2025-12-15T08:45:00Z', action: 'NOTE_UPDATED', category: 'Note', summary: 'Note updated', changedById: 292 },
-
     { id: 13, projectId: 500102, timestamp: '2025-10-20T09:00:00Z', action: 'PROJECT_CREATED', category: 'Project', summary: 'Project "Metro Line Extension" created', changedById: 262 },
     { id: 14, projectId: 500102, timestamp: '2025-10-25T11:30:00Z', action: 'COMPANY_ADDED', category: 'Company', summary: 'Company "Turner Construction" added as Subcontractor - Steel', changedById: 262 },
     { id: 15, projectId: 500102, timestamp: '2025-11-01T14:00:00Z', action: 'OPPORTUNITY_CREATED', category: 'Opportunity', summary: 'Opportunity "Excavator fleet for foundation work" created', changedById: 303 },
     { id: 16, projectId: 500102, timestamp: '2025-11-10T16:20:00Z', action: 'ACTIVITY_ADDED', category: 'Activity', summary: 'Activity "Phone Call" added', changedById: 262 },
     { id: 17, projectId: 500102, timestamp: '2025-11-20T10:10:00Z', action: 'EQUIPMENT_ADDED', category: 'Equipment', summary: 'Equipment "Volvo EC220E" added', changedById: 303 },
     { id: 18, projectId: 500102, timestamp: '2025-12-02T13:45:00Z', action: 'PROJECT_UPDATED', category: 'Project', summary: 'Project details updated (description)', changedById: 262 },
-
     { id: 19, projectId: 500103, timestamp: '2025-09-15T08:30:00Z', action: 'PROJECT_CREATED', category: 'Project', summary: 'Project "Riverside Commercial Park" created', changedById: 304 },
     { id: 20, projectId: 500103, timestamp: '2025-09-20T12:00:00Z', action: 'OPPORTUNITY_CREATED', category: 'Opportunity', summary: 'Opportunity "Paving equipment package" created', changedById: 304 },
     { id: 21, projectId: 500103, timestamp: '2025-10-05T09:15:00Z', action: 'COMPANY_ADDED', category: 'Company', summary: 'Company "Curran Contracting" added as Subcontractor - Paving', changedById: 305 },
     { id: 22, projectId: 500103, timestamp: '2025-10-15T15:30:00Z', action: 'NOTE_ADDED', category: 'Note', summary: 'Note added', changedById: 304 },
     { id: 23, projectId: 500103, timestamp: '2025-11-01T10:45:00Z', action: 'EQUIPMENT_ADDED', category: 'Equipment', summary: 'Equipment "Case SV340B" added', changedById: 305 },
     { id: 24, projectId: 500103, timestamp: '2025-11-20T14:00:00Z', action: 'ACTIVITY_ADDED', category: 'Activity', summary: 'Activity "Email" added', changedById: 304 },
-
     { id: 25, projectId: 500104, timestamp: '2025-10-01T08:00:00Z', action: 'PROJECT_CREATED', category: 'Project', summary: 'Project created', changedById: 292 },
     { id: 26, projectId: 500104, timestamp: '2025-10-10T11:20:00Z', action: 'OPPORTUNITY_CREATED', category: 'Opportunity', summary: 'Opportunity "Generator rental for temp power" created', changedById: 292 },
     { id: 27, projectId: 500104, timestamp: '2025-10-18T14:30:00Z', action: 'COMPANY_ADDED', category: 'Company', summary: 'Company added as General Contractor', changedById: 292 },
     { id: 28, projectId: 500104, timestamp: '2025-11-05T09:00:00Z', action: 'PROJECT_UPDATED', category: 'Project', summary: 'Project details updated (statusId)', changedById: 313, details: { field: 'statusId', from: 'Planning', to: 'Active' } },
-
     { id: 29, projectId: 500105, timestamp: '2025-08-20T10:00:00Z', action: 'PROJECT_CREATED', category: 'Project', summary: 'Project created', changedById: 305 },
     { id: 30, projectId: 500105, timestamp: '2025-09-01T13:15:00Z', action: 'COMPANY_ADDED', category: 'Company', summary: 'Company "Rosendin Electric" added as Subcontractor - Electrical', changedById: 305 },
     { id: 31, projectId: 500105, timestamp: '2025-09-15T16:45:00Z', action: 'OPPORTUNITY_CREATED', category: 'Opportunity', summary: 'Opportunity "Boom lift rental" created', changedById: 262 },
@@ -253,11 +269,33 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setNoteTagsState(defaultNoteTags);
     }
 
+    // Load lookups from localStorage or defaults
+    const savedLookups = localStorage.getItem(LOOKUPS_STORAGE_KEY);
+    if (savedLookups) {
+      try {
+        const parsed = JSON.parse(savedLookups);
+        if (parsed.primaryStages) setPrimaryStagesState(parsed.primaryStages);
+        if (parsed.primaryProjectTypes) setPrimaryProjectTypesState(parsed.primaryProjectTypes);
+        if (parsed.ownershipTypes) setOwnershipTypesState(parsed.ownershipTypes);
+      } catch (e) {
+        console.error('Failed to parse saved lookups', e);
+      }
+    }
+
+    // Load dodge mappings
+    const savedDodge = localStorage.getItem(DODGE_MAPPINGS_STORAGE_KEY);
+    if (savedDodge) {
+      try {
+        setDodgeMappingsState(JSON.parse(savedDodge));
+      } catch (e) {
+        console.error('Failed to parse saved dodge mappings', e);
+      }
+    }
+
     const savedFilters = localStorage.getItem(FILTERS_STORAGE_KEY);
     if (savedFilters) {
       try {
         const parsed = JSON.parse(savedFilters);
-        // Migrate old single-value filters to arrays
         if ('assigneeId' in parsed && !('assigneeIds' in parsed)) {
           parsed.assigneeIds = parsed.assigneeId ? [parsed.assigneeId] : [];
           delete parsed.assigneeId;
@@ -288,6 +326,43 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const setNoteTags = (tags: NoteTag[]) => {
     setNoteTagsState(tags);
     localStorage.setItem(NOTE_TAGS_STORAGE_KEY, JSON.stringify(tags));
+  };
+
+  // Lookup setters with persistence
+  const persistLookups = (stages: LookupOption[], types: LookupOption[], ownership: LookupOption[]) => {
+    localStorage.setItem(LOOKUPS_STORAGE_KEY, JSON.stringify({
+      primaryStages: stages,
+      primaryProjectTypes: types,
+      ownershipTypes: ownership,
+    }));
+  };
+
+  const setPrimaryStages = (items: LookupOption[]) => {
+    setPrimaryStagesState(items);
+    persistLookups(items, primaryProjectTypes, ownershipTypes);
+  };
+
+  const setPrimaryProjectTypes = (items: LookupOption[]) => {
+    setPrimaryProjectTypesState(items);
+    persistLookups(primaryStages, items, ownershipTypes);
+  };
+
+  const setOwnershipTypes = (items: LookupOption[]) => {
+    setOwnershipTypesState(items);
+    persistLookups(primaryStages, primaryProjectTypes, items);
+  };
+
+  const setDodgeMappings = (type: string, mappings: DodgeMapping[]) => {
+    setDodgeMappingsState(prev => {
+      const updated = { ...prev, [type]: mappings };
+      localStorage.setItem(DODGE_MAPPINGS_STORAGE_KEY, JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const getLookupLabel = (type: 'primaryStage' | 'primaryProjectType' | 'ownershipType', id: string): string => {
+    const list = type === 'primaryStage' ? primaryStages : type === 'primaryProjectType' ? primaryProjectTypes : ownershipTypes;
+    return list.find(item => item.id === id)?.label || id;
   };
 
   const getSalesRepName = (id: number): string => {
@@ -700,6 +775,15 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         getRevenueByType,
         getCompanyById,
         getAllKnownCompanies,
+        primaryStages,
+        setPrimaryStages,
+        primaryProjectTypes,
+        setPrimaryProjectTypes,
+        ownershipTypes,
+        setOwnershipTypes,
+        getLookupLabel,
+        dodgeMappings,
+        setDodgeMappings,
       }}
     >
       {children}
