@@ -587,7 +587,7 @@
             "name": "University Tech Park - Incubator Building",
             "description": "New 3-story mixed-use office and lab space.",
             "statusId": "Planning",
-            "salesRepIds": [313],
+            "assigneeIds": [313],
             "projectPrimaryContact": {
                 "name": "Dr. Alan Grant",
                 "title": "University Liaison",
