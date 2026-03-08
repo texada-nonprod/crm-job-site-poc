@@ -331,6 +331,17 @@ const ManageDropdowns = () => {
             color: item.color || 'slate'
           })));
         }
+
+        // Sync lookup additions
+        if (selectedDropdown === 'primaryStage') {
+          setPrimaryStages([...dropdowns.primaryStage, newOption].map(i => ({ id: i.id, label: i.label, displayOrder: i.displayOrder })));
+        }
+        if (selectedDropdown === 'primaryProjectType') {
+          setPrimaryProjectTypes([...dropdowns.primaryProjectType, newOption].map(i => ({ id: i.id, label: i.label, displayOrder: i.displayOrder })));
+        }
+        if (selectedDropdown === 'ownershipType') {
+          setOwnershipTypes([...dropdowns.ownershipType, newOption].map(i => ({ id: i.id, label: i.label, displayOrder: i.displayOrder })));
+        }
       }
       setNewItem({
         label: '',
