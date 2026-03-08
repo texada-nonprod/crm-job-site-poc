@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { Project } from '@/types';
 
-type SortColumn = 'name' | 'address' | 'assignee' | 'contact' | 'status' | 'revenue';
+type SortColumn = 'name' | 'address' | 'assignee' | 'owner' | 'status' | 'revenue';
 type SortDirection = 'asc' | 'desc' | null;
 
 // Status display order mapping (matches ManageDropdowns configuration)
@@ -24,7 +24,7 @@ const getStatusOrder = (statusId: string): number => {
 
 export const ProjectTable = () => {
   const navigate = useNavigate();
-  const { getFilteredProjects, getUserNames, calculateProjectRevenue } = useData();
+  const { getFilteredProjects, getUserNames, calculateProjectRevenue, getCompanyById } = useData();
   const { getStatusColorClasses } = useStatusColors();
   const [sortColumn, setSortColumn] = useState<SortColumn | null>('status');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
@@ -62,8 +62,12 @@ export const ProjectTable = () => {
       case 'assignee':
         comparison = getUserNames(a.assigneeIds).localeCompare(getUserNames(b.assigneeIds));
         break;
-      case 'contact':
-        comparison = a.projectPrimaryContact.name.localeCompare(b.projectPrimaryContact.name);
+      case 'owner': {
+        const ownerA = a.projectOwner?.companyId ? getCompanyById(a.projectOwner.companyId)?.companyName || '' : '';
+        const ownerB = b.projectOwner?.companyId ? getCompanyById(b.projectOwner.companyId)?.companyName || '' : '';
+        comparison = ownerA.localeCompare(ownerB);
+        break;
+      }
         break;
       case 'status':
         comparison = getStatusOrder(a.statusId) - getStatusOrder(b.statusId);
@@ -120,11 +124,11 @@ export const ProjectTable = () => {
             </TableHead>
             <TableHead 
               className="cursor-pointer select-none group hover:bg-muted/50"
-              onClick={() => handleSort('contact')}
+              onClick={() => handleSort('owner')}
             >
               <div className="flex items-center">
-                Primary Contact
-                <SortIcon column="contact" />
+                Owner
+                <SortIcon column="owner" />
               </div>
             </TableHead>
             <TableHead 
@@ -164,7 +168,7 @@ export const ProjectTable = () => {
                 <TableCell className="font-medium">{project.name}</TableCell>
                 <TableCell>{project.address.city}, {project.address.state}</TableCell>
                 <TableCell>{getUserNames(project.assigneeIds)}</TableCell>
-                <TableCell>{project.projectPrimaryContact.name}</TableCell>
+                <TableCell>{project.projectOwner?.companyId ? getCompanyById(project.projectOwner.companyId)?.companyName || '—' : '—'}</TableCell>
                 <TableCell>
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColorClasses(project.statusId)}`}>
                     {project.statusId}

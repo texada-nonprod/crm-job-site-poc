@@ -64,6 +64,8 @@ interface DataContextType {
   getFilteredProjects: () => Project[];
   getTotalPipelineRevenue: () => number;
   getRevenueByType: () => { typeId: number; typeName: string; revenue: number }[];
+  getCompanyById: (companyId: string) => ProjectCompany | undefined;
+  getAllKnownCompanies: () => ProjectCompany[];
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -225,6 +227,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const projectsWithMigratedData = projectsData.content.map(p => ({
       ...p,
       assigneeIds: (p as any).assigneeIds || (p as any).salesRepIds || [],
+      projectOwner: (p as any).projectOwner || { companyId: '', contactIds: [] },
       activities: (p as any).activities || [],
       notes: migrateNotes((p as any).notes || []),
       projectCompanies: migrateProjectCompanies((p as any).siteCompanies || (p as any).projectCompanies || []),
@@ -309,6 +312,29 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const calculateProjectRevenue = (project: Project): number => {
     return project.associatedOpportunities.reduce((sum, opp) => sum + opp.revenue, 0);
+  };
+
+  const getCompanyById = (companyId: string): ProjectCompany | undefined => {
+    for (const project of projects) {
+      const company = project.projectCompanies.find(c => c.companyId === companyId);
+      if (company) return company;
+    }
+    return undefined;
+  };
+
+  const getAllKnownCompanies = (): ProjectCompany[] => {
+    const seen = new Set<string>();
+    const result: ProjectCompany[] = [];
+    for (const project of projects) {
+      for (const company of project.projectCompanies) {
+        const key = company.companyId;
+        if (!seen.has(key)) {
+          seen.add(key);
+          result.push(company);
+        }
+      }
+    }
+    return result.sort((a, b) => a.companyName.localeCompare(b.companyName));
   };
 
   const getFilteredProjects = (): Project[] => {
@@ -660,6 +686,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         getFilteredProjects,
         getTotalPipelineRevenue,
         getRevenueByType,
+        getCompanyById,
+        getAllKnownCompanies,
       }}
     >
       {children}

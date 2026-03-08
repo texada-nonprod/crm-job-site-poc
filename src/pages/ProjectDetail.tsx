@@ -35,7 +35,7 @@ type LocationViewType = 'address' | 'coordinates';
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { projects, getSalesRepName, getSalesRepNames, getUserName, getUserNames, opportunities, getStageName, getStage, removeProjectCompany, updateProject, deleteActivity, noteTags, addNote, updateNote, deleteNote, addCustomerEquipment, updateCustomerEquipment, deleteCustomerEquipment } = useData();
+  const { projects, getSalesRepName, getSalesRepNames, getUserName, getUserNames, opportunities, getStageName, getStage, removeProjectCompany, updateProject, deleteActivity, noteTags, addNote, updateNote, deleteNote, addCustomerEquipment, updateCustomerEquipment, deleteCustomerEquipment, getCompanyById } = useData();
   const { statusColors, getStatusColorClasses } = useStatusColors();
   const { toast } = useToast();
   const [selectedOpportunity, setSelectedOpportunity] = useState<any>(null);
@@ -434,23 +434,44 @@ const ProjectDetail = () => {
               <Separator />
 
               <div className="flex items-start gap-3">
-                <User className="h-5 w-5 text-muted-foreground mt-0.5" />
+                <Building2 className="h-5 w-5 text-muted-foreground mt-0.5" />
                 <div className="flex-1">
-                  <p className="font-medium">Primary Contact</p>
-                  <p className="text-sm">{project.projectPrimaryContact.name}</p>
-                  <p className="text-sm text-muted-foreground">{project.projectPrimaryContact.title}</p>
-                  <div className="flex items-center gap-4 mt-2 text-sm">
-                    <div className="flex items-center gap-1">
-                      <Phone className="h-3 w-3" />
-                      <span>{project.projectPrimaryContact.phone}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Mail className="h-3 w-3" />
-                      <a href={`mailto:${project.projectPrimaryContact.email}`} className="text-primary hover:underline">
-                        {project.projectPrimaryContact.email}
-                      </a>
-                    </div>
-                  </div>
+                  <p className="font-medium">Project Owner</p>
+                  {(() => {
+                    const ownerCompany = project.projectOwner?.companyId ? getCompanyById(project.projectOwner.companyId) : undefined;
+                    if (!ownerCompany) return <p className="text-sm text-muted-foreground italic">No owner assigned</p>;
+                    const selectedContacts = ownerCompany.companyContacts.filter(c => project.projectOwner.contactIds.includes(c.id));
+                    return (
+                      <div>
+                        <p className="text-sm font-medium">{ownerCompany.companyName}</p>
+                        {selectedContacts.length > 0 ? (
+                          <div className="mt-2 space-y-2">
+                            {selectedContacts.map(contact => (
+                              <div key={contact.id} className="text-sm">
+                                <p>{contact.name}{contact.title ? ` — ${contact.title}` : ''}</p>
+                                <div className="flex items-center gap-4 text-muted-foreground">
+                                  {contact.phone && (
+                                    <div className="flex items-center gap-1">
+                                      <Phone className="h-3 w-3" />
+                                      <span>{contact.phone}</span>
+                                    </div>
+                                  )}
+                                  {contact.email && (
+                                    <div className="flex items-center gap-1">
+                                      <Mail className="h-3 w-3" />
+                                      <a href={`mailto:${contact.email}`} className="text-primary hover:underline">{contact.email}</a>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-sm text-muted-foreground italic mt-1">No contacts selected</p>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 

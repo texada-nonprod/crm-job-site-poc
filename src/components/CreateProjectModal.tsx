@@ -7,10 +7,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Checkbox } from '@/components/ui/checkbox';
 
 import { useData } from '@/contexts/DataContext';
 import { useToast } from '@/hooks/use-toast';
-import { Check, ChevronsUpDown, X } from 'lucide-react';
+import { Check, ChevronsUpDown, X, Building2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 
@@ -20,7 +21,7 @@ interface CreateProjectModalProps {
 }
 
 export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalProps) => {
-  const { createProject, users, getUserName } = useData();
+  const { createProject, users, getUserName, getAllKnownCompanies, getCompanyById } = useData();
   const { toast } = useToast();
 
   const [name, setName] = useState('');
@@ -28,10 +29,9 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
   const [statusId, setStatusId] = useState('Active');
   const [assigneeIds, setAssigneeIds] = useState<number[]>([]);
   const [assigneeOpen, setAssigneeOpen] = useState(false);
-  const [contactName, setContactName] = useState('');
-  const [contactTitle, setContactTitle] = useState('');
-  const [contactPhone, setContactPhone] = useState('');
-  const [contactEmail, setContactEmail] = useState('');
+  const [ownerCompanyId, setOwnerCompanyId] = useState('');
+  const [ownerContactIds, setOwnerContactIds] = useState<number[]>([]);
+  const [ownerCompanyOpen, setOwnerCompanyOpen] = useState(false);
   const [locationType, setLocationType] = useState<'address' | 'coordinates'>('address');
   const [street, setStreet] = useState('');
   const [city, setCity] = useState('');
@@ -41,15 +41,16 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
 
+  const allCompanies = getAllKnownCompanies();
+  const selectedOwnerCompany = ownerCompanyId ? getCompanyById(ownerCompanyId) : undefined;
+
   const resetForm = () => {
     setName('');
     setDescription('');
     setStatusId('Active');
     setAssigneeIds([]);
-    setContactName('');
-    setContactTitle('');
-    setContactPhone('');
-    setContactEmail('');
+    setOwnerCompanyId('');
+    setOwnerContactIds([]);
     setLocationType('address');
     setStreet('');
     setCity('');
@@ -73,8 +74,8 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
       return;
     }
 
-    if (!contactName.trim() || !contactEmail.trim() || !contactPhone.trim()) {
-      toast({ title: "Error", description: "Please fill in all primary contact fields.", variant: "destructive" });
+    if (!ownerCompanyId) {
+      toast({ title: "Error", description: "Please select a project owner company.", variant: "destructive" });
       return;
     }
 
@@ -92,17 +93,14 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
       }
     }
 
-
     createProject({
       name: name.trim(),
       description: description.trim(),
       statusId,
       assigneeIds,
-      projectPrimaryContact: {
-        name: contactName.trim(),
-        title: contactTitle.trim(),
-        phone: contactPhone.trim(),
-        email: contactEmail.trim()
+      projectOwner: {
+        companyId: ownerCompanyId,
+        contactIds: ownerContactIds,
       },
       address: locationType === 'address' 
         ? { street: street.trim(), city: city.trim(), state: state.trim(), zipCode: zipCode.trim(), country: country.trim(), latitude: 0, longitude: 0 }
@@ -220,12 +218,68 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
           </div>
 
           <div className="space-y-4 pt-4 border-t">
-            <h3 className="font-semibold">Primary Contact</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2"><Label htmlFor="contactName">Name *</Label><Input id="contactName" value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder="Contact name" required /></div>
-              <div className="space-y-2"><Label htmlFor="contactTitle">Title</Label><Input id="contactTitle" value={contactTitle} onChange={(e) => setContactTitle(e.target.value)} placeholder="Contact title" /></div>
-              <div className="space-y-2"><Label htmlFor="contactPhone">Phone *</Label><Input id="contactPhone" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} placeholder="(555) 123-4567" required /></div>
-              <div className="space-y-2"><Label htmlFor="contactEmail">Email *</Label><Input id="contactEmail" type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="contact@example.com" required /></div>
+            <h3 className="font-semibold flex items-center gap-2"><Building2 className="h-4 w-4" /> Project Owner</h3>
+            <div className="space-y-3">
+              <div className="space-y-2">
+                <Label>Company *</Label>
+                <Popover open={ownerCompanyOpen} onOpenChange={setOwnerCompanyOpen}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" role="combobox" aria-expanded={ownerCompanyOpen} className="w-full justify-between">
+                      {selectedOwnerCompany ? selectedOwnerCompany.companyName : <span className="text-muted-foreground">Select a company...</span>}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0" align="start">
+                    <Command>
+                      <CommandInput placeholder="Search company..." />
+                      <CommandList>
+                        <CommandEmpty>No company found.</CommandEmpty>
+                        <CommandGroup>
+                          {allCompanies.map((company) => (
+                            <CommandItem
+                              key={company.companyId}
+                              value={company.companyName}
+                              onSelect={() => {
+                                setOwnerCompanyId(company.companyId);
+                                setOwnerContactIds([]);
+                                setOwnerCompanyOpen(false);
+                              }}
+                            >
+                              <Check className={cn("mr-2 h-4 w-4", ownerCompanyId === company.companyId ? "opacity-100" : "opacity-0")} />
+                              {company.companyName}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              {selectedOwnerCompany && selectedOwnerCompany.companyContacts.length > 0 && (
+                <div className="space-y-2">
+                  <Label>Contact(s)</Label>
+                  <div className="space-y-2 rounded-md border border-input p-3">
+                    {selectedOwnerCompany.companyContacts.map((contact) => (
+                      <div key={contact.id} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`owner-contact-${contact.id}`}
+                          checked={ownerContactIds.includes(contact.id)}
+                          onCheckedChange={(checked) => {
+                            setOwnerContactIds(prev =>
+                              checked ? [...prev, contact.id] : prev.filter(id => id !== contact.id)
+                            );
+                          }}
+                        />
+                        <label htmlFor={`owner-contact-${contact.id}`} className="text-sm cursor-pointer flex-1">
+                          <span className="font-medium">{contact.name}</span>
+                          {contact.title && <span className="text-muted-foreground"> — {contact.title}</span>}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

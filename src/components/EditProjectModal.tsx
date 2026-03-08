@@ -6,11 +6,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Checkbox } from '@/components/ui/checkbox';
 
 import { useData } from '@/contexts/DataContext';
 import { useToast } from '@/hooks/use-toast';
 import { Project } from '@/types';
-import { Plus, X, Check, ChevronsUpDown } from 'lucide-react';
+import { X, Check, ChevronsUpDown, Building2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 
@@ -23,16 +24,15 @@ interface EditProjectModalProps {
 }
 
 export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectModalProps) => {
-  const { updateProject, users, getUserName } = useData();
+  const { updateProject, users, getUserName, getAllKnownCompanies, getCompanyById } = useData();
   const { toast } = useToast();
 
   const [assigneeIds, setAssigneeIds] = useState<number[]>(project.assigneeIds);
   const [assigneeOpen, setAssigneeOpen] = useState(false);
   const [description, setDescription] = useState(project.description);
-  const [contactName, setContactName] = useState(project.projectPrimaryContact.name);
-  const [contactTitle, setContactTitle] = useState(project.projectPrimaryContact.title);
-  const [contactPhone, setContactPhone] = useState(project.projectPrimaryContact.phone);
-  const [contactEmail, setContactEmail] = useState(project.projectPrimaryContact.email);
+  const [ownerCompanyId, setOwnerCompanyId] = useState(project.projectOwner?.companyId || '');
+  const [ownerContactIds, setOwnerContactIds] = useState<number[]>(project.projectOwner?.contactIds || []);
+  const [ownerCompanyOpen, setOwnerCompanyOpen] = useState(false);
   const [street, setStreet] = useState(project.address.street);
   const [city, setCity] = useState(project.address.city);
   const [state, setState] = useState(project.address.state);
@@ -42,14 +42,15 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
   const [longitude, setLongitude] = useState(project.address.longitude?.toString() || '');
   const [locationType, setLocationType] = useState<LocationType>('address');
 
+  const allCompanies = getAllKnownCompanies();
+  const selectedOwnerCompany = ownerCompanyId ? getCompanyById(ownerCompanyId) : undefined;
+
   useEffect(() => {
     if (open) {
       setAssigneeIds(project.assigneeIds);
       setDescription(project.description);
-      setContactName(project.projectPrimaryContact.name);
-      setContactTitle(project.projectPrimaryContact.title);
-      setContactPhone(project.projectPrimaryContact.phone);
-      setContactEmail(project.projectPrimaryContact.email);
+      setOwnerCompanyId(project.projectOwner?.companyId || '');
+      setOwnerContactIds(project.projectOwner?.contactIds || []);
       setStreet(project.address.street);
       setCity(project.address.city);
       setState(project.address.state);
@@ -64,8 +65,8 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!contactName.trim() || !contactEmail.trim() || !contactPhone.trim()) {
-      toast({ title: "Error", description: "Please fill in all primary contact fields.", variant: "destructive" }); return;
+    if (!ownerCompanyId) {
+      toast({ title: "Error", description: "Please select a project owner company.", variant: "destructive" }); return;
     }
     if (locationType === 'address') {
       if (!street.trim() || !city.trim() || !state.trim() || !zipCode.trim() || !country.trim()) {
@@ -93,8 +94,9 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
         latitude: locationType === 'coordinates' ? parseFloat(latitude) : project.address.latitude,
         longitude: locationType === 'coordinates' ? parseFloat(longitude) : project.address.longitude
       },
-      projectPrimaryContact: {
-        name: contactName.trim(), title: contactTitle.trim(), phone: contactPhone.trim(), email: contactEmail.trim()
+      projectOwner: {
+        companyId: ownerCompanyId,
+        contactIds: ownerContactIds,
       }
     });
 
@@ -175,15 +177,73 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
             )}
           </div>
           <div className="space-y-2"><Label htmlFor="description">Description</Label><Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Enter project description..." rows={4} /></div>
+          
           <div className="space-y-4 pt-4 border-t">
-            <h3 className="font-semibold">Primary Contact</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2"><Label htmlFor="contactName">Name *</Label><Input id="contactName" value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder="Contact name" required /></div>
-              <div className="space-y-2"><Label htmlFor="contactTitle">Title</Label><Input id="contactTitle" value={contactTitle} onChange={(e) => setContactTitle(e.target.value)} placeholder="Contact title" /></div>
-              <div className="space-y-2"><Label htmlFor="contactPhone">Phone *</Label><Input id="contactPhone" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} placeholder="(555) 123-4567" required /></div>
-              <div className="space-y-2"><Label htmlFor="contactEmail">Email *</Label><Input id="contactEmail" type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="contact@example.com" required /></div>
+            <h3 className="font-semibold flex items-center gap-2"><Building2 className="h-4 w-4" /> Project Owner</h3>
+            <div className="space-y-3">
+              <div className="space-y-2">
+                <Label>Company *</Label>
+                <Popover open={ownerCompanyOpen} onOpenChange={setOwnerCompanyOpen}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" role="combobox" aria-expanded={ownerCompanyOpen} className="w-full justify-between">
+                      {selectedOwnerCompany ? selectedOwnerCompany.companyName : <span className="text-muted-foreground">Select a company...</span>}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0" align="start">
+                    <Command>
+                      <CommandInput placeholder="Search company..." />
+                      <CommandList>
+                        <CommandEmpty>No company found.</CommandEmpty>
+                        <CommandGroup>
+                          {allCompanies.map((company) => (
+                            <CommandItem
+                              key={company.companyId}
+                              value={company.companyName}
+                              onSelect={() => {
+                                setOwnerCompanyId(company.companyId);
+                                setOwnerContactIds([]);
+                                setOwnerCompanyOpen(false);
+                              }}
+                            >
+                              <Check className={cn("mr-2 h-4 w-4", ownerCompanyId === company.companyId ? "opacity-100" : "opacity-0")} />
+                              {company.companyName}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              {selectedOwnerCompany && selectedOwnerCompany.companyContacts.length > 0 && (
+                <div className="space-y-2">
+                  <Label>Contact(s)</Label>
+                  <div className="space-y-2 rounded-md border border-input p-3">
+                    {selectedOwnerCompany.companyContacts.map((contact) => (
+                      <div key={contact.id} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`edit-owner-contact-${contact.id}`}
+                          checked={ownerContactIds.includes(contact.id)}
+                          onCheckedChange={(checked) => {
+                            setOwnerContactIds(prev =>
+                              checked ? [...prev, contact.id] : prev.filter(id => id !== contact.id)
+                            );
+                          }}
+                        />
+                        <label htmlFor={`edit-owner-contact-${contact.id}`} className="text-sm cursor-pointer flex-1">
+                          <span className="font-medium">{contact.name}</span>
+                          {contact.title && <span className="text-muted-foreground"> — {contact.title}</span>}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
+
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
             <Button type="submit">Save Changes</Button>
