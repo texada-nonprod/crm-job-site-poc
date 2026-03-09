@@ -590,7 +590,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return project;
       })
     );
-    logChange(projectId, 'ACTIVITY_ADDED', 'Activity', `Activity "${activity.activityType}" added`);
+    logChange(projectId, 'ACTIVITY_ADDED', 'Activity', `Activity "${activity.typeId}" added`);
   };
 
   const updateActivity = (projectId: number, activityId: number, updates: Partial<Activity>) => {
