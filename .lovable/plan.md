@@ -1,39 +1,22 @@
 
+## Simplified Dodge Project Linkage
 
-# Remove PAR (Planned Annual Rate) from Projects
+The user clarification: the URL contains the ID (extractable if needed), and if a `dodgeProject` link exists, it always has both `url` and `name` (not optional).
 
-PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
+### Revised Data Model
+```typescript
+dodgeProject?: {
+  url: string;       // Complete link to external Dodge Project
+  name: string;      // Project name from external system
+};
+```
 
-## Changes
+### Changes
+1. **`src/types/index.ts`**: Update `Project.dodgeProject` to remove `id` field, make `name` required.
+2. **`src/data/Project.json`**: Update sample data for 4 projects with simplified structure.
+3. **`src/pages/ProjectDetail.tsx`**: Display link using the `name` as link text; URL already contains ID.
+4. **`src/components/EditProjectModal.tsx`**: Two fields: Dodge Project Name and Dodge Project URL (both required if filling out either). Clear button to unlink.
+5. **`src/components/CreateProjectModal.tsx`**: Same fields, optional group.
+6. **`src/contexts/DataContext.tsx`**: Handle simplified structure in CRUD operations.
 
-### 1. `src/types/index.ts`
-- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
-- Remove `showBehindPAR` from `Filters` interface
-
-### 2. `src/data/Project.json`
-- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
-
-### 3. `src/contexts/DataContext.tsx`
-- Remove `showBehindPAR: false` from default filters
-- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
-- Remove changelog entry referencing `plannedAnnualRate` (id 18)
-
-### 4. `src/components/FilterBar.tsx`
-- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
-
-### 5. `src/components/EditProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove their reset in `useEffect`
-- Remove the PAR validation check
-- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
-- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
-
-### 6. `src/components/CreateProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove PAR validation
-- Remove `plannedAnnualRate` and `parStartDate` from new project object
-- Remove the Planned Annual Rate input and PAR Start Date picker from the form
-
-### 7. `src/pages/ProjectDetail.tsx`
-- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
-
+This removes redundancy and tightens the architecture—URL is the canonical reference, name is always present for display.
