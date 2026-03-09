@@ -358,6 +358,51 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode }:
             />
           </div>
 
+          <div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-1 text-xs text-muted-foreground px-0"
+              onClick={() => setShowMoreFields(!showMoreFields)}
+            >
+              {showMoreFields ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+              More fields
+            </Button>
+            {showMoreFields && (
+              <div className="mt-2 space-y-4">
+                <div className="space-y-2">
+                  <Label>Campaign</Label>
+                  <Select value={campaignId} onValueChange={setCampaignId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="None" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
+                      {campaignsData.content.map(c => (
+                        <SelectItem key={c.id} value={c.id.toString()}>{c.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Issue</Label>
+                  <Select value={issueId} onValueChange={setIssueId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="None" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
+                      {filteredIssues.map(issue => (
+                        <SelectItem key={issue.id} value={issue.id.toString()}>{issue.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
