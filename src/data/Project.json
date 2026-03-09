@@ -505,11 +505,7 @@
             "activities": [
                 { "id": 1011, "assigneeId": 304, "activityType": "Email", "date": "2025-05-15T00:00:00.000Z", "description": "Sent service contract renewal proposal" }
             ],
-            "customerEquipment": [
-                { "id": 1, "companyId": "1293500", "equipmentType": "Drill Rig", "make": "Schramm", "model": "T130XD", "year": 2018, "serialNumber": "SCHRT130XD1", "hours": 7800 },
-                { "id": 2, "companyId": "1140350", "equipmentType": "Generator", "make": "Caterpillar", "model": "C15", "year": 2020, "serialNumber": "CATC15PWRX1", "hours": 4200 },
-                { "id": 3, "companyId": "1293500", "equipmentType": "Excavator", "make": "Caterpillar", "model": "330F", "year": 2019, "serialNumber": "CAT330FLCR1", "hours": 6100 }
-            ]
+            "customerEquipment": [1022, 1023, 1024]
         },
         {
             "id": 500107,
