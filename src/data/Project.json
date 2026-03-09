@@ -611,7 +611,11 @@
                 { "id": 3, "companyId": "1174395", "equipmentType": "Wheel Loader", "make": "Caterpillar", "model": "950GC", "year": 2021, "serialNumber": "CAT950GCWL1", "hours": 2400 },
                 { "id": 4, "companyId": "1035040", "equipmentType": "Boom Lift", "make": "Genie", "model": "S-65", "year": 2022, "serialNumber": "GENS65XC141", "hours": 1200 },
                 { "id": 5, "companyId": "1174395", "equipmentType": "Dozer", "make": "Komatsu", "model": "D39PX", "year": 2020, "serialNumber": "KMTD39PXRR1", "hours": 3600 }
-            ]
+            ],
+            "dodgeProject": {
+                "url": "https://www.construction.com/projects/5001070/willow-creek-residential-subdivision",
+                "name": "Willow Creek Residential Subdivision Phase 2"
+            }
         },
         {
             "id": 500108,
