@@ -70,7 +70,8 @@ export const ProjectTable = () => {
   const {
     getFilteredProjects,
     getUserNames,
-    calculateProjectRevenue,
+    calculateProjectWonRevenue,
+    calculateProjectPipelineRevenue,
     getCompanyById,
     getLookupLabel,
   } = useData();
