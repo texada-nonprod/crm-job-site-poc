@@ -1,17 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { useData } from '@/contexts/DataContext';
 import { useToast } from '@/hooks/use-toast';
 import { Activity } from '@/types';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, isPast } from 'date-fns';
 import { cn } from '@/lib/utils';
 import activityTypesData from '@/data/ActivityTypes.json';
 
@@ -32,6 +33,7 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode }:
   const [salesRepId, setSalesRepId] = useState<string>('');
   const [typeId, setTypeId] = useState<string>('');
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [timeValue, setTimeValue] = useState<string>('12:00');
   const [description, setDescription] = useState('');
   const [contactName, setContactName] = useState('');
   const [notes, setNotes] = useState('');
@@ -40,7 +42,9 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode }:
     if (activity && mode === 'edit') {
       setSalesRepId(activity.salesRepId.toString());
       setTypeId(activity.typeId);
-      setDate(activity.date ? new Date(activity.date) : undefined);
+      const actDate = activity.date ? new Date(activity.date) : undefined;
+      setDate(actDate);
+      setTimeValue(actDate ? format(actDate, 'HH:mm') : '12:00');
       setDescription(activity.description);
       setContactName(activity.contactName || '');
       setNotes(activity.notes || '');
@@ -48,11 +52,34 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode }:
       setSalesRepId('');
       setTypeId('');
       setDate(undefined);
+      setTimeValue('12:00');
       setDescription('');
       setContactName('');
       setNotes('');
     }
   }, [activity, mode, open]);
+
+  const handleDateSelect = (selectedDay: Date | undefined) => {
+    if (!selectedDay) { setDate(undefined); return; }
+    const [hours, minutes] = timeValue.split(':').map(Number);
+    const merged = new Date(selectedDay);
+    merged.setHours(hours, minutes, 0, 0);
+    setDate(merged);
+  };
+
+  const handleTimeChange = (newTime: string) => {
+    setTimeValue(newTime);
+    if (!date) return;
+    const [hours, minutes] = newTime.split(':').map(Number);
+    const merged = new Date(date);
+    merged.setHours(hours, minutes, 0, 0);
+    setDate(merged);
+  };
+
+  const status = useMemo(() => {
+    if (!date) return null;
+    return isPast(date) ? 'Completed' : 'Outstanding';
+  }, [date]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +93,7 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode }:
       return;
     }
 
-    const statusId = date < new Date() ? 2 : 1;
+    const statusId = isPast(date) ? 2 : 1;
 
     const activityData = {
       statusId,
@@ -80,16 +107,10 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode }:
 
     if (mode === 'create') {
       addActivity(projectId, activityData);
-      toast({
-        title: "Success",
-        description: "Activity created successfully."
-      });
+      toast({ title: "Success", description: "Activity created successfully." });
     } else if (activity) {
       updateActivity(projectId, activity.id, activityData);
-      toast({
-        title: "Success",
-        description: "Activity updated successfully."
-      });
+      toast({ title: "Success", description: "Activity updated successfully." });
     }
 
     onOpenChange(false);
@@ -135,7 +156,22 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode }:
           </div>
 
           <div className="space-y-2">
-            <Label>Date</Label>
+            <div className="flex items-center gap-2">
+              <Label>Date & Time</Label>
+              {status && (
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "text-xs pointer-events-none",
+                    status === 'Completed'
+                      ? "border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
+                      : "border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-300"
+                  )}
+                >
+                  {status}
+                </Badge>
+              )}
+            </div>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -146,16 +182,25 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode }:
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : "Select date"}
+                  {date ? format(date, "MMM d, yyyy 'at' h:mm a") : "Select date & time"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
                   selected={date}
-                  onSelect={setDate}
+                  onSelect={handleDateSelect}
                   initialFocus
                 />
+                <div className="border-t border-border px-3 py-2">
+                  <Label className="text-xs text-muted-foreground">Time</Label>
+                  <Input
+                    type="time"
+                    value={timeValue}
+                    onChange={(e) => handleTimeChange(e.target.value)}
+                    className="mt-1 h-8"
+                  />
+                </div>
               </PopoverContent>
             </Popover>
           </div>
