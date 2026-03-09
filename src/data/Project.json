@@ -819,6 +819,320 @@
                 { "id": 1017, "statusId": 2, "salesRepId": 305, "typeId": "F", "date": "2025-03-05T10:00:00.000Z", "description": "Quarterly review with quarry operations team", "contactName": "Frank Thompson", "notes": "Reviewed safety metrics and equipment utilization rates." }
             ],
             "customerEquipment": [1036, 1037, 1038, 1039, 1040, 1041]
+        },
+        {
+            "id": 500111,
+            "name": "Midway Distribution Center - Phase 2",
+            "description": "Expanding warehouse footprint by 200,000 sq ft with new loading docks and cold storage wing.",
+            "statusId": "Active",
+            "assigneeIds": [313],
+            "valuation": 32000000,
+            "primaryStageId": "PRE_CONSTRUCTION",
+            "primaryProjectTypeId": "COMMERCIAL",
+            "ownershipTypeId": "PRIVATE",
+            "bidDate": "2025-04-10",
+            "targetStartDate": "2025-07-01",
+            "targetCompletionDate": "2027-03-31",
+            "projectOwner": {
+                "companyId": "OWN-MDWAY",
+                "contactIds": [1]
+            },
+            "address": {
+                "street": "8800 Logistics Blvd",
+                "city": "Bolingbrook",
+                "state": "IL",
+                "zipCode": "60440",
+                "country": "USA",
+                "latitude": 41.698,
+                "longitude": -88.068
+            },
+            "siteCompanies": [
+                {
+                    "companyId": "OWN-MDWAY",
+                    "companyName": "Midway Logistics Group",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "Derek Hall", "title": "VP of Facilities", "phone": "630-555-1010", "email": "dhall@midwaylogistics.com" }
+                    ],
+                    "primaryContactIndex": 0
+                },
+                {
+                    "companyId": "1174395",
+                    "companyName": "Ryan Companies US Inc",
+                    "roleId": "GC",
+                    "roleDescription": "General Contractor",
+                    "isPrimaryContact": true,
+                    "companyContacts": [
+                        { "id": 1, "name": "Amanda Price", "title": "Project Director", "phone": "630-555-1020", "email": "a.price@ryancompanies.com" }
+                    ],
+                    "primaryContactIndex": 0
+                }
+            ],
+            "associatedOpportunities": [
+                { "id": 300031, "type": "Sales", "description": "CAT 336 Excavator for foundation work", "stageId": 8, "revenue": 185000 },
+                { "id": 300032, "type": "Rental Service", "description": "Telescoping forklift 12-month rental", "stageId": 16, "revenue": 48000 }
+            ],
+            "notes": [
+                { "id": 1, "content": "Site adjacent to active rail yard. PPE and spotter required near tracks at all times.", "createdAt": "2025-04-01T09:00:00.000Z", "createdById": 313, "tagIds": ["SAFETY"], "attachments": [] }
+            ],
+            "activities": [
+                { "id": 1018, "statusId": 2, "salesRepId": 313, "typeId": "F", "date": "2025-04-05T10:00:00.000Z", "description": "Initial site walk with GC", "contactName": "Amanda Price", "notes": "Reviewed staging area and delivery routes." }
+            ],
+            "customerEquipment": []
+        },
+        {
+            "id": 500112,
+            "name": "Lincoln Park Mixed-Use Development",
+            "description": "6-story mixed-use building with ground-floor retail and 84 residential units above.",
+            "statusId": "Active",
+            "assigneeIds": [305, 313],
+            "valuation": 58000000,
+            "primaryStageId": "UNDER_CONSTRUCTION",
+            "primaryProjectTypeId": "COMMERCIAL",
+            "ownershipTypeId": "PRIVATE",
+            "bidDate": "2024-11-20",
+            "targetStartDate": "2025-03-01",
+            "targetCompletionDate": "2027-06-30",
+            "projectOwner": {
+                "companyId": "OWN-LPDEV",
+                "contactIds": [1]
+            },
+            "address": {
+                "street": "2450 N Halsted St",
+                "city": "Chicago",
+                "state": "IL",
+                "zipCode": "60614",
+                "country": "USA",
+                "latitude": 41.926,
+                "longitude": -87.648
+            },
+            "siteCompanies": [
+                {
+                    "companyId": "OWN-LPDEV",
+                    "companyName": "Halsted Development Partners",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "Victoria Meyers", "title": "Managing Partner", "phone": "312-555-2200", "email": "vmeyers@halsteddev.com" }
+                    ],
+                    "primaryContactIndex": 0
+                },
+                {
+                    "companyId": "998810",
+                    "companyName": "Turner Construction Company",
+                    "roleId": "GC",
+                    "roleDescription": "General Contractor",
+                    "isPrimaryContact": true,
+                    "companyContacts": [
+                        { "id": 1, "name": "Marcus Bell", "title": "Senior Superintendent", "phone": "312-555-2210", "email": "mbell@turnerconstruction.com" }
+                    ],
+                    "primaryContactIndex": 0
+                }
+            ],
+            "associatedOpportunities": [
+                { "id": 300033, "type": "Sales", "description": "Tower crane purchase for vertical construction", "stageId": 16, "revenue": 320000 },
+                { "id": 300034, "type": "Rent", "description": "Boom lift fleet rental for facade installation", "stageId": 4, "revenue": 27500 },
+                { "id": 300035, "type": "Parts", "description": "Concrete pump replacement parts", "stageId": 16, "revenue": 14200 }
+            ],
+            "notes": [
+                { "id": 1, "content": "Street closure permits required for crane erection. City alderman office must be notified 72 hours in advance.", "createdAt": "2025-03-10T08:00:00.000Z", "createdById": 305, "tagIds": ["COMPLIANCE"], "attachments": [] },
+                { "id": 2, "content": "Residential neighbors sensitive to early morning noise. No work before 8 AM per city ordinance.", "createdAt": "2025-03-12T14:00:00.000Z", "createdById": 305, "tagIds": ["COMPLIANCE", "GENERAL"], "attachments": [] }
+            ],
+            "activities": [
+                { "id": 1019, "statusId": 2, "salesRepId": 305, "typeId": "F", "date": "2025-03-10T09:30:00.000Z", "description": "Foundation progress inspection", "contactName": "Marcus Bell", "notes": "Piles completed. Ready for grade beams next week." }
+            ],
+            "customerEquipment": []
+        },
+        {
+            "id": 500113,
+            "name": "I-55 Bridge Deck Replacement - Channahon",
+            "description": "Full deck replacement of the I-55 overpass at Channahon Rd including barrier walls and approach slabs.",
+            "statusId": "Active",
+            "assigneeIds": [303],
+            "valuation": 18000000,
+            "primaryStageId": "UNDER_CONSTRUCTION",
+            "primaryProjectTypeId": "INSTITUTIONAL",
+            "ownershipTypeId": "PUBLIC",
+            "bidDate": "2024-09-05",
+            "targetStartDate": "2025-04-15",
+            "targetCompletionDate": "2026-10-31",
+            "projectOwner": {
+                "companyId": "OWN-IDOT",
+                "contactIds": [1]
+            },
+            "address": {
+                "street": "I-55 & Channahon Rd",
+                "city": "Channahon",
+                "state": "IL",
+                "zipCode": "60410",
+                "country": "USA",
+                "latitude": 41.428,
+                "longitude": -88.228
+            },
+            "siteCompanies": [
+                {
+                    "companyId": "OWN-IDOT",
+                    "companyName": "Illinois Dept of Transportation",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "Thomas Keane", "title": "District Engineer", "phone": "815-555-3300", "email": "tkeane@illinois.gov" }
+                    ],
+                    "primaryContactIndex": 0
+                },
+                {
+                    "companyId": "1067200",
+                    "companyName": "Mortenson Construction",
+                    "roleId": "GC",
+                    "roleDescription": "General Contractor",
+                    "isPrimaryContact": true,
+                    "companyContacts": [
+                        { "id": 1, "name": "Steve Novak", "title": "Bridge Division PM", "phone": "815-555-3310", "email": "s.novak@mortenson.com" }
+                    ],
+                    "primaryContactIndex": 0
+                }
+            ],
+            "associatedOpportunities": [
+                { "id": 300036, "type": "Rent", "description": "Crane rental for girder placement", "stageId": 16, "revenue": 75000 },
+                { "id": 300037, "type": "Sales", "description": "Concrete barrier forms and hardware", "stageId": 2, "revenue": 42000 }
+            ],
+            "notes": [
+                { "id": 1, "content": "IDOT work zone safety standards apply. Temporary traffic control plan must be approved before any lane closures.", "createdAt": "2025-04-10T07:00:00.000Z", "createdById": 303, "tagIds": ["SAFETY", "COMPLIANCE"], "attachments": [] }
+            ],
+            "activities": [
+                { "id": 1020, "statusId": 2, "salesRepId": 303, "typeId": "E", "date": "2025-04-12T11:00:00.000Z", "description": "Sent crane specs and availability", "contactName": "Steve Novak", "notes": "300-ton crane needed for precast girders." }
+            ],
+            "customerEquipment": []
+        },
+        {
+            "id": 500114,
+            "name": "O'Hare Cargo Facility Renovation",
+            "description": "Interior renovation and MEP upgrades to existing 120,000 sq ft air cargo handling facility.",
+            "statusId": "Pending",
+            "assigneeIds": [313, 303],
+            "valuation": 22000000,
+            "primaryStageId": "PRE_CONSTRUCTION",
+            "primaryProjectTypeId": "COMMERCIAL",
+            "ownershipTypeId": "PUBLIC",
+            "bidDate": "2025-06-01",
+            "targetStartDate": "2025-10-01",
+            "targetCompletionDate": "2026-12-31",
+            "projectOwner": {
+                "companyId": "OWN-CDA",
+                "contactIds": [1]
+            },
+            "address": {
+                "street": "11601 W Touhy Ave",
+                "city": "Chicago",
+                "state": "IL",
+                "zipCode": "60666",
+                "country": "USA",
+                "latitude": 41.978,
+                "longitude": -87.904
+            },
+            "siteCompanies": [
+                {
+                    "companyId": "OWN-CDA",
+                    "companyName": "Chicago Dept of Aviation",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "Maria Santos", "title": "Capital Projects Manager", "phone": "773-555-4400", "email": "msantos@cityofchicago.org" }
+                    ],
+                    "primaryContactIndex": 0
+                },
+                {
+                    "companyId": "998810",
+                    "companyName": "Turner Construction Company",
+                    "roleId": "GC",
+                    "roleDescription": "General Contractor",
+                    "isPrimaryContact": true,
+                    "companyContacts": [
+                        { "id": 1, "name": "James Whitfield", "title": "Aviation Division Lead", "phone": "773-555-4410", "email": "jwhitfield@turnerconstruction.com" }
+                    ],
+                    "primaryContactIndex": 0
+                }
+            ],
+            "associatedOpportunities": [
+                { "id": 300038, "type": "Sales", "description": "Skid steer loaders for interior demo", "stageId": 4, "revenue": 95000 },
+                { "id": 300039, "type": "Rental Service", "description": "Scissor lift fleet for ceiling work", "stageId": 1, "revenue": 18500 }
+            ],
+            "notes": [
+                { "id": 1, "content": "TSA background checks required for all personnel. Badge applications take 4-6 weeks — plan accordingly.", "createdAt": "2025-05-01T10:00:00.000Z", "createdById": 313, "tagIds": ["SECURITY", "COMPLIANCE"], "attachments": [] }
+            ],
+            "activities": [],
+            "customerEquipment": []
+        },
+        {
+            "id": 500115,
+            "name": "Prairie Wind Solar Farm - Kankakee County",
+            "description": "500-acre utility-scale solar installation with access roads, inverter pads, and substation grading.",
+            "statusId": "Active",
+            "assigneeIds": [305],
+            "valuation": 75000000,
+            "primaryStageId": "UNDER_CONSTRUCTION",
+            "primaryProjectTypeId": "INDUSTRIAL",
+            "ownershipTypeId": "PRIVATE",
+            "bidDate": "2024-08-20",
+            "targetStartDate": "2025-02-01",
+            "targetCompletionDate": "2026-08-31",
+            "projectOwner": {
+                "companyId": "OWN-PRWND",
+                "contactIds": [1]
+            },
+            "address": {
+                "street": "County Road 3000E",
+                "city": "Kankakee",
+                "state": "IL",
+                "zipCode": "60901",
+                "country": "USA",
+                "latitude": 41.120,
+                "longitude": -87.860
+            },
+            "siteCompanies": [
+                {
+                    "companyId": "OWN-PRWND",
+                    "companyName": "Prairie Wind Energy LLC",
+                    "roleId": "OWNER",
+                    "roleDescription": "Property Owner",
+                    "isPrimaryContact": false,
+                    "companyContacts": [
+                        { "id": 1, "name": "Nathan Cole", "title": "Construction Director", "phone": "815-555-5500", "email": "ncole@prairiewindenergy.com" },
+                        { "id": 2, "name": "Samantha Lewis", "title": "Environmental Manager", "phone": "815-555-5501", "email": "slewis@prairiewindenergy.com" }
+                    ],
+                    "primaryContactIndex": 0
+                },
+                {
+                    "companyId": "1067200",
+                    "companyName": "Mortenson Construction",
+                    "roleId": "GC",
+                    "roleDescription": "General Contractor",
+                    "isPrimaryContact": true,
+                    "companyContacts": [
+                        { "id": 1, "name": "Chris Dawson", "title": "Renewables PM", "phone": "815-555-5510", "email": "c.dawson@mortenson.com" }
+                    ],
+                    "primaryContactIndex": 0
+                }
+            ],
+            "associatedOpportunities": [
+                { "id": 300040, "type": "Sales", "description": "CAT D6 Dozer fleet for grading", "stageId": 16, "revenue": 410000 },
+                { "id": 300041, "type": "Rent", "description": "Compact track loaders for panel staging", "stageId": 8, "revenue": 36000 },
+                { "id": 300042, "type": "Service", "description": "Preventive maintenance on customer fleet", "stageId": 16, "revenue": 28000 }
+            ],
+            "notes": [
+                { "id": 1, "content": "Wetland setback zones marked with orange fencing. No equipment operation within 50 ft of flagged areas.", "createdAt": "2025-02-15T08:00:00.000Z", "createdById": 305, "tagIds": ["COMPLIANCE"], "attachments": [] },
+                { "id": 2, "content": "County road weight limits in effect during spring thaw. Route deliveries via state highway.", "createdAt": "2025-03-01T07:30:00.000Z", "createdById": 305, "tagIds": ["GENERAL"], "attachments": [] }
+            ],
+            "activities": [
+                { "id": 1021, "statusId": 2, "salesRepId": 305, "typeId": "F", "date": "2025-02-20T09:00:00.000Z", "description": "Equipment mobilization planning", "contactName": "Chris Dawson", "notes": "Coordinated dozer and loader delivery schedule for March start." },
+                { "id": 1022, "statusId": 2, "salesRepId": 305, "typeId": "F", "date": "2025-03-15T14:00:00.000Z", "description": "Monthly progress review", "contactName": "Nathan Cole", "notes": "Grading 40% complete. On track for panel installation in Q3." }
+            ],
+            "customerEquipment": []
         }
     ],
     "sorting": "id",
