@@ -27,6 +27,7 @@ interface ActivityModalProps {
   projectId: number;
   activity?: Activity;
   mode: 'create' | 'edit';
+  followUpFrom?: Activity;
 }
 
 export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode }: ActivityModalProps) => {
