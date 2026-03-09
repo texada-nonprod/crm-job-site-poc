@@ -166,8 +166,8 @@
                 { "id": 3, "content": "Background checks required for all personnel due to public venue security protocols.", "createdAt": "2025-03-01T14:15:00.000Z", "createdById": 305, "tagIds": ["SECURITY"], "attachments": [] }
             ],
             "activities": [
-                { "id": 1004, "assigneeId": 305, "activityType": "Email", "date": "2025-03-01T00:00:00.000Z", "description": "Sent proposal for excavator purchase" },
-                { "id": 1005, "assigneeId": 305, "activityType": "Site Visit", "date": "2025-03-10T00:00:00.000Z", "description": "Equipment demonstration scheduled" }
+                { "id": 1004, "statusId": 2, "salesRepId": 305, "typeId": "E", "date": "2025-03-01T11:15:00.000Z", "description": "Sent proposal for excavator purchase", "contactName": "Aisha Bartlett", "notes": "Included pricing for CAT 320 and trade-in options." },
+                { "id": 1005, "statusId": 1, "salesRepId": 305, "typeId": "F", "date": "2026-04-10T08:00:00.000Z", "description": "Equipment demonstration scheduled", "contactName": "Brian Sullivan", "notes": "Demo of CAT 320 at Mortenson yard.", "issueId": 3, "customerId": "OWN-RVRFRNT" }
             ],
             "customerEquipment": [1008, 1007, 1009]
         },
