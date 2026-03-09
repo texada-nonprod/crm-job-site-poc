@@ -54,14 +54,15 @@ export const KPICard = () => {
 
   return (
     <Card className="p-6 mb-6">
-      <div className="flex items-center gap-6">
+      <div className="flex flex-col md:flex-row items-stretch gap-6">
         <RevenueSection
           icon={DollarSign}
           label="Pipeline Revenue"
           total={pipelineRevenue}
           byType={pipelineByType}
         />
-        <Separator orientation="vertical" className="h-12" />
+        <Separator orientation="vertical" className="hidden md:block h-auto" />
+        <Separator className="md:hidden" />
         <RevenueSection
           icon={Trophy}
           label="Won Revenue"
