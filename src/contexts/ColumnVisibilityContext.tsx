@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useCallback, type ReactNode } from
 import { type ColumnId, ALL_COLUMN_IDS } from '@/hooks/useColumnVisibility';
 
 const STORAGE_KEY = 'crm-project-columns';
-const DEFAULT_VISIBLE: ColumnId[] = ['address', 'assignee', 'owner', 'status', 'revenue'];
+const DEFAULT_VISIBLE: ColumnId[] = ['address', 'assignee', 'owner', 'status', 'wonRevenue', 'pipelineRevenue'];
 
 function loadFromStorage(): ColumnId[] {
   try {

@@ -20,7 +20,8 @@ type SortColumn =
   | 'assignee'
   | 'owner'
   | 'status'
-  | 'revenue'
+  | 'wonRevenue'
+  | 'pipelineRevenue'
   | 'valuation'
   | 'primaryStage'
   | 'projectType'
@@ -55,7 +56,8 @@ interface ColConfig {
 interface RenderHelpers {
   getUserNames: (ids: number[]) => string;
   getCompanyById: (id: string) => { companyName: string } | undefined;
-  calculateProjectRevenue: (p: Project) => number;
+  calculateProjectWonRevenue: (p: Project) => number;
+  calculateProjectPipelineRevenue: (p: Project) => number;
   getStatusColorClasses: (s: string) => string;
   getLookupLabel: (type: 'primaryStage' | 'primaryProjectType' | 'ownershipType', id: string) => string;
   formatDate: (d?: string) => string;
@@ -68,7 +70,8 @@ export const ProjectTable = () => {
   const {
     getFilteredProjects,
     getUserNames,
-    calculateProjectRevenue,
+    calculateProjectWonRevenue,
+    calculateProjectPipelineRevenue,
     getCompanyById,
     getLookupLabel,
   } = useData();
@@ -94,7 +97,8 @@ export const ProjectTable = () => {
   const helpers: RenderHelpers = {
     getUserNames,
     getCompanyById: getCompanyById as any,
-    calculateProjectRevenue,
+    calculateProjectWonRevenue,
+    calculateProjectPipelineRevenue,
     getStatusColorClasses,
     getLookupLabel,
     formatDate,
@@ -135,11 +139,18 @@ export const ProjectTable = () => {
       ),
     },
     {
-      id: 'revenue',
-      sortKey: 'revenue',
-      header: 'Revenue',
+      id: 'wonRevenue',
+      sortKey: 'wonRevenue',
+      header: 'Won Revenue',
       align: 'right',
-      render: (p, h) => `$${Math.round(h.calculateProjectRevenue(p)).toLocaleString('en-US')}`,
+      render: (p, h) => `$${Math.round(h.calculateProjectWonRevenue(p)).toLocaleString('en-US')}`,
+    },
+    {
+      id: 'pipelineRevenue',
+      sortKey: 'pipelineRevenue',
+      header: 'Pipeline Revenue',
+      align: 'right',
+      render: (p, h) => `$${Math.round(h.calculateProjectPipelineRevenue(p)).toLocaleString('en-US')}`,
     },
     {
       id: 'valuation',
@@ -243,8 +254,11 @@ export const ProjectTable = () => {
       case 'status':
         comparison = getStatusOrder(a.statusId) - getStatusOrder(b.statusId);
         break;
-      case 'revenue':
-        comparison = calculateProjectRevenue(a) - calculateProjectRevenue(b);
+      case 'wonRevenue':
+        comparison = calculateProjectWonRevenue(a) - calculateProjectWonRevenue(b);
+        break;
+      case 'pipelineRevenue':
+        comparison = calculateProjectPipelineRevenue(a) - calculateProjectPipelineRevenue(b);
         break;
       case 'valuation':
         comparison = (a.valuation ?? 0) - (b.valuation ?? 0);

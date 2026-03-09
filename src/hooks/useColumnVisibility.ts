@@ -5,7 +5,8 @@ export type ColumnId =
   | 'assignee'
   | 'owner'
   | 'status'
-  | 'revenue'
+  | 'wonRevenue'
+  | 'pipelineRevenue'
   | 'valuation'
   | 'primaryStage'
   | 'projectType'
@@ -20,7 +21,8 @@ export const ALL_COLUMN_IDS: ColumnId[] = [
   'assignee',
   'owner',
   'status',
-  'revenue',
+  'wonRevenue',
+  'pipelineRevenue',
   'valuation',
   'primaryStage',
   'projectType',
