@@ -327,7 +327,7 @@
                 { "id": 2, "content": "Final safety inspection passed with no incidents recorded during project.", "createdAt": "2024-11-15T17:30:00.000Z", "createdById": 292, "tagIds": ["SAFETY", "COMPLIANCE"], "attachments": [] }
             ],
             "activities": [
-                { "id": 1007, "assigneeId": 292, "activityType": "Site Visit", "date": "2024-11-15T00:00:00.000Z", "description": "Final walkthrough and project closeout" }
+                { "id": 1007, "statusId": 2, "salesRepId": 292, "typeId": "F", "date": "2024-11-15T13:00:00.000Z", "description": "Final walkthrough and project closeout", "contactName": "Michael Trent", "notes": "All equipment returned. Punch list items resolved." }
             ],
             "customerEquipment": [1013, 1014, 1015]
         },
