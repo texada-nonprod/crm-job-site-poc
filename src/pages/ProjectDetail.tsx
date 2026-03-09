@@ -295,10 +295,22 @@ const ProjectDetail = () => {
     if (!actSortColumn || !actSortDirection) return 0;
     let cmp = 0;
     switch (actSortColumn) {
-      case 'assignee':cmp = getSalesRepName(a.salesRepId).localeCompare(getSalesRepName(b.salesRepId));break;
-      case 'activityType':cmp = (a.typeId || '').localeCompare(b.typeId || '');break;
-      case 'date':cmp = new Date(a.date).getTime() - new Date(b.date).getTime();break;
-      case 'description':cmp = (a.description || '').localeCompare(b.description || '');break;
+      case 'assignee':
+        cmp = getSalesRepName(a.salesRepId).localeCompare(getSalesRepName(b.salesRepId));
+        break;
+      case 'activityType':
+        cmp = (a.typeId || '').localeCompare(b.typeId || '');
+        break;
+      case 'date':
+        cmp = new Date(a.date).getTime() - new Date(b.date).getTime();
+        break;
+      case 'status':
+        // Group Outstanding vs Completed (Completed is statusId === 2)
+        cmp = Number(a.statusId === 2) - Number(b.statusId === 2);
+        break;
+      case 'description':
+        cmp = (a.description || '').localeCompare(b.description || '');
+        break;
     }
     return actSortDirection === 'asc' ? cmp : -cmp;
   });
