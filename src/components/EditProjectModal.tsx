@@ -85,8 +85,7 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
       setBidDate(project.bidDate ? parseISO(project.bidDate) : undefined);
       setTargetStartDate(project.targetStartDate ? parseISO(project.targetStartDate) : undefined);
       setTargetCompletionDate(project.targetCompletionDate ? parseISO(project.targetCompletionDate) : undefined);
-      setDodgeProjectName(project.dodgeProject?.name || '');
-      setDodgeProjectUrl(project.dodgeProject?.url || '');
+      setExternalReference(project.externalReference);
     }
   }, [open, project]);
 
