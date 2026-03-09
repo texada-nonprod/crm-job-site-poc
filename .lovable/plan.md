@@ -1,39 +1,30 @@
 
 
-# Remove PAR (Planned Annual Rate) from Projects
+## Plan: Make KPI Card Responsive
 
-PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
+### Problem
+On tablet widths, the `RevenueSection` uses `flex justify-between` in a single row, causing the large total number and the per-type breakdown to overlap when space is tight.
 
-## Changes
+### Solution
+Make the layout responsive at three breakpoints:
 
-### 1. `src/types/index.ts`
-- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
-- Remove `showBehindPAR` from `Filters` interface
+**Mobile (< 768px):**
+- Stack Pipeline and Won sections vertically (remove horizontal separator)
+- Within each section, stack the total and per-type breakdown vertically
 
-### 2. `src/data/Project.json`
-- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
+**Tablet (768px–1024px):**
+- Keep Pipeline and Won side-by-side
+- Within each section, stack the total and per-type breakdown vertically (instead of horizontal `justify-between`)
 
-### 3. `src/contexts/DataContext.tsx`
-- Remove `showBehindPAR: false` from default filters
-- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
-- Remove changelog entry referencing `plannedAnnualRate` (id 18)
+**Desktop (> 1024px):**
+- Current layout — everything horizontal
 
-### 4. `src/components/FilterBar.tsx`
-- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
+### Changes
 
-### 5. `src/components/EditProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove their reset in `useEffect`
-- Remove the PAR validation check
-- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
-- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
-
-### 6. `src/components/CreateProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove PAR validation
-- Remove `plannedAnnualRate` and `parStartDate` from new project object
-- Remove the Planned Annual Rate input and PAR Start Date picker from the form
-
-### 7. `src/pages/ProjectDetail.tsx`
-- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
+**`src/components/KPICard.tsx`**
+- Outer container: `flex flex-col md:flex-row` (stacks on mobile, row on tablet+)
+- `RevenueSection` inner layout: change from `flex justify-between` to `flex flex-col lg:flex-row lg:justify-between` so the breakdown wraps below the total on tablet
+- Per-type breakdown: `flex flex-wrap` to handle varying counts gracefully
+- Separator between Pipeline/Won: hidden on mobile, visible on md+
+- Reduce text size slightly on smaller screens (`text-2xl md:text-3xl` for the total)
 
