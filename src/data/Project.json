@@ -659,11 +659,7 @@
             "activities": [
                 { "id": 1014, "assigneeId": 292, "activityType": "Phone Call", "date": "2025-08-20T00:00:00.000Z", "description": "Coordinated parts delivery schedule" }
             ],
-            "customerEquipment": [
-                { "id": 1, "companyId": "$000313", "equipmentType": "Crane", "make": "Liebherr", "model": "LTM1100", "year": 2017, "serialNumber": "LBHLTM11001", "hours": 8500 },
-                { "id": 2, "companyId": "NON-DBS", "equipmentType": "Milling Machine", "make": "Wirtgen", "model": "W210Fi", "year": 2019, "serialNumber": "WRTW210FiX1", "hours": 4800 },
-                { "id": 3, "companyId": "$000313", "equipmentType": "Boom Lift", "make": "JLG", "model": "1350SJP", "year": 2021, "serialNumber": "JLG1350SJP1", "hours": 1900 }
-            ]
+            "customerEquipment": [1030, 1031, 1032]
         },
         {
             "id": 500109,
