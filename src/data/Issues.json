@@ -1,0 +1,9 @@
+{
+  "content": [
+    { "id": 1, "customerId": "OWN-STMARYS", "label": "Delayed parts delivery on warranty claim" },
+    { "id": 2, "customerId": "OWN-STMARYS", "label": "Recurring hydraulic leak on rental unit" },
+    { "id": 3, "customerId": "OWN-RVRFRNT", "label": "Billing discrepancy on service invoice" },
+    { "id": 4, "customerId": "OWN-AMZN", "label": "Generator noise complaint from adjacent tenant" },
+    { "id": 5, "customerId": "OWN-RKSLD", "label": "Excessive wear on excavator bucket teeth" }
+  ]
+}

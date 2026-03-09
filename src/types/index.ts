@@ -14,10 +14,19 @@ export interface CustomerEquipment {
 
 export interface Activity {
   id: number;
-  assigneeId: number;
-  activityType: string;
+  statusId: number;
+  salesRepId: number;
+  typeId: string;
   date: string;
   description: string;
+  contactName: string;
+  notes: string;
+  campaignId?: number;
+  issueId?: number;
+  customerId?: string;
+  division?: string;
+  opportunityId?: number;
+  previousRelatedActivityId?: number;
 }
 
 export interface Attachment {

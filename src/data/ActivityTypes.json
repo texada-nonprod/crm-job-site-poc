@@ -1,0 +1,8 @@
+{
+  "content": [
+    { "id": "E", "label": "Email" },
+    { "id": "P", "label": "Phone" },
+    { "id": "F", "label": "Face-to-Face" },
+    { "id": "Q", "label": "Quote" }
+  ]
+}
