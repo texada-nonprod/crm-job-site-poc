@@ -420,14 +420,7 @@
                 { "id": 1009, "assigneeId": 305, "activityType": "Site Visit", "date": "2025-01-17T00:00:00.000Z", "description": "Generator installation inspection" },
                 { "id": 1010, "assigneeId": 313, "activityType": "Phone Call", "date": "2025-02-01T00:00:00.000Z", "description": "Discussed additional equipment requirements" }
             ],
-            "customerEquipment": [
-                { "id": 1, "companyId": "1067200", "equipmentType": "Excavator", "make": "Komatsu", "model": "PC210", "year": 2020, "serialNumber": "KMTPC210LCK", "hours": 6800 },
-                { "id": 2, "companyId": "1067200", "equipmentType": "Dozer", "make": "Caterpillar", "model": "D6T", "year": 2018, "serialNumber": "CATD6TXLWP3", "hours": 9200 },
-                { "id": 3, "companyId": "1035040", "equipmentType": "Wheel Loader", "make": "John Deere", "model": "644K", "year": 2017, "serialNumber": "JD644KZBA42", "hours": 11500 },
-                { "id": 4, "companyId": "1140350", "equipmentType": "Boom Lift", "make": "JLG", "model": "860SJ", "year": 2019, "serialNumber": "JLG860SJWR1", "hours": 3800 },
-                { "id": 5, "companyId": "1035040", "equipmentType": "Forklift", "make": "Caterpillar", "model": "DP50", "year": 2020, "serialNumber": "CATDP50NWJ2", "hours": 5100 },
-                { "id": 6, "companyId": "1067200", "equipmentType": "Compactor", "make": "Bomag", "model": "BW211D", "year": 2021, "serialNumber": "BMGBW211DA1", "hours": 2900 }
-            ],
+            "customerEquipment": [1016, 1017, 1018, 1019, 1020, 1021],
             "externalReference": {
                 "source": "Dodge Data & Analytics",
                 "url": "https://www.construction.com/projects/5001050/amazon-fulfillment-center-ord5",
