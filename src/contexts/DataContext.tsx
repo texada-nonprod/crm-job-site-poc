@@ -78,7 +78,8 @@ interface DataContextType {
   setPrimaryProjectTypes: (items: LookupOption[]) => void;
   ownershipTypes: LookupOption[];
   setOwnershipTypes: (items: LookupOption[]) => void;
-  getLookupLabel: (type: 'primaryStage' | 'primaryProjectType' | 'ownershipType', id: string) => string;
+  uomTypes: LookupOption[];
+  getLookupLabel: (type: 'primaryStage' | 'primaryProjectType' | 'ownershipType' | 'uomTypes', id: string) => string;
   // Dodge Mappings
   dodgeMappings: Record<string, DodgeMapping[]>;
   setDodgeMappings: (type: string, mappings: DodgeMapping[]) => void;
