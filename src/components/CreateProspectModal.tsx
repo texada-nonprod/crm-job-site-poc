@@ -330,6 +330,20 @@ export const CreateProspectModal = ({ open, onOpenChange, onSave }: CreateProspe
               <FieldError error={errors.companyName} />
             </div>
             <div>
+              <Label>Division <span className="text-destructive">*</span></Label>
+              <Select value={divisionId} onValueChange={setDivisionId}>
+                <SelectTrigger className={errors.division ? 'border-destructive' : ''}>
+                  <SelectValue placeholder="Select a division" />
+                </SelectTrigger>
+                <SelectContent>
+                  {DIVISIONS.map(div => (
+                    <SelectItem key={div.code} value={div.code}>{div.code} - {div.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FieldError error={errors.division} />
+            </div>
+            <div>
               <Label>Phone Number <span className="text-destructive">*</span></Label>
               <Input value={phone} onChange={e => handlePhoneChange(e.target.value, setPhone)}
                 placeholder={selectedCountry?.phoneMask || 'Phone number'}
