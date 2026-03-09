@@ -74,6 +74,9 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode }:
         setSelectedCompanyId('');
         setSelectedContactId('');
       }
+      setCampaignId(activity.campaignId?.toString() || '');
+      setIssueId(activity.issueId?.toString() || '');
+      setShowMoreFields(!!(activity.campaignId || activity.issueId));
     } else {
       setSalesRepId('');
       setTypeId('');
@@ -83,6 +86,9 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode }:
       setNotes('');
       setSelectedCompanyId('');
       setSelectedContactId('');
+      setCampaignId('');
+      setIssueId('');
+      setShowMoreFields(false);
     }
   }, [activity, mode, open]);
 
