@@ -250,7 +250,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       projectOwner: (p as any).projectOwner || { companyId: '', contactIds: [] },
       activities: (p as any).activities || [],
       notes: migrateNotes((p as any).notes || []),
+      projectCompanies: migrateProjectCompanies((p as any).siteCompanies || (p as any).projectCompanies || []),
       customerEquipment: ((p as any).customerEquipment || []).map((e: any) => typeof e === 'number' ? e : e.id) as number[],
+    })) as Project[];
+    
     setProjects(projectsWithMigratedData);
     setSalesReps(salesRepsData.content);
     setOpportunities(opportunitiesData.content.map((o: any) => ({
