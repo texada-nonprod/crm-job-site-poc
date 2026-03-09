@@ -65,7 +65,7 @@ export const ProjectTable = () => {
     getLookupLabel,
   } = useData();
   const { getStatusColorClasses } = useStatusColors();
-  const { isVisible } = useColumnVisibility();
+  const { visibleColumns, isVisible } = useColumnVisibility();
   const [sortColumn, setSortColumn] = useState<SortColumn | null>('status');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
@@ -179,7 +179,10 @@ export const ProjectTable = () => {
     },
   ];
 
-  const activeColumns = COLUMN_DEFS.filter((c) => isVisible(c.id));
+  // Respect user's column order from visibleColumns
+  const activeColumns = visibleColumns
+    .map(id => COLUMN_DEFS.find(c => c.id === id))
+    .filter((c): c is ColConfig => c !== undefined);
 
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
