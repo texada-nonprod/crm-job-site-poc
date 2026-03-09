@@ -815,8 +815,8 @@
                 { "id": 4, "content": "Quarry security is active 24/7. After-hours access requires advance coordination with quarry manager.", "createdAt": "2025-03-05T16:00:00.000Z", "createdById": 305, "tagIds": ["SECURITY"], "attachments": [] }
             ],
             "activities": [
-                { "id": 1016, "assigneeId": 305, "activityType": "Site Visit", "date": "2025-02-20T00:00:00.000Z", "description": "Equipment assessment for overburden removal" },
-                { "id": 1017, "assigneeId": 305, "activityType": "Meeting", "date": "2025-03-05T00:00:00.000Z", "description": "Quarterly review with quarry operations team" }
+                { "id": 1016, "statusId": 2, "salesRepId": 305, "typeId": "F", "date": "2025-02-20T08:00:00.000Z", "description": "Equipment assessment for overburden removal", "contactName": "Fred Flint", "notes": "Assessed current fleet. Recommending 390F excavator.", "issueId": 5, "customerId": "OWN-RKSLD" },
+                { "id": 1017, "statusId": 2, "salesRepId": 305, "typeId": "F", "date": "2025-03-05T10:00:00.000Z", "description": "Quarterly review with quarry operations team", "contactName": "Frank Thompson", "notes": "Reviewed safety metrics and equipment utilization rates." }
             ],
             "customerEquipment": [1036, 1037, 1038, 1039, 1040, 1041]
         }
