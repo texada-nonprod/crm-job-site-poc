@@ -158,6 +158,14 @@ const ProjectDetail = () => {
 
   const handleCreateActivity = () => {
     setSelectedActivity(undefined);
+    setFollowUpFromActivity(undefined);
+    setActivityModalMode('create');
+    setShowActivityModal(true);
+  };
+
+  const handleFollowUpActivity = (activity: Activity) => {
+    setSelectedActivity(undefined);
+    setFollowUpFromActivity(activity);
     setActivityModalMode('create');
     setShowActivityModal(true);
   };
