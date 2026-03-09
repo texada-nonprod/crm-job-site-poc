@@ -70,11 +70,11 @@ export const AddCustomerEquipmentModal = ({ open, onOpenChange, onSave, projectI
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[800px] overflow-hidden">
           <DialogHeader>
             <DialogTitle>Add Equipment to Project</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto">
             <div className="space-y-2">
               <Label>Company *</Label>
               <Select value={companyId} onValueChange={setCompanyId}>
