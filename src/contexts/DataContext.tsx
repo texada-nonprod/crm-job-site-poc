@@ -797,6 +797,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setPrimaryProjectTypes,
         ownershipTypes,
         setOwnershipTypes,
+        uomTypes,
         getLookupLabel,
         dodgeMappings,
         setDodgeMappings,
