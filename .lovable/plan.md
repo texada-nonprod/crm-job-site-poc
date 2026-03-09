@@ -1,39 +1,29 @@
 
 
-# Remove PAR (Planned Annual Rate) from Projects
+## Plan: Company & Contact Lookup in Activity Modal
 
-PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
+### Current Behavior
+The Activity modal has a free-text `contactName` input that's always visible. The `Activity` type already has an optional `customerId` field.
 
-## Changes
+### New Behavior
+1. Add an optional **Company** searchable dropdown populated from the current project's `projectCompanies`
+2. Only when a company is selected does the **Contact** field appear — as a searchable dropdown of that company's `companyContacts`
+3. Both fields are optional (the user can create an activity without associating a company/contact)
+4. Clearing the company clears the contact selection
 
-### 1. `src/types/index.ts`
-- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
-- Remove `showBehindPAR` from `Filters` interface
+### Changes
 
-### 2. `src/data/Project.json`
-- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
+**`src/components/ActivityModal.tsx`**:
+- Add state: `selectedCompanyId` (string | '') and `selectedContactId` (number | '')
+- Get the current project from context to access `projectCompanies`
+- Replace the free-text `contactName` input with:
+  - A searchable **Company** select (using Command/Combobox pattern with Popover) listing the project's companies by `companyName`
+  - Include a clear button to deselect
+- Conditionally render a searchable **Contact** select (same Combobox pattern) showing `companyContacts` for the selected company, displaying name and title
+- When company changes, reset contact selection
+- On submit: derive `contactName` from the selected contact's name (and store `customerId` from the selected company's `companyId`)
+- On edit: initialize company/contact from `activity.customerId` and `activity.contactName` by matching against project companies
+- Remove `contactName` from required field validation (now optional, only required if company is selected)
 
-### 3. `src/contexts/DataContext.tsx`
-- Remove `showBehindPAR: false` from default filters
-- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
-- Remove changelog entry referencing `plannedAnnualRate` (id 18)
-
-### 4. `src/components/FilterBar.tsx`
-- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
-
-### 5. `src/components/EditProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove their reset in `useEffect`
-- Remove the PAR validation check
-- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
-- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
-
-### 6. `src/components/CreateProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove PAR validation
-- Remove `plannedAnnualRate` and `parStartDate` from new project object
-- Remove the Planned Annual Rate input and PAR Start Date picker from the form
-
-### 7. `src/pages/ProjectDetail.tsx`
-- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
+**`src/types/index.ts`** — No changes needed; `customerId` and `contactName` already exist on `Activity`
 
