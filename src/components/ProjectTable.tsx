@@ -4,7 +4,8 @@ import { useData } from '@/contexts/DataContext';
 import { useStatusColors } from '@/hooks/useStatusColors';
 import { useColumnVisibility, ColumnId } from '@/hooks/useColumnVisibility';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Card } from '@/components/ui/card';
+import { Card, CardHeader } from '@/components/ui/card';
+import { ColumnVisibilitySelector } from '@/components/ColumnVisibilitySelector';
 import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { Project } from '@/types';
 
@@ -289,6 +290,12 @@ export const ProjectTable = () => {
 
   return (
     <Card>
+      <div className="flex items-center justify-between px-4 py-3 border-b">
+        <p className="text-sm text-muted-foreground">
+          Showing {sortedProjects.length} project{sortedProjects.length !== 1 ? 's' : ''}
+        </p>
+        <ColumnVisibilitySelector />
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
