@@ -640,17 +640,15 @@ const ProjectDetail = () => {
             <h2 className="text-lg font-semibold">Opportunities</h2>
             <div className="flex gap-2">
               <Button
-                variant="outline"
                 size="sm"
                 onClick={() => setShowAssociateModal(true)}>
-                
                 <LinkIcon className="h-4 w-4 mr-2" />
                 Associate Existing
               </Button>
               <Button
+                variant="outline"
                 size="sm"
                 onClick={() => setShowCreateModal(true)}>
-                
                 <Plus className="h-4 w-4 mr-2" />
                 Create New
               </Button>
