@@ -445,6 +445,8 @@ export const ProjectTable = () => {
           </div>
         </div>
       </div>
+
+      <FilterModal open={showFilterModal} onOpenChange={setShowFilterModal} />
     </Card>
   );
 };
