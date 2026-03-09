@@ -329,11 +329,7 @@
             "activities": [
                 { "id": 1007, "assigneeId": 292, "activityType": "Site Visit", "date": "2024-11-15T00:00:00.000Z", "description": "Final walkthrough and project closeout" }
             ],
-            "customerEquipment": [
-                { "id": 1, "companyId": "1764465", "equipmentType": "Compact Track Loader", "make": "Bobcat", "model": "T595", "year": 2022, "serialNumber": "BCT595NR211", "hours": 1400 },
-                { "id": 2, "companyId": "1019550", "equipmentType": "Mini Excavator", "make": "Kubota", "model": "KX040", "year": 2021, "serialNumber": "KBTKX040ML2", "hours": 2200 },
-                { "id": 3, "companyId": "1764465", "equipmentType": "Stump Grinder", "make": "Vermeer", "model": "SC60TX", "year": 2020, "serialNumber": "VRMSC60TXA1", "hours": 800 }
-            ]
+            "customerEquipment": [1013, 1014, 1015]
         },
         {
             "id": 500105,
