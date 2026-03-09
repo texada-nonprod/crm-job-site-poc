@@ -69,6 +69,10 @@ interface DataContextType {
   getFilteredProjects: () => Project[];
   getTotalPipelineRevenue: () => number;
   getRevenueByType: () => { typeId: number; typeName: string; revenue: number }[];
+  getWonRevenue: () => number;
+  getPipelineRevenue: () => number;
+  getWonRevenueByType: () => { typeId: number; typeName: string; revenue: number }[];
+  getPipelineRevenueByType: () => { typeId: number; typeName: string; revenue: number }[];
   getCompanyById: (companyId: string) => ProjectCompany | undefined;
   getAllKnownCompanies: () => ProjectCompany[];
   // Lookups
