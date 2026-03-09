@@ -1,39 +1,22 @@
 
 
-# Remove PAR (Planned Annual Rate) from Projects
+## Add Date-Time Picker with Live Status Badge to Activity Modal
 
-PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
+### Changes to `src/components/ActivityModal.tsx`
 
-## Changes
+1. **Replace date-only picker with date+time picker**:
+   - Keep the Calendar inside the Popover for date selection
+   - Add an `<Input type="time">` below the Calendar inside the same Popover
+   - Store time separately as a string (e.g. `"14:30"`), merge with calendar date into a single `Date` object on every change
+   - Update the trigger button display format from `"PPP"` to `"MMM d, yyyy 'at' h:mm a"`
 
-### 1. `src/types/index.ts`
-- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
-- Remove `showBehindPAR` from `Filters` interface
+2. **Add live status badge**:
+   - Compute status reactively: `const status = date ? (isPast(date) ? 'Completed' : 'Outstanding') : null`
+   - Render a read-only `Badge` next to the "Date & Time" label
+   - Green (`bg-emerald-100 text-emerald-700`) for Completed, amber (`bg-amber-100 text-amber-700`) for Outstanding
+   - Updates instantly on any date or time change — no user interaction needed beyond picking a date/time
 
-### 2. `src/data/Project.json`
-- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
+3. **Import `Badge` from `@/components/ui/badge`** and `isPast` from `date-fns`
 
-### 3. `src/contexts/DataContext.tsx`
-- Remove `showBehindPAR: false` from default filters
-- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
-- Remove changelog entry referencing `plannedAnnualRate` (id 18)
-
-### 4. `src/components/FilterBar.tsx`
-- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
-
-### 5. `src/components/EditProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove their reset in `useEffect`
-- Remove the PAR validation check
-- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
-- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
-
-### 6. `src/components/CreateProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove PAR validation
-- Remove `plannedAnnualRate` and `parStartDate` from new project object
-- Remove the Planned Annual Rate input and PAR Start Date picker from the form
-
-### 7. `src/pages/ProjectDetail.tsx`
-- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
+No other files need changes — this is purely a modal UI enhancement.
 
