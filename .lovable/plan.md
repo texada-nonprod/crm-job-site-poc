@@ -1,32 +1,39 @@
 
 
-## Fix: Column Visibility Not Syncing Between Selector and Table
+# Remove PAR (Planned Annual Rate) from Projects
 
-### Root Cause
-`useColumnVisibility()` uses `useState` internally. Each component calling it (`ColumnVisibilitySelector` and `ProjectTable`) gets its own independent state copy. Changes in one don't propagate to the other — only localStorage is updated, which only takes effect on page reload.
+PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
 
-### Solution
-Lift the column visibility state into a React Context provider so all consumers share a single state instance.
+## Changes
 
-### Changes
+### 1. `src/types/index.ts`
+- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
+- Remove `showBehindPAR` from `Filters` interface
 
-**New file: `src/contexts/ColumnVisibilityContext.tsx`**
-- Create a `ColumnVisibilityProvider` that wraps the existing hook logic
-- Expose `visibleColumns`, `toggleColumn`, `isVisible`, `moveColumn`, `setVisibleColumns` via context
-- Export a `useColumnVisibility()` hook that reads from context (replacing the current standalone hook)
+### 2. `src/data/Project.json`
+- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
 
-**Modified: `src/hooks/useColumnVisibility.ts`**
-- Keep type exports (`ColumnId`, `ALL_COLUMN_IDS`) and the storage/default constants
-- Remove the hook itself (logic moves to context)
-- Re-export `useColumnVisibility` from the context module for backward compatibility
+### 3. `src/contexts/DataContext.tsx`
+- Remove `showBehindPAR: false` from default filters
+- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
+- Remove changelog entry referencing `plannedAnnualRate` (id 18)
 
-**Modified: `src/pages/ProjectList.tsx`**
-- Wrap the page content with `<ColumnVisibilityProvider>` so both `ColumnVisibilitySelector` and `ProjectTable` share state
+### 4. `src/components/FilterBar.tsx`
+- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
 
-**No changes needed to:**
-- `ColumnVisibilitySelector.tsx` — imports stay the same
-- `ProjectTable.tsx` — imports stay the same
+### 5. `src/components/EditProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove their reset in `useEffect`
+- Remove the PAR validation check
+- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
+- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
 
-### Technical Detail
-The context provider will hold the `useState` and `useCallback` logic currently in the hook. Both the selector popover and the table will consume the same context, so toggling/reordering columns updates both immediately without requiring a page refresh.
+### 6. `src/components/CreateProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove PAR validation
+- Remove `plannedAnnualRate` and `parStartDate` from new project object
+- Remove the Planned Annual Rate input and PAR Start Date picker from the form
+
+### 7. `src/pages/ProjectDetail.tsx`
+- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
 
