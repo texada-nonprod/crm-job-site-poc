@@ -7,6 +7,7 @@ import opportunitiesData from '@/data/Opportunity.json';
 import opportunityStagesData from '@/data/OpportunityStages.json';
 import opportunityTypesData from '@/data/OpportunityTypes.json';
 import lookupsData from '@/data/Lookups.json';
+import companyEquipmentData from '@/data/CompanyEquipment.json';
 
 // Division constants
 export const DIVISIONS = [
