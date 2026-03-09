@@ -807,12 +807,21 @@ const ProjectDetail = () => {
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Companies</h2>
-            <Button
-              size="sm"
-              onClick={() => setShowAssociateCompanyModal(true)}>
-              <LinkIcon className="h-4 w-4 mr-2" />
-              Associate Existing
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowCreateProspectModal(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create New
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => setShowAssociateCompanyModal(true)}>
+                <LinkIcon className="h-4 w-4 mr-2" />
+                Associate Existing
+              </Button>
+            </div>
           </div>
           {project.projectCompanies.filter((c) => c.roleId !== 'OWNER').length === 0 ?
           <p className="text-center text-muted-foreground py-8">
