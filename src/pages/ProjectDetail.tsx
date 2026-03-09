@@ -806,15 +806,16 @@ const ProjectDetail = () => {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Activities</h2>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleCreateActivity}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create New
-              </Button>
               <Button
+                variant="outline"
                 size="sm"
                 onClick={() => setShowAssociateActivityModal(true)}>
                 <LinkIcon className="h-4 w-4 mr-2" />
                 Associate Existing
+              </Button>
+              <Button size="sm" onClick={handleCreateActivity}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create New
               </Button>
             </div>
           </div>
