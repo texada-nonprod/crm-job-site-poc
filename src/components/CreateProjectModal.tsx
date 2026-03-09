@@ -145,7 +145,7 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
       bidDate: bidDate ? format(bidDate, 'yyyy-MM-dd') : undefined,
       targetStartDate: targetStartDate ? format(targetStartDate, 'yyyy-MM-dd') : undefined,
       targetCompletionDate: targetCompletionDate ? format(targetCompletionDate, 'yyyy-MM-dd') : undefined,
-      dodgeProject,
+      externalReference,
     });
 
     toast({ title: "Success", description: `Project "${name.trim()}" created successfully.` });
