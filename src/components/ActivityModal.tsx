@@ -180,7 +180,7 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode, f
       customerId: selectedCompanyId || undefined,
       campaignId: campaignId && campaignId !== 'none' ? parseInt(campaignId) : undefined,
       issueId: issueId && issueId !== 'none' ? parseInt(issueId) : undefined,
-      previousRelatedActivityId: followUpFrom?.id
+      previousRelatedActivityId: followUpFrom?.id || (linkedActivityId && linkedActivityId !== 'none' ? parseInt(linkedActivityId) : undefined)
     };
 
     if (mode === 'create') {
