@@ -1,23 +1,39 @@
 
 
-## Plan: Add Division Dropdown to Create Prospect Modal
+# Remove PAR (Planned Annual Rate) from Projects
 
-### Problem
-Creating a prospect requires selecting a division, but the modal currently has no division field.
+PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
 
-### Changes
+## Changes
 
-**`src/components/CreateProspectModal.tsx`**
-1. Import `DIVISIONS` from `@/contexts/DataContext` and `Select`/`SelectContent`/`SelectItem`/`SelectTrigger`/`SelectValue` from the UI select component.
-2. Add `divisionId` state (initially `''`).
-3. Add a Division dropdown in the Company Information section (alongside Company Name and Phone), using the same `DIVISIONS` array as the Create Opportunity modal (`G`, `C`, `P`, `R`, `S`, `V`, `X`). Display as `"G - General Line"` format.
-4. Add `divisionId` validation — required field, show error if empty on submit.
-5. Add `divisionId` to `ProspectData` interface and include it in the `onSave` payload.
-6. Reset `divisionId` in `resetForm`.
+### 1. `src/types/index.ts`
+- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
+- Remove `showBehindPAR` from `Filters` interface
 
-**`src/contexts/DataContext.tsx`** (or callers)
-- No changes needed — `DIVISIONS` is already exported.
+### 2. `src/data/Project.json`
+- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
 
-### Layout
-The Company Information grid becomes 3 fields. On desktop they'll sit in the 2-col grid; the division dropdown will flow naturally as a third item. Alternatively, place it on its own row or adjust to a 3-col grid on larger screens — keeping the existing `sm:grid-cols-2` is simplest and the division field will wrap to the next row.
+### 3. `src/contexts/DataContext.tsx`
+- Remove `showBehindPAR: false` from default filters
+- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
+- Remove changelog entry referencing `plannedAnnualRate` (id 18)
+
+### 4. `src/components/FilterBar.tsx`
+- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
+
+### 5. `src/components/EditProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove their reset in `useEffect`
+- Remove the PAR validation check
+- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
+- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
+
+### 6. `src/components/CreateProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove PAR validation
+- Remove `plannedAnnualRate` and `parStartDate` from new project object
+- Remove the Planned Annual Rate input and PAR Start Date picker from the form
+
+### 7. `src/pages/ProjectDetail.tsx`
+- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
 

@@ -4,11 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { DIVISIONS } from '@/contexts/DataContext';
 import { countries, pinnedCountryCodes, getCountryByCode, type Country } from '@/data/Countries';
 import { fetchStatesProvinces, hasStatesProvinces, type StateProvince } from '@/data/StatesProvinces';
 
@@ -21,6 +23,7 @@ interface CreateProspectModalProps {
 export interface ProspectData {
   companyName: string;
   phone: string;
+  divisionId: string;
   address1: string;
   address2: string;
   address3: string;
@@ -150,6 +153,7 @@ export const CreateProspectModal = ({ open, onOpenChange, onSave }: CreateProspe
   // Company
   const [companyName, setCompanyName] = useState('');
   const [phone, setPhone] = useState('');
+  const [divisionId, setDivisionId] = useState('');
 
   // Address
   const [address1, setAddress1] = useState('');
@@ -230,6 +234,7 @@ export const CreateProspectModal = ({ open, onOpenChange, onSave }: CreateProspe
     if (!submitted) return {};
     const e: Record<string, string> = {};
     if (!companyName.trim()) e.companyName = 'Required';
+    if (!divisionId) e.division = 'Required';
     if (!phone.trim()) e.phone = 'Required';
     else if (hasMaskedCountry && !validatePhone(phone, countryCode)) e.phone = 'Invalid format';
     if (!addressValid) e.address = 'At least one address line is required';
@@ -247,10 +252,10 @@ export const CreateProspectModal = ({ open, onOpenChange, onSave }: CreateProspe
     else if (!validateEmail(email)) e.email = 'Invalid email';
     if (businessPhone.trim() && hasMaskedCountry && !validatePhone(businessPhone, countryCode)) e.businessPhone = 'Invalid format';
     return e;
-  }, [submitted, companyName, phone, addressValid, city, countryCode, stateCode, zipCode, firstName, lastName, title, mobilePhone, email, businessPhone, hasMaskedCountry, isStateRequired]);
+  }, [submitted, companyName, divisionId, phone, addressValid, city, countryCode, stateCode, zipCode, firstName, lastName, title, mobilePhone, email, businessPhone, hasMaskedCountry, isStateRequired]);
 
   const resetForm = useCallback(() => {
-    setCompanyName(''); setPhone('');
+    setCompanyName(''); setPhone(''); setDivisionId('');
     setAddress1(''); setAddress2(''); setAddress3('');
     setCity(''); setCountryCode(''); setStateCode(''); setZipCode('');
     setFirstName(''); setLastName(''); setTitle('');
@@ -261,7 +266,7 @@ export const CreateProspectModal = ({ open, onOpenChange, onSave }: CreateProspe
   const handleSubmit = () => {
     setSubmitted(true);
     // Check required fields
-    const hasErrors = !companyName.trim() || !phone.trim() || !addressValid || !city.trim() || !countryCode ||
+    const hasErrors = !companyName.trim() || !divisionId || !phone.trim() || !addressValid || !city.trim() || !countryCode ||
       (isStateRequired && !stateCode) || !zipCode.trim() || !firstName.trim() || !lastName.trim() ||
       !title.trim() || !mobilePhone.trim() || !email.trim() || !validateEmail(email) ||
       (hasMaskedCountry && !validatePhone(phone, countryCode)) ||
@@ -277,6 +282,7 @@ export const CreateProspectModal = ({ open, onOpenChange, onSave }: CreateProspe
     onSave({
       companyName: companyName.trim(),
       phone,
+      divisionId,
       address1: address1.trim(),
       address2: address2.trim(),
       address3: address3.trim(),
@@ -322,6 +328,20 @@ export const CreateProspectModal = ({ open, onOpenChange, onSave }: CreateProspe
               <Label>Company Name <span className="text-destructive">*</span></Label>
               <Input value={companyName} onChange={e => setCompanyName(e.target.value)} placeholder="Company name" className={errors.companyName ? 'border-destructive' : ''} />
               <FieldError error={errors.companyName} />
+            </div>
+            <div>
+              <Label>Division <span className="text-destructive">*</span></Label>
+              <Select value={divisionId} onValueChange={setDivisionId}>
+                <SelectTrigger className={errors.division ? 'border-destructive' : ''}>
+                  <SelectValue placeholder="Select a division" />
+                </SelectTrigger>
+                <SelectContent>
+                  {DIVISIONS.map(div => (
+                    <SelectItem key={div.code} value={div.code}>{div.code} - {div.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FieldError error={errors.division} />
             </div>
             <div>
               <Label>Phone Number <span className="text-destructive">*</span></Label>
