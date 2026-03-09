@@ -80,7 +80,7 @@ const ProjectDetail = () => {
   const [actSortDirection, setActSortDirection] = useState<'asc' | 'desc' | null>('desc');
 
   // Sort state for Equipment table
-  const [eqSortColumn, setEqSortColumn] = useState<'type' | 'make' | 'model' | 'year' | 'serial' | 'hours' | 'ownership' | null>(null);
+  const [eqSortColumn, setEqSortColumn] = useState<'type' | 'make' | 'model' | 'year' | 'serial' | 'smu' | 'ownership' | null>(null);
   const [eqSortDirection, setEqSortDirection] = useState<'asc' | 'desc' | null>(null);
 
   const project = projects.find((p) => p.id === parseInt(id || '0'));
