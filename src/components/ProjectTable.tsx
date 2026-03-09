@@ -139,11 +139,18 @@ export const ProjectTable = () => {
       ),
     },
     {
-      id: 'revenue',
-      sortKey: 'revenue',
-      header: 'Revenue',
+      id: 'wonRevenue',
+      sortKey: 'wonRevenue',
+      header: 'Won Revenue',
       align: 'right',
-      render: (p, h) => `$${Math.round(h.calculateProjectRevenue(p)).toLocaleString('en-US')}`,
+      render: (p, h) => `$${Math.round(h.calculateProjectWonRevenue(p)).toLocaleString('en-US')}`,
+    },
+    {
+      id: 'pipelineRevenue',
+      sortKey: 'pipelineRevenue',
+      header: 'Pipeline Revenue',
+      align: 'right',
+      render: (p, h) => `$${Math.round(h.calculateProjectPipelineRevenue(p)).toLocaleString('en-US')}`,
     },
     {
       id: 'valuation',
