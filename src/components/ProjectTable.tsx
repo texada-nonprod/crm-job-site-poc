@@ -97,7 +97,8 @@ export const ProjectTable = () => {
   const helpers: RenderHelpers = {
     getUserNames,
     getCompanyById: getCompanyById as any,
-    calculateProjectRevenue,
+    calculateProjectWonRevenue,
+    calculateProjectPipelineRevenue,
     getStatusColorClasses,
     getLookupLabel,
     formatDate,
