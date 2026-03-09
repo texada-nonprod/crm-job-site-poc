@@ -196,169 +196,126 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode, f
         <DialogHeader>
           <DialogTitle>{mode === 'create' ? 'Create New Activity' : 'Edit Activity'}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto px-1 py-1">
-          {followUpFrom && mode === 'create' && (
-            <div className="flex items-center gap-2 rounded-md border border-border bg-muted/50 px-3 py-2 text-sm">
-              <Link2 className="h-4 w-4 text-muted-foreground shrink-0" />
-              <span className="text-muted-foreground">Follow-up to:</span>
-              <span className="font-medium truncate">{followUpFrom.description}</span>
-            </div>
-          )}
-          <div className="space-y-2">
-            <Label htmlFor="salesRep">Sales Rep</Label>
-            <Select value={salesRepId} onValueChange={setSalesRepId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select sales rep" />
-              </SelectTrigger>
-              <SelectContent>
-                {users.map(user => (
-                  <SelectItem key={user.id} value={user.id.toString()}>
-                    {user.lastName}, {user.firstName}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="typeId">Activity Type</Label>
-            <Select value={typeId} onValueChange={setTypeId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                {ACTIVITY_TYPES.map(type => (
-                  <SelectItem key={type.id} value={type.id}>
-                    {type.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label>Date & Time</Label>
-              {status && (
-                <Badge
-                  variant="outline"
-                  className={cn(
-                    "text-xs pointer-events-none",
-                    status === 'Completed'
-                      ? "border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
-                      : "border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-300"
-                  )}
-                >
-                  {status}
-                </Badge>
-              )}
-            </div>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "MMM d, yyyy 'at' h:mm a") : "Select date & time"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={handleDateSelect}
-                  initialFocus
-                />
-                <div className="border-t border-border px-3 py-2">
-                  <Label className="text-xs text-muted-foreground">Time</Label>
-                  <Input
-                    type="time"
-                    value={timeValue}
-                    onChange={(e) => handleTimeChange(e.target.value)}
-                    className="mt-1 h-8"
-                  />
-                </div>
-              </PopoverContent>
-            </Popover>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Company (optional)</Label>
-            <Popover open={companyPopoverOpen} onOpenChange={setCompanyPopoverOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  className={cn("w-full justify-between font-normal", !selectedCompanyId && "text-muted-foreground")}
-                >
-                  {selectedCompany?.companyName || "Select company..."}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
-                <Command>
-                  <CommandInput placeholder="Search companies..." />
-                  <CommandList>
-                    <CommandEmpty>No companies found.</CommandEmpty>
-                    <CommandGroup>
-                      {projectCompanies.map(company => (
-                        <CommandItem
-                          key={company.companyId}
-                          value={company.companyName}
-                          onSelect={() => handleCompanyChange(company.companyId)}
-                        >
-                          <Check className={cn("mr-2 h-4 w-4", selectedCompanyId === company.companyId ? "opacity-100" : "opacity-0")} />
-                          <span>{company.companyName}</span>
-                          <span className="ml-auto text-xs text-muted-foreground">{company.roleDescription}</span>
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-            {selectedCompanyId && (
-              <Button type="button" variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={() => { setSelectedCompanyId(''); setSelectedContactId(''); }}>
-                <X className="h-3 w-3 mr-1" /> Clear company
-              </Button>
+        
+        <div className="flex-1 overflow-y-auto px-1 py-1">
+          <div className="space-y-4">
+            {followUpFrom && mode === 'create' && (
+              <div className="flex items-center gap-2 rounded-md border border-border bg-muted/50 px-3 py-2 text-sm">
+                <Link2 className="h-4 w-4 text-muted-foreground shrink-0" />
+                <span className="text-muted-foreground">Follow-up to:</span>
+                <span className="font-medium truncate">{followUpFrom.description}</span>
+              </div>
             )}
-          </div>
-
-          {selectedCompanyId && companyContacts.length > 0 && (
             <div className="space-y-2">
-              <Label>Contact</Label>
-              <Popover open={contactPopoverOpen} onOpenChange={setContactPopoverOpen}>
+              <Label htmlFor="salesRep">Sales Rep</Label>
+              <Select value={salesRepId} onValueChange={setSalesRepId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select sales rep" />
+                </SelectTrigger>
+                <SelectContent>
+                  {users.map(user => (
+                    <SelectItem key={user.id} value={user.id.toString()}>
+                      {user.lastName}, {user.firstName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="typeId">Activity Type</Label>
+              <Select value={typeId} onValueChange={setTypeId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {ACTIVITY_TYPES.map(type => (
+                    <SelectItem key={type.id} value={type.id}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label>Date & Time</Label>
+                {status && (
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      "text-xs pointer-events-none",
+                      status === 'Completed'
+                        ? "border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
+                        : "border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-300"
+                    )}
+                  >
+                    {status}
+                  </Badge>
+                )}
+              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date ? format(date, "MMM d, yyyy 'at' h:mm a") : "Select date & time"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={handleDateSelect}
+                    initialFocus
+                  />
+                  <div className="border-t border-border px-3 py-2">
+                    <Label className="text-xs text-muted-foreground">Time</Label>
+                    <Input
+                      type="time"
+                      value={timeValue}
+                      onChange={(e) => handleTimeChange(e.target.value)}
+                      className="mt-1 h-8"
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Company (optional)</Label>
+              <Popover open={companyPopoverOpen} onOpenChange={setCompanyPopoverOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     role="combobox"
-                    className={cn("w-full justify-between font-normal", !selectedContactId && "text-muted-foreground")}
+                    className={cn("w-full justify-between font-normal", !selectedCompanyId && "text-muted-foreground")}
                   >
-                    {selectedContactId ? companyContacts.find(c => c.id === selectedContactId)?.name || "Select contact..." : "Select contact..."}
+                    {selectedCompany?.companyName || "Select company..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
                   <Command>
-                    <CommandInput placeholder="Search contacts..." />
+                    <CommandInput placeholder="Search companies..." />
                     <CommandList>
-                      <CommandEmpty>No contacts found.</CommandEmpty>
+                      <CommandEmpty>No companies found.</CommandEmpty>
                       <CommandGroup>
-                        {companyContacts.map(contact => (
+                        {projectCompanies.map(company => (
                           <CommandItem
-                            key={contact.id}
-                            value={contact.name}
-                            onSelect={() => { setSelectedContactId(contact.id); setContactPopoverOpen(false); }}
+                            key={company.companyId}
+                            value={company.companyName}
+                            onSelect={() => handleCompanyChange(company.companyId)}
                           >
-                            <Check className={cn("mr-2 h-4 w-4", selectedContactId === contact.id ? "opacity-100" : "opacity-0")} />
-                            <div>
-                              <div>{contact.name}</div>
-                              {contact.title && <div className="text-xs text-muted-foreground">{contact.title}</div>}
-                            </div>
+                            <Check className={cn("mr-2 h-4 w-4", selectedCompanyId === company.companyId ? "opacity-100" : "opacity-0")} />
+                            <span>{company.companyName}</span>
+                            <span className="ml-auto text-xs text-muted-foreground">{company.roleDescription}</span>
                           </CommandItem>
                         ))}
                       </CommandGroup>
@@ -366,76 +323,124 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode, f
                   </Command>
                 </PopoverContent>
               </Popover>
+              {selectedCompanyId && (
+                <Button type="button" variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={() => { setSelectedCompanyId(''); setSelectedContactId(''); }}>
+                  <X className="h-3 w-3 mr-1" /> Clear company
+                </Button>
+              )}
             </div>
-          )}
 
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Input
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter activity description"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
-            <Textarea
-              id="notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Enter notes"
-              rows={2}
-            />
-          </div>
-
-          <div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="flex items-center gap-1 text-xs text-muted-foreground px-0"
-              onClick={() => setShowMoreFields(!showMoreFields)}
-            >
-              {showMoreFields ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-              More fields
-            </Button>
-            {showMoreFields && (
-              <div className="mt-2 space-y-4">
-                <div className="space-y-2">
-                  <Label>Campaign</Label>
-                  <Select value={campaignId} onValueChange={setCampaignId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="None" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
-                      {campaignsData.content.map(c => (
-                        <SelectItem key={c.id} value={c.id.toString()}>{c.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Issue</Label>
-                  <Select value={issueId} onValueChange={setIssueId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="None" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
-                      {filteredIssues.map(issue => (
-                        <SelectItem key={issue.id} value={issue.id.toString()}>{issue.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+            {selectedCompanyId && companyContacts.length > 0 && (
+              <div className="space-y-2">
+                <Label>Contact</Label>
+                <Popover open={contactPopoverOpen} onOpenChange={setContactPopoverOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn("w-full justify-between font-normal", !selectedContactId && "text-muted-foreground")}
+                    >
+                      {selectedContactId ? companyContacts.find(c => c.id === selectedContactId)?.name || "Select contact..." : "Select contact..."}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                    <Command>
+                      <CommandInput placeholder="Search contacts..." />
+                      <CommandList>
+                        <CommandEmpty>No contacts found.</CommandEmpty>
+                        <CommandGroup>
+                          {companyContacts.map(contact => (
+                            <CommandItem
+                              key={contact.id}
+                              value={contact.name}
+                              onSelect={() => { setSelectedContactId(contact.id); setContactPopoverOpen(false); }}
+                            >
+                              <Check className={cn("mr-2 h-4 w-4", selectedContactId === contact.id ? "opacity-100" : "opacity-0")} />
+                              <div>
+                                <div>{contact.name}</div>
+                                {contact.title && <div className="text-xs text-muted-foreground">{contact.title}</div>}
+                              </div>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
             )}
-          </div>
 
-          <div className="flex justify-end gap-2 pt-4">
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Input
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Enter activity description"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="notes">Notes</Label>
+              <Textarea
+                id="notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Enter notes"
+                rows={2}
+              />
+            </div>
+
+            <div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-1 text-xs text-muted-foreground px-0"
+                onClick={() => setShowMoreFields(!showMoreFields)}
+              >
+                {showMoreFields ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                More fields
+              </Button>
+              {showMoreFields && (
+                <div className="mt-2 space-y-4">
+                  <div className="space-y-2">
+                    <Label>Campaign</Label>
+                    <Select value={campaignId} onValueChange={setCampaignId}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="None" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">None</SelectItem>
+                        {campaignsData.content.map(c => (
+                          <SelectItem key={c.id} value={c.id.toString()}>{c.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Issue</Label>
+                    <Select value={issueId} onValueChange={setIssueId}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="None" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">None</SelectItem>
+                        {filteredIssues.map(issue => (
+                          <SelectItem key={issue.id} value={issue.id.toString()}>{issue.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="flex justify-end gap-2 pt-4 border-t border-border bg-background">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
