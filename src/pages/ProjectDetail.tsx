@@ -23,6 +23,7 @@ import { AssociateActivityModal } from '@/components/AssociateActivityModal';
 import { NotesSection } from '@/components/NotesSection';
 import { ProjectCompaniesTable } from '@/components/ProjectCompaniesTable';
 import { AddCustomerEquipmentModal } from '@/components/AddCustomerEquipmentModal';
+import { CreateProspectModal, type ProspectData } from '@/components/CreateProspectModal';
 import { Input } from '@/components/ui/input';
 import { MultiSelectFilter } from '@/components/MultiSelectFilter';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
