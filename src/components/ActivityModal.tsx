@@ -197,6 +197,13 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode, f
           <DialogTitle>{mode === 'create' ? 'Create New Activity' : 'Edit Activity'}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {followUpFrom && mode === 'create' && (
+            <div className="flex items-center gap-2 rounded-md border border-border bg-muted/50 px-3 py-2 text-sm">
+              <Link2 className="h-4 w-4 text-muted-foreground shrink-0" />
+              <span className="text-muted-foreground">Follow-up to:</span>
+              <span className="font-medium truncate">{followUpFrom.description}</span>
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="salesRep">Sales Rep</Label>
             <Select value={salesRepId} onValueChange={setSalesRepId}>

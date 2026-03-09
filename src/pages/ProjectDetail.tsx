@@ -1153,7 +1153,8 @@ const ProjectDetail = () => {
         onOpenChange={setShowActivityModal}
         projectId={project.id}
         activity={selectedActivity}
-        mode={activityModalMode} />
+        mode={activityModalMode}
+        followUpFrom={followUpFromActivity} />
       
 
       <AlertDialog open={showDeleteActivityDialog} onOpenChange={setShowDeleteActivityDialog}>
