@@ -846,9 +846,9 @@ const ProjectDetail = () => {
               <TableBody>
                 {sortedActivities.map((activity) =>
               <TableRow key={activity.id}>
-                    <TableCell className="font-medium">{getUserName(activity.assigneeId)}</TableCell>
+                    <TableCell className="font-medium">{getSalesRepName(activity.salesRepId)}</TableCell>
                     <TableCell>
-                      <Badge variant="outline">{activity.activityType}</Badge>
+                      <Badge variant="outline">{getActivityTypeLabel(activity.typeId)}</Badge>
                     </TableCell>
                     <TableCell className="text-sm">
                       {new Date(activity.date).toLocaleDateString()}

@@ -611,7 +611,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       prev.map(project => {
         if (project.id === projectId) {
           const act = project.activities.find(a => a.id === activityId);
-          if (act) desc = act.activityType;
+          if (act) desc = act.typeId;
           return { ...project, activities: project.activities.filter(a => a.id !== activityId) };
         }
         return project;
