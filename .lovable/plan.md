@@ -1,39 +1,45 @@
 
 
-# Remove PAR (Planned Annual Rate) from Projects
+## Update Activity Example Data to Match New Spec
 
-PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
+The current activity records in `Project.json` use the old shape (`assigneeId`, `activityType`). They need to be updated to the new API-aligned shape with all required fields populated.
 
-## Changes
+### Field Mapping
 
-### 1. `src/types/index.ts`
-- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
-- Remove `showBehindPAR` from `Filters` interface
+| Old field | New field | Notes |
+|---|---|---|
+| `assigneeId` | `salesRepId` | Same IDs, rename only |
+| `activityType` | `typeId` | Map: "Site Visit"→"F", "Phone Call"→"P", "Email"→"E", "Meeting"→"F", "Follow-up"→"P" |
+| `date` | `date` | Add realistic times instead of `T00:00:00.000Z` |
+| `description` | `description` | Keep as-is |
+| _(new)_ | `statusId` | 2 (Completed) for past dates, 1 (Outstanding) for future |
+| _(new)_ | `contactName` | Pick a plausible contact from the project's companies |
+| _(new)_ | `notes` | Add a short note per activity |
 
-### 2. `src/data/Project.json`
-- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
+### What changes
 
-### 3. `src/contexts/DataContext.tsx`
-- Remove `showBehindPAR: false` from default filters
-- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
-- Remove changelog entry referencing `plannedAnnualRate` (id 18)
+**`src/data/Project.json`** — Update all ~17 activity records across 10 projects. Each activity gets the new shape, e.g.:
 
-### 4. `src/components/FilterBar.tsx`
-- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
+```json
+{
+  "id": 1001,
+  "statusId": 2,
+  "salesRepId": 313,
+  "typeId": "F",
+  "date": "2025-01-20T09:30:00.000Z",
+  "description": "Initial site walkthrough with project manager",
+  "contactName": "Michael Ross",
+  "notes": "Reviewed crane placement options and staging area layout."
+}
+```
 
-### 5. `src/components/EditProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove their reset in `useEffect`
-- Remove the PAR validation check
-- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
-- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
+Some activities will get optional fields (`campaignId`, `issueId`, `customerId`) sprinkled in for realism. One pair will demonstrate the `previousRelatedActivityId` linkage (a completed activity with a follow-up outstanding one).
 
-### 6. `src/components/CreateProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove PAR validation
-- Remove `plannedAnnualRate` and `parStartDate` from new project object
-- Remove the Planned Annual Rate input and PAR Start Date picker from the form
+**`src/types/index.ts`** — Update `Activity` interface to match (as previously planned).
 
-### 7. `src/pages/ProjectDetail.tsx`
-- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
+### New lookup data files
+
+- **`src/data/ActivityTypes.json`** — E, P, F, Q
+- **`src/data/Campaigns.json`** — 3 dealer campaigns
+- **`src/data/Issues.json`** — Customer-scoped issues with `customerId` field
 
