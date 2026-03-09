@@ -61,6 +61,7 @@ const ProjectDetail = () => {
   const [showDeleteEquipmentDialog, setShowDeleteEquipmentDialog] = useState(false);
   const [equipmentToDelete, setEquipmentToDelete] = useState<number | null>(null);
   const [equipmentSearch, setEquipmentSearch] = useState('');
+  const [followUpFromActivity, setFollowUpFromActivity] = useState<Activity | undefined>(undefined);
 
   // Sort state for Opportunities table
   const [oppSortColumn, setOppSortColumn] = useState<'type' | 'description' | 'division' | 'stage' | 'salesRep' | 'estClose' | 'revenue' | null>('stage');
