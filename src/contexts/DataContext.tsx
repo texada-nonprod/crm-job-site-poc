@@ -78,7 +78,8 @@ interface DataContextType {
   setPrimaryProjectTypes: (items: LookupOption[]) => void;
   ownershipTypes: LookupOption[];
   setOwnershipTypes: (items: LookupOption[]) => void;
-  getLookupLabel: (type: 'primaryStage' | 'primaryProjectType' | 'ownershipType', id: string) => string;
+  uomTypes: LookupOption[];
+  getLookupLabel: (type: 'primaryStage' | 'primaryProjectType' | 'ownershipType' | 'uomTypes', id: string) => string;
   // Dodge Mappings
   dodgeMappings: Record<string, DodgeMapping[]>;
   setDodgeMappings: (type: string, mappings: DodgeMapping[]) => void;
@@ -170,6 +171,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [primaryStages, setPrimaryStagesState] = useState<LookupOption[]>(lookupsData.primaryStages);
   const [primaryProjectTypes, setPrimaryProjectTypesState] = useState<LookupOption[]>(lookupsData.primaryProjectTypes);
   const [ownershipTypes, setOwnershipTypesState] = useState<LookupOption[]>(lookupsData.ownershipTypes);
+  const [uomTypes] = useState<LookupOption[]>(lookupsData.uomTypes || []);
   const [dodgeMappings, setDodgeMappingsState] = useState<Record<string, DodgeMapping[]>>({});
 
   // Current user and change log
@@ -364,8 +366,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
-  const getLookupLabel = (type: 'primaryStage' | 'primaryProjectType' | 'ownershipType', id: string): string => {
-    const list = type === 'primaryStage' ? primaryStages : type === 'primaryProjectType' ? primaryProjectTypes : ownershipTypes;
+  const getLookupLabel = (type: 'primaryStage' | 'primaryProjectType' | 'ownershipType' | 'uomTypes', id: string): string => {
+    const list = type === 'primaryStage' ? primaryStages : type === 'primaryProjectType' ? primaryProjectTypes : type === 'uomTypes' ? uomTypes : ownershipTypes;
     return list.find(item => item.id === id)?.label || id;
   };
 
@@ -795,6 +797,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setPrimaryProjectTypes,
         ownershipTypes,
         setOwnershipTypes,
+        uomTypes,
         getLookupLabel,
         dodgeMappings,
         setDodgeMappings,

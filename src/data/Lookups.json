@@ -16,5 +16,10 @@
   "ownershipTypes": [
     { "id": "GOVERNMENTAL", "label": "Governmental", "displayOrder": 1 },
     { "id": "PRIVATE", "label": "Private", "displayOrder": 2 }
+  ],
+  "uomTypes": [
+    { "id": "HOURS", "label": "Hours", "displayOrder": 1 },
+    { "id": "MILES", "label": "Miles", "displayOrder": 2 },
+    { "id": "KILOMETRES", "label": "Kilometres", "displayOrder": 3 }
   ]
 }

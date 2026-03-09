@@ -9,6 +9,7 @@ export interface CustomerEquipment {
   year?: number;
   serialNumber?: string;
   smu?: number;
+  uom?: string;
   ownershipStatus: 'owned' | 'rented';
 }
 

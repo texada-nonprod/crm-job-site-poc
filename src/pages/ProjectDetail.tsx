@@ -61,6 +61,7 @@ const ProjectDetail = () => {
   const [showDeleteEquipmentDialog, setShowDeleteEquipmentDialog] = useState(false);
   const [equipmentToDelete, setEquipmentToDelete] = useState<number | null>(null);
   const [equipmentSearch, setEquipmentSearch] = useState('');
+  const [showUom, setShowUom] = useState(() => localStorage.getItem('showEquipmentUom') === 'true');
   const [followUpFromActivity, setFollowUpFromActivity] = useState<Activity | undefined>(undefined);
 
   // Sort state for Opportunities table
@@ -955,15 +956,28 @@ const ProjectDetail = () => {
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Customer Equipment</h2>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleCreateEquipment}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create New
-              </Button>
-              <Button size="sm" onClick={() => setShowEquipmentModal(true)}>
-                <LinkIcon className="h-4 w-4 mr-2" />
-                Associate Existing
-              </Button>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="show-uom"
+                  checked={showUom}
+                  onCheckedChange={(checked) => {
+                    setShowUom(checked);
+                    localStorage.setItem('showEquipmentUom', String(checked));
+                  }}
+                />
+                <Label htmlFor="show-uom" className="text-sm cursor-pointer">Show UOM</Label>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={handleCreateEquipment}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create New
+                </Button>
+                <Button size="sm" onClick={() => setShowEquipmentModal(true)}>
+                  <LinkIcon className="h-4 w-4 mr-2" />
+                  Associate Existing
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -1048,6 +1062,9 @@ const ProjectDetail = () => {
                                 <TableHead className="text-right cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleEqSort('smu')}>
                                   <div className="flex items-center justify-end">SMU<SortIcon active={eqSortColumn === 'smu'} direction={eqSortDirection} /></div>
                                 </TableHead>
+                                {showUom && (
+                                  <TableHead>UOM</TableHead>
+                                )}
                                 <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleEqSort('ownership')}>
                                   <div className="flex items-center">Ownership<SortIcon active={eqSortColumn === 'ownership'} direction={eqSortDirection} /></div>
                                 </TableHead>
@@ -1063,6 +1080,9 @@ const ProjectDetail = () => {
                                   <TableCell>{eq.year || '—'}</TableCell>
                                   <TableCell className="font-mono text-sm">{eq.serialNumber || '—'}</TableCell>
                                   <TableCell className="text-right">{eq.smu?.toLocaleString() || '—'}</TableCell>
+                                  {showUom && (
+                                    <TableCell>{eq.uom ? getLookupLabel('uomTypes', eq.uom) : '—'}</TableCell>
+                                  )}
                                   <TableCell>
                                     <Badge variant={eq.ownershipStatus === 'owned' ? 'default' : 'secondary'}>
                                       {eq.ownershipStatus === 'owned' ? 'Owned' : 'Rented'}
