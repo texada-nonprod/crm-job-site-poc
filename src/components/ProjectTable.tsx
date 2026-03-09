@@ -290,6 +290,12 @@ export const ProjectTable = () => {
 
   return (
     <Card>
+      <div className="flex items-center justify-between px-4 py-3 border-b">
+        <p className="text-sm text-muted-foreground">
+          Showing {sortedProjects.length} project{sortedProjects.length !== 1 ? 's' : ''}
+        </p>
+        <ColumnVisibilitySelector />
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
