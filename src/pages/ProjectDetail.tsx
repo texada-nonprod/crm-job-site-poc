@@ -33,7 +33,7 @@ import { Activity, ProjectCompany, CustomerEquipment } from '@/types';
 type LocationViewType = 'address' | 'coordinates';
 
 const ProjectDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{id: string;}>();
   const navigate = useNavigate();
   const { projects, getSalesRepName, getSalesRepNames, getUserName, getUserNames, opportunities, getStageName, getStage, removeProjectCompany, updateProject, deleteActivity, noteTags, addNote, updateNote, deleteNote, addCustomerEquipment, updateCustomerEquipment, deleteCustomerEquipment, getCompanyById, getLookupLabel } = useData();
   const { statusColors, getStatusColorClasses } = useStatusColors();
@@ -83,14 +83,14 @@ const ProjectDetail = () => {
   const [eqSortColumn, setEqSortColumn] = useState<'type' | 'make' | 'model' | 'year' | 'serial' | 'hours' | null>(null);
   const [eqSortDirection, setEqSortDirection] = useState<'asc' | 'desc' | null>(null);
 
-  const project = projects.find(p => p.id === parseInt(id || '0'));
+  const project = projects.find((p) => p.id === parseInt(id || '0'));
 
   const hasAddress = project?.address.street && project?.address.city && project?.address.state;
-  const hasCoordinates = project?.address.latitude != null && project?.address.longitude != null && 
-    !isNaN(project?.address.latitude) && !isNaN(project?.address.longitude);
-  
-  const defaultLocationView: LocationViewType = hasAddress ? 'address' : (hasCoordinates ? 'coordinates' : 'address');
-  
+  const hasCoordinates = project?.address.latitude != null && project?.address.longitude != null &&
+  !isNaN(project?.address.latitude) && !isNaN(project?.address.longitude);
+
+  const defaultLocationView: LocationViewType = hasAddress ? 'address' : hasCoordinates ? 'coordinates' : 'address';
+
   useEffect(() => {
     if (project) {
       setLocationViewType(defaultLocationView);
@@ -104,19 +104,19 @@ const ProjectDetail = () => {
           <h1 className="text-2xl font-bold mb-2">Project Not Found</h1>
           <Button onClick={() => navigate('/')}>Return to List</Button>
         </div>
-      </div>
-    );
+      </div>);
+
   }
 
   const handleOpportunityClick = (oppId: number) => {
-    const fullOpp = opportunities.find(o => o.id === oppId);
+    const fullOpp = opportunities.find((o) => o.id === oppId);
     if (fullOpp) {
       setSelectedOpportunity(fullOpp);
       setShowOpportunityDetail(true);
     }
   };
 
-  const primaryGC = project.projectCompanies.find(c => c.roleId === 'GC' && c.isPrimaryContact);
+  const primaryGC = project.projectCompanies.find((c) => c.roleId === 'GC' && c.isPrimaryContact);
 
   const handleRemoveGC = () => {
     if (primaryGC) {
@@ -217,31 +217,31 @@ const ProjectDetail = () => {
   };
 
   const makeSortHandler = <T,>(
-    currentCol: T | null, setCol: (c: T | null) => void,
-    currentDir: 'asc' | 'desc' | null, setDir: (d: 'asc' | 'desc' | null) => void
-  ) => (column: T) => {
+  currentCol: T | null, setCol: (c: T | null) => void,
+  currentDir: 'asc' | 'desc' | null, setDir: (d: 'asc' | 'desc' | null) => void) =>
+  (column: T) => {
     if (currentCol === column) {
-      if (currentDir === 'asc') setDir('desc');
-      else { setDir(null); setCol(null); }
-    } else { setCol(column); setDir('asc'); }
+      if (currentDir === 'asc') setDir('desc');else
+      {setDir(null);setCol(null);}
+    } else {setCol(column);setDir('asc');}
   };
 
   const handleOppSort = makeSortHandler(oppSortColumn, setOppSortColumn as (c: typeof oppSortColumn) => void, oppSortDirection, setOppSortDirection);
   const handleActSort = makeSortHandler(actSortColumn, setActSortColumn as (c: typeof actSortColumn) => void, actSortDirection, setActSortDirection);
   const handleEqSort = makeSortHandler(eqSortColumn, setEqSortColumn as (c: typeof eqSortColumn) => void, eqSortDirection, setEqSortDirection);
 
-  const SortIcon = ({ active, direction }: { active: boolean; direction: 'asc' | 'desc' | null }) => {
+  const SortIcon = ({ active, direction }: {active: boolean;direction: 'asc' | 'desc' | null;}) => {
     if (!active) return <ArrowUpDown className="h-4 w-4 ml-1 opacity-0 group-hover:opacity-50 transition-opacity" />;
     if (direction === 'asc') return <ArrowUp className="h-4 w-4 ml-1" />;
     return <ArrowDown className="h-4 w-4 ml-1" />;
   };
 
-  const filteredOpportunities = project.associatedOpportunities.filter(opp => {
+  const filteredOpportunities = project.associatedOpportunities.filter((opp) => {
     const stage = getStage(opp.stageId);
     if (oppShowOpenOnly && stage && (stage.phaseid === 3 || stage.phaseid === 4)) return false;
     if (oppFilterStage.length > 0 && !oppFilterStage.includes(String(opp.stageId))) return false;
     if (oppFilterType.length > 0 && !oppFilterType.includes(opp.type)) return false;
-    const fullOpp = opportunities.find(o => o.id === opp.id);
+    const fullOpp = opportunities.find((o) => o.id === opp.id);
     if (oppFilterDivision.length > 0) {
       if (!fullOpp || !oppFilterDivision.includes(fullOpp.divisionId)) return false;
     }
@@ -254,39 +254,39 @@ const ProjectDetail = () => {
     return true;
   });
 
-  const uniqueStages = [...new Map(project.associatedOpportunities.map(o => [o.stageId, getStageName(o.stageId)] as [number, string])).entries()].sort((a, b) => (a[1] as string).localeCompare(b[1] as string));
-  const uniqueTypes = [...new Set(project.associatedOpportunities.map(o => o.type))].sort();
-  const uniqueDivisions = [...new Set(project.associatedOpportunities.map(o => {
-    const full = opportunities.find(f => f.id === o.id);
+  const uniqueStages = [...new Map(project.associatedOpportunities.map((o) => [o.stageId, getStageName(o.stageId)] as [number, string])).entries()].sort((a, b) => (a[1] as string).localeCompare(b[1] as string));
+  const uniqueTypes = [...new Set(project.associatedOpportunities.map((o) => o.type))].sort();
+  const uniqueDivisions = [...new Set(project.associatedOpportunities.map((o) => {
+    const full = opportunities.find((f) => f.id === o.id);
     return full?.divisionId || '';
   }).filter(Boolean))].sort();
-  const uniqueOppSalesReps = [...new Set(project.associatedOpportunities.map(o => {
-    const full = opportunities.find(f => f.id === o.id);
+  const uniqueOppSalesReps = [...new Set(project.associatedOpportunities.map((o) => {
+    const full = opportunities.find((f) => f.id === o.id);
     return full ? getSalesRepName(full.salesRepId) : '';
   }).filter(Boolean))].sort();
-  const uniqueOppCompanies = [...new Set(project.associatedOpportunities.map(o => {
-    const full = opportunities.find(f => f.id === o.id);
+  const uniqueOppCompanies = [...new Set(project.associatedOpportunities.map((o) => {
+    const full = opportunities.find((f) => f.id === o.id);
     return full?.customerName || '';
   }).filter(Boolean))].sort();
 
   const sortedOpportunities = [...filteredOpportunities].sort((a, b) => {
     if (!oppSortColumn || !oppSortDirection) return 0;
     let cmp = 0;
-    const fullA = opportunities.find(o => o.id === a.id);
-    const fullB = opportunities.find(o => o.id === b.id);
+    const fullA = opportunities.find((o) => o.id === a.id);
+    const fullB = opportunities.find((o) => o.id === b.id);
     switch (oppSortColumn) {
-      case 'type': cmp = (a.type || '').localeCompare(b.type || ''); break;
-      case 'description': cmp = (a.description || '').localeCompare(b.description || ''); break;
-      case 'division': cmp = (fullA?.divisionId || '').localeCompare(fullB?.divisionId || ''); break;
-      case 'stage': cmp = (getStage(a.stageId)?.displayorder ?? 999) - (getStage(b.stageId)?.displayorder ?? 999); break;
-      case 'salesRep': cmp = getSalesRepName(fullA?.salesRepId || 0).localeCompare(getSalesRepName(fullB?.salesRepId || 0)); break;
-      case 'estClose': {
-        const dateA = (fullA?.estimateDeliveryYear || 0) * 100 + (fullA?.estimateDeliveryMonth || 0);
-        const dateB = (fullB?.estimateDeliveryYear || 0) * 100 + (fullB?.estimateDeliveryMonth || 0);
-        cmp = dateA - dateB;
-        break;
-      }
-      case 'revenue': cmp = (a.revenue || 0) - (b.revenue || 0); break;
+      case 'type':cmp = (a.type || '').localeCompare(b.type || '');break;
+      case 'description':cmp = (a.description || '').localeCompare(b.description || '');break;
+      case 'division':cmp = (fullA?.divisionId || '').localeCompare(fullB?.divisionId || '');break;
+      case 'stage':cmp = (getStage(a.stageId)?.displayorder ?? 999) - (getStage(b.stageId)?.displayorder ?? 999);break;
+      case 'salesRep':cmp = getSalesRepName(fullA?.salesRepId || 0).localeCompare(getSalesRepName(fullB?.salesRepId || 0));break;
+      case 'estClose':{
+          const dateA = (fullA?.estimateDeliveryYear || 0) * 100 + (fullA?.estimateDeliveryMonth || 0);
+          const dateB = (fullB?.estimateDeliveryYear || 0) * 100 + (fullB?.estimateDeliveryMonth || 0);
+          cmp = dateA - dateB;
+          break;
+        }
+      case 'revenue':cmp = (a.revenue || 0) - (b.revenue || 0);break;
     }
     if (cmp === 0) {
       const dateA = (fullA?.estimateDeliveryYear || 0) * 100 + (fullA?.estimateDeliveryMonth || 0);
@@ -300,10 +300,10 @@ const ProjectDetail = () => {
     if (!actSortColumn || !actSortDirection) return 0;
     let cmp = 0;
     switch (actSortColumn) {
-      case 'assignee': cmp = getUserName(a.assigneeId).localeCompare(getUserName(b.assigneeId)); break;
-      case 'activityType': cmp = (a.activityType || '').localeCompare(b.activityType || ''); break;
-      case 'date': cmp = new Date(a.date).getTime() - new Date(b.date).getTime(); break;
-      case 'description': cmp = (a.description || '').localeCompare(b.description || ''); break;
+      case 'assignee':cmp = getUserName(a.assigneeId).localeCompare(getUserName(b.assigneeId));break;
+      case 'activityType':cmp = (a.activityType || '').localeCompare(b.activityType || '');break;
+      case 'date':cmp = new Date(a.date).getTime() - new Date(b.date).getTime();break;
+      case 'description':cmp = (a.description || '').localeCompare(b.description || '');break;
     }
     return actSortDirection === 'asc' ? cmp : -cmp;
   });
@@ -313,12 +313,12 @@ const ProjectDetail = () => {
     return [...items].sort((a, b) => {
       let cmp = 0;
       switch (eqSortColumn) {
-        case 'type': cmp = (a.equipmentType || '').localeCompare(b.equipmentType || ''); break;
-        case 'make': cmp = (a.make || '').localeCompare(b.make || ''); break;
-        case 'model': cmp = (a.model || '').localeCompare(b.model || ''); break;
-        case 'year': cmp = (a.year || 0) - (b.year || 0); break;
-        case 'serial': cmp = (a.serialNumber || '').localeCompare(b.serialNumber || ''); break;
-        case 'hours': cmp = (a.hours || 0) - (b.hours || 0); break;
+        case 'type':cmp = (a.equipmentType || '').localeCompare(b.equipmentType || '');break;
+        case 'make':cmp = (a.make || '').localeCompare(b.make || '');break;
+        case 'model':cmp = (a.model || '').localeCompare(b.model || '');break;
+        case 'year':cmp = (a.year || 0) - (b.year || 0);break;
+        case 'serial':cmp = (a.serialNumber || '').localeCompare(b.serialNumber || '');break;
+        case 'hours':cmp = (a.hours || 0) - (b.hours || 0);break;
       }
       return eqSortDirection === 'asc' ? cmp : -cmp;
     });
@@ -339,17 +339,17 @@ const ProjectDetail = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {statusOptions.map(status => {
+                {statusOptions.map((status) => {
                   const colorId = statusColors[status];
-                  const colorConfig = STATUS_COLORS.find(c => c.id === colorId);
+                  const colorConfig = STATUS_COLORS.find((c) => c.id === colorId);
                   return (
                     <SelectItem key={status} value={status}>
                       <div className="flex items-center gap-2">
                         <span className={`w-3 h-3 rounded-full ${colorConfig?.bg || 'bg-muted'}`} />
                         {status}
                       </div>
-                    </SelectItem>
-                  );
+                    </SelectItem>);
+
                 })}
               </SelectContent>
             </Select>
@@ -370,8 +370,8 @@ const ProjectDetail = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setShowEditModal(true)}
-              >
+                onClick={() => setShowEditModal(true)}>
+                
                 <Pencil className="h-4 w-4 mr-2" />
                 Edit
               </Button>
@@ -383,51 +383,51 @@ const ProjectDetail = () => {
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
                     <p className="font-medium">Location</p>
-                    {(hasAddress || hasCoordinates) && (
-                      <div className="flex rounded-md border border-input overflow-hidden">
+                    {(hasAddress || hasCoordinates) &&
+                    <div className="flex rounded-md border border-input overflow-hidden">
                         <Button
-                          type="button"
-                          variant={locationViewType === 'address' ? 'default' : 'ghost'}
-                          size="sm"
-                          className="rounded-none h-7 text-xs"
-                          onClick={() => setLocationViewType('address')}
-                          disabled={!hasAddress}
-                        >
+                        type="button"
+                        variant={locationViewType === 'address' ? 'default' : 'ghost'}
+                        size="sm"
+                        className="rounded-none h-7 text-xs"
+                        onClick={() => setLocationViewType('address')}
+                        disabled={!hasAddress}>
+                        
                           Address
                         </Button>
                         <Button
-                          type="button"
-                          variant={locationViewType === 'coordinates' ? 'default' : 'ghost'}
-                          size="sm"
-                          className="rounded-none h-7 text-xs"
-                          onClick={() => setLocationViewType('coordinates')}
-                          disabled={!hasCoordinates}
-                        >
+                        type="button"
+                        variant={locationViewType === 'coordinates' ? 'default' : 'ghost'}
+                        size="sm"
+                        className="rounded-none h-7 text-xs"
+                        onClick={() => setLocationViewType('coordinates')}
+                        disabled={!hasCoordinates}>
+                        
                           Coordinates
                         </Button>
                       </div>
-                    )}
+                    }
                   </div>
-                  {locationViewType === 'address' ? (
-                    hasAddress ? (
-                      <p className="text-sm text-muted-foreground">
+                  {locationViewType === 'address' ?
+                  hasAddress ?
+                  <p className="text-sm text-muted-foreground">
                         {project.address.street}<br />
                         {project.address.city}, {project.address.state} {project.address.zipCode}<br />
                         {project.address.country}
-                      </p>
-                    ) : (
-                      <p className="text-sm text-muted-foreground italic">No address available</p>
-                    )
-                  ) : (
-                    hasCoordinates ? (
-                      <p className="text-sm text-muted-foreground">
+                      </p> :
+
+                  <p className="text-sm text-muted-foreground italic">No address available</p> :
+
+
+                  hasCoordinates ?
+                  <p className="text-sm text-muted-foreground">
                         Latitude: {project.address.latitude}<br />
                         Longitude: {project.address.longitude}
-                      </p>
-                    ) : (
-                      <p className="text-sm text-muted-foreground italic">No coordinates available</p>
-                    )
-                  )}
+                      </p> :
+
+                  <p className="text-sm text-muted-foreground italic">No coordinates available</p>
+
+                  }
                 </div>
               </div>
 
@@ -440,37 +440,37 @@ const ProjectDetail = () => {
                   {(() => {
                     const ownerCompany = project.projectOwner?.companyId ? getCompanyById(project.projectOwner.companyId) : undefined;
                     if (!ownerCompany) return <p className="text-sm text-muted-foreground italic">No owner assigned</p>;
-                    const selectedContacts = ownerCompany.companyContacts.filter(c => project.projectOwner.contactIds.includes(c.id));
+                    const selectedContacts = ownerCompany.companyContacts.filter((c) => project.projectOwner.contactIds.includes(c.id));
                     return (
                       <div>
                         <p className="text-sm font-medium">{ownerCompany.companyName}</p>
-                        {selectedContacts.length > 0 ? (
-                          <div className="mt-2 space-y-2">
-                            {selectedContacts.map(contact => (
-                              <div key={contact.id} className="text-sm">
+                        {selectedContacts.length > 0 ?
+                        <div className="mt-2 space-y-2">
+                            {selectedContacts.map((contact) =>
+                          <div key={contact.id} className="text-sm">
                                 <p>{contact.name}{contact.title ? ` — ${contact.title}` : ''}</p>
                                 <div className="flex items-center gap-4 text-muted-foreground">
-                                  {contact.phone && (
-                                    <div className="flex items-center gap-1">
+                                  {contact.phone &&
+                              <div className="flex items-center gap-1">
                                       <Phone className="h-3 w-3" />
                                       <span>{contact.phone}</span>
                                     </div>
-                                  )}
-                                  {contact.email && (
-                                    <div className="flex items-center gap-1">
+                              }
+                                  {contact.email &&
+                              <div className="flex items-center gap-1">
                                       <Mail className="h-3 w-3" />
                                       <a href={`mailto:${contact.email}`} className="text-primary hover:underline">{contact.email}</a>
                                     </div>
-                                  )}
+                              }
                                 </div>
                               </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-sm text-muted-foreground italic mt-1">No contacts selected</p>
-                        )}
-                      </div>
-                    );
+                          )}
+                          </div> :
+
+                        <p className="text-sm text-muted-foreground italic mt-1">No contacts selected</p>
+                        }
+                      </div>);
+
                   })()}
                 </div>
               </div>
@@ -483,79 +483,79 @@ const ProjectDetail = () => {
               </div>
 
               {/* Project Details fields */}
-              {(project.valuation || project.primaryStageId || project.primaryProjectTypeId || project.ownershipTypeId || project.bidDate || project.targetStartDate || project.targetCompletionDate) && (
-                <>
+              {(project.valuation || project.primaryStageId || project.primaryProjectTypeId || project.ownershipTypeId || project.bidDate || project.targetStartDate || project.targetCompletionDate) &&
+              <>
                   <Separator />
                   <div>
                     <p className="font-medium mb-3">Project Details</p>
                     <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
-                      {project.valuation != null && (
-                        <div>
+                      {project.valuation != null &&
+                    <div>
                           <span className="text-muted-foreground">Valuation</span>
                           <p className="font-medium">${Math.round(project.valuation).toLocaleString('en-US')}</p>
                         </div>
-                      )}
-                      {project.ownershipTypeId && (
-                        <div>
+                    }
+                      {project.ownershipTypeId &&
+                    <div>
                           <span className="text-muted-foreground">Ownership Type</span>
                           <p className="font-medium">{getLookupLabel('ownershipType', project.ownershipTypeId)}</p>
                         </div>
-                      )}
-                      {project.primaryStageId && (
-                        <div>
+                    }
+                      {project.primaryStageId &&
+                    <div>
                           <span className="text-muted-foreground">Primary Stage</span>
                           <p className="font-medium">{getLookupLabel('primaryStage', project.primaryStageId)}</p>
                         </div>
-                      )}
-                      {project.primaryProjectTypeId && (
-                        <div>
+                    }
+                      {project.primaryProjectTypeId &&
+                    <div>
                           <span className="text-muted-foreground">Primary Project Type</span>
                           <p className="font-medium">{getLookupLabel('primaryProjectType', project.primaryProjectTypeId)}</p>
                         </div>
-                      )}
-                      {project.bidDate && (
-                        <div>
+                    }
+                      {project.bidDate &&
+                    <div>
                           <span className="text-muted-foreground">Bid Date</span>
                           <p className="font-medium">{new Date(project.bidDate + 'T00:00:00').toLocaleDateString('en-US')}</p>
                         </div>
-                      )}
-                      {project.targetStartDate && (
-                        <div>
+                    }
+                      {project.targetStartDate &&
+                    <div>
                           <span className="text-muted-foreground">Target Start Date</span>
                           <p className="font-medium">{new Date(project.targetStartDate + 'T00:00:00').toLocaleDateString('en-US')}</p>
                         </div>
-                      )}
-                      {project.targetCompletionDate && (
-                        <div>
+                    }
+                      {project.targetCompletionDate &&
+                    <div>
                           <span className="text-muted-foreground">Target Completion Date</span>
                           <p className="font-medium">{new Date(project.targetCompletionDate + 'T00:00:00').toLocaleDateString('en-US')}</p>
                         </div>
-                      )}
+                    }
                     </div>
                   </div>
                 </>
-              )}
+              }
 
-              {project.externalReference && (
-                <>
+              {project.externalReference &&
+              <>
                   <Separator />
                   <div className="flex items-start gap-3">
                     <ExternalLink className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div>
                       <p className="font-medium">{project.externalReference.source}</p>
                       <a
-                        href={project.externalReference.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-primary hover:underline inline-flex items-center gap-1"
-                      >
+                      href={project.externalReference.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+                      
                         {project.externalReference.name}
                         <ExternalLink className="h-3 w-3" />
                       </a>
                     </div>
                   </div>
                 </>
-              )}
+              }
             </div>
           </Card>
 
@@ -580,45 +580,45 @@ const ProjectDetail = () => {
                   <Building2 className="h-4 w-4" />
                   <h3 className="font-semibold">General Contractor</h3>
                 </div>
-                {primaryGC && (
-                  <div className="flex gap-1">
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => setShowEditGCModal(true)}
-                    >
+                {primaryGC &&
+                <div className="flex gap-1">
+                    <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => setShowEditGCModal(true)}>
+                    
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => setShowRemoveGCDialog(true)}
-                    >
+                    <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => setShowRemoveGCDialog(true)}>
+                    
                       <X className="h-4 w-4" />
                     </Button>
                   </div>
-                )}
+                }
               </div>
-              {primaryGC ? (
-                (() => {
-                  const gcPrimaryContact = primaryGC.companyContacts?.[primaryGC.primaryContactIndex || 0];
-                  const gcContactCount = primaryGC.companyContacts?.length || 0;
-                  return (
-                    <div className="space-y-2 text-sm">
+              {primaryGC ?
+              (() => {
+                const gcPrimaryContact = primaryGC.companyContacts?.[primaryGC.primaryContactIndex || 0];
+                const gcContactCount = primaryGC.companyContacts?.length || 0;
+                return (
+                  <div className="space-y-2 text-sm">
                       <p className="font-medium">{primaryGC.companyName}</p>
-                      {gcPrimaryContact && (
-                        <>
+                      {gcPrimaryContact &&
+                    <>
                           <p className="text-muted-foreground">{gcPrimaryContact.name}</p>
                           {gcPrimaryContact.title && <p className="text-muted-foreground">{gcPrimaryContact.title}</p>}
                           <div className="pt-2 space-y-1">
-                            {gcPrimaryContact.phone && (
-                              <div className="flex items-center gap-1 text-muted-foreground">
+                            {gcPrimaryContact.phone &&
+                        <div className="flex items-center gap-1 text-muted-foreground">
                                 <Phone className="h-3 w-3" />
                                 <span>{gcPrimaryContact.phone}</span>
                               </div>
-                            )}
+                        }
                             <div className="flex items-center gap-1 text-muted-foreground">
                               <Mail className="h-3 w-3" />
                               <a href={`mailto:${gcPrimaryContact.email}`} className="text-primary hover:underline">
@@ -626,25 +626,25 @@ const ProjectDetail = () => {
                               </a>
                             </div>
                           </div>
-                          {gcContactCount > 1 && (
-                            <p className="text-xs text-muted-foreground pt-1">
+                          {gcContactCount > 1 &&
+                      <p className="text-xs text-muted-foreground pt-1">
                               + {gcContactCount - 1} more contact{gcContactCount > 2 ? 's' : ''}
                             </p>
-                          )}
+                      }
                         </>
-                      )}
-                    </div>
-                  );
-                })()
-              ) : (
-                <div className="space-y-3">
+                    }
+                    </div>);
+
+              })() :
+
+              <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">No general contractor assigned</p>
                   <Button size="sm" onClick={() => setShowAddGCModal(true)}>
                     <Plus className="h-4 w-4 mr-2" />
                     Add GC
                   </Button>
                 </div>
-              )}
+              }
             </Card>
           </div>
         </div>
@@ -653,72 +653,72 @@ const ProjectDetail = () => {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Opportunities</h2>
             <div className="flex gap-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
-                onClick={() => setShowAssociateModal(true)}
-              >
+                onClick={() => setShowAssociateModal(true)}>
+                
                 <LinkIcon className="h-4 w-4 mr-2" />
                 Associate Existing
               </Button>
-              <Button 
+              <Button
                 size="sm"
-                onClick={() => setShowCreateModal(true)}
-              >
+                onClick={() => setShowCreateModal(true)}>
+                
                 <Plus className="h-4 w-4 mr-2" />
                 Create New
               </Button>
             </div>
           </div>
 
-          {project.associatedOpportunities.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">
+          {project.associatedOpportunities.length === 0 ?
+          <p className="text-center text-muted-foreground py-8">
               No opportunities associated with this project yet.
-            </p>
-          ) : (
-            <>
+            </p> :
+
+          <>
               <div className="flex gap-3 mb-4 flex-wrap">
                 <MultiSelectFilter
-                  label="Stages"
-                  options={uniqueStages.map(([stageId, stageName]) => ({ value: String(stageId), label: stageName as string }))}
-                  selected={oppFilterStage}
-                  onSelectionChange={setOppFilterStage}
-                  className="w-[160px]"
-                />
+                label="Stages"
+                options={uniqueStages.map(([stageId, stageName]) => ({ value: String(stageId), label: stageName as string }))}
+                selected={oppFilterStage}
+                onSelectionChange={setOppFilterStage}
+                className="w-[160px]" />
+              
                 <MultiSelectFilter
-                  label="Divisions"
-                  options={uniqueDivisions.map((d: string) => ({ value: d, label: d }))}
-                  selected={oppFilterDivision}
-                  onSelectionChange={setOppFilterDivision}
-                  className="w-[160px]"
-                />
+                label="Divisions"
+                options={uniqueDivisions.map((d: string) => ({ value: d, label: d }))}
+                selected={oppFilterDivision}
+                onSelectionChange={setOppFilterDivision}
+                className="w-[160px]" />
+              
                 <MultiSelectFilter
-                  label="Types"
-                  options={uniqueTypes.map((t: string) => ({ value: t, label: t }))}
-                  selected={oppFilterType}
-                  onSelectionChange={setOppFilterType}
-                  className="w-[160px]"
-                />
+                label="Types"
+                options={uniqueTypes.map((t: string) => ({ value: t, label: t }))}
+                selected={oppFilterType}
+                onSelectionChange={setOppFilterType}
+                className="w-[160px]" />
+              
                 <MultiSelectFilter
-                  label="Sales Reps"
-                  options={uniqueOppSalesReps.map((r: string) => ({ value: r, label: r }))}
-                  selected={oppFilterSalesRep}
-                  onSelectionChange={setOppFilterSalesRep}
-                  className="w-[180px]"
-                />
+                label="Sales Reps"
+                options={uniqueOppSalesReps.map((r: string) => ({ value: r, label: r }))}
+                selected={oppFilterSalesRep}
+                onSelectionChange={setOppFilterSalesRep}
+                className="w-[180px]" />
+              
                 <MultiSelectFilter
-                  label="Companies"
-                  options={uniqueOppCompanies.map((c: string) => ({ value: c, label: c }))}
-                  selected={oppFilterCompany}
-                  onSelectionChange={setOppFilterCompany}
-                  className="w-[180px]"
-                />
+                label="Companies"
+                options={uniqueOppCompanies.map((c: string) => ({ value: c, label: c }))}
+                selected={oppFilterCompany}
+                onSelectionChange={setOppFilterCompany}
+                className="w-[180px]" />
+              
                 <div className="flex items-center space-x-2 ml-auto">
                   <Switch
-                    id="oppShowOpenOnly"
-                    checked={oppShowOpenOnly}
-                    onCheckedChange={setOppShowOpenOnly}
-                  />
+                  id="oppShowOpenOnly"
+                  checked={oppShowOpenOnly}
+                  onCheckedChange={setOppShowOpenOnly} />
+                
                   <Label htmlFor="oppShowOpenOnly" className="text-sm font-normal cursor-pointer">
                     Show Open Only
                   </Label>
@@ -751,14 +751,14 @@ const ProjectDetail = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {sortedOpportunities.map(opp => {
-                    const fullOpp = opportunities.find(o => o.id === opp.id);
-                    return (
-                      <TableRow 
-                        key={opp.id}
-                        className="cursor-pointer hover:bg-muted/50"
-                        onClick={() => handleOpportunityClick(opp.id)}
-                      >
+                  {sortedOpportunities.map((opp) => {
+                  const fullOpp = opportunities.find((o) => o.id === opp.id);
+                  return (
+                    <TableRow
+                      key={opp.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleOpportunityClick(opp.id)}>
+                      
                         <TableCell>
                           <Badge variant="secondary">{opp.type}</Badge>
                         </TableCell>
@@ -771,16 +771,16 @@ const ProjectDetail = () => {
                         </TableCell>
                         <TableCell>{fullOpp ? getSalesRepName(fullOpp.salesRepId) : '-'}</TableCell>
                         <TableCell>
-                          {fullOpp?.estimateDeliveryMonth && fullOpp?.estimateDeliveryYear
-                            ? `${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][fullOpp.estimateDeliveryMonth - 1]} ${fullOpp.estimateDeliveryYear}`
-                            : '-'}
+                          {fullOpp?.estimateDeliveryMonth && fullOpp?.estimateDeliveryYear ?
+                        `${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][fullOpp.estimateDeliveryMonth - 1]} ${fullOpp.estimateDeliveryYear}` :
+                        '-'}
                         </TableCell>
                         <TableCell className="text-right font-medium">
                           ${opp.revenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}
                         </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                      </TableRow>);
+
+                })}
                 </TableBody>
                 <TableFooter>
                   <TableRow>
@@ -792,43 +792,43 @@ const ProjectDetail = () => {
                 </TableFooter>
               </Table>
             </>
-          )}
+          }
         </Card>
 
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Subcontractors & Companies</h2>
-            <Button 
-              variant="outline" 
+            <h2 className="text-lg font-semibold">Companies</h2>
+            <Button
+              variant="outline"
               size="sm"
-              onClick={() => setShowAssociateCompanyModal(true)}
-            >
+              onClick={() => setShowAssociateCompanyModal(true)}>
+              
               <LinkIcon className="h-4 w-4 mr-2" />
               Associate Existing
             </Button>
           </div>
-          {project.projectCompanies.filter(c => c.roleId !== 'OWNER').length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">
+          {project.projectCompanies.filter((c) => c.roleId !== 'OWNER').length === 0 ?
+          <p className="text-center text-muted-foreground py-8">
               No companies associated with this project yet.
-            </p>
-          ) : (
-            <ProjectCompaniesTable
-              projectId={project.id}
-              companies={project.projectCompanies.filter(c => c.roleId !== 'OWNER')}
-              onRemoveCompany={initiateRemoveCompany}
-            />
-          )}
+            </p> :
+
+          <ProjectCompaniesTable
+            projectId={project.id}
+            companies={project.projectCompanies.filter((c) => c.roleId !== 'OWNER')}
+            onRemoveCompany={initiateRemoveCompany} />
+
+          }
         </Card>
 
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Activities</h2>
             <div className="flex gap-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
-                onClick={() => setShowAssociateActivityModal(true)}
-              >
+                onClick={() => setShowAssociateActivityModal(true)}>
+                
                 <LinkIcon className="h-4 w-4 mr-2" />
                 Associate Existing
               </Button>
@@ -839,12 +839,12 @@ const ProjectDetail = () => {
             </div>
           </div>
 
-          {(!project.activities || project.activities.length === 0) ? (
-            <p className="text-center text-muted-foreground py-8">
+          {!project.activities || project.activities.length === 0 ?
+          <p className="text-center text-muted-foreground py-8">
               No activities recorded for this project yet.
-            </p>
-          ) : (
-            <Table>
+            </p> :
+
+          <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleActSort('assignee')}>
@@ -863,8 +863,8 @@ const ProjectDetail = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sortedActivities.map(activity => (
-                  <TableRow key={activity.id}>
+                {sortedActivities.map((activity) =>
+              <TableRow key={activity.id}>
                     <TableCell className="font-medium">{getUserName(activity.assigneeId)}</TableCell>
                     <TableCell>
                       <Badge variant="outline">{activity.activityType}</Badge>
@@ -876,28 +876,28 @@ const ProjectDetail = () => {
                     <TableCell>
                       <div className="flex gap-1">
                         <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => handleEditActivity(activity)}
-                        >
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => handleEditActivity(activity)}>
+                      
                           <Pencil className="h-4 w-4" />
                         </Button>
                         <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => initiateDeleteActivity(activity.id)}
-                        >
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => initiateDeleteActivity(activity.id)}>
+                      
                           <X className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
                   </TableRow>
-                ))}
+              )}
               </TableBody>
             </Table>
-          )}
+          }
         </Card>
 
         <Card className="p-6">
@@ -909,26 +909,26 @@ const ProjectDetail = () => {
             </Button>
           </div>
 
-          {(!project.customerEquipment || project.customerEquipment.length === 0) ? (
-            <p className="text-center text-muted-foreground py-8">
+          {!project.customerEquipment || project.customerEquipment.length === 0 ?
+          <p className="text-center text-muted-foreground py-8">
               No customer equipment recorded for this project.
-            </p>
-          ) : (() => {
+            </p> :
+          (() => {
             const searchLower = equipmentSearch.toLowerCase();
             const hasSearch = searchLower.length > 0;
 
-            const filteredEquipment = project.customerEquipment.filter(eq => {
+            const filteredEquipment = project.customerEquipment.filter((eq) => {
               if (!hasSearch) return true;
-              const companyName = project.projectCompanies.find(c => c.companyId === eq.companyId)?.companyName || '';
+              const companyName = project.projectCompanies.find((c) => c.companyId === eq.companyId)?.companyName || '';
               const searchStr = `${companyName} ${eq.equipmentType} ${eq.make} ${eq.model} ${eq.year || ''} ${eq.serialNumber || ''}`.toLowerCase();
               return searchStr.includes(searchLower);
             });
 
-            const grouped = filteredEquipment.reduce<Record<string, { companyName: string; items: CustomerEquipment[] }>>((acc, eq) => {
+            const grouped = filteredEquipment.reduce<Record<string, {companyName: string;items: CustomerEquipment[];}>>((acc, eq) => {
               if (!acc[eq.companyId]) {
                 acc[eq.companyId] = {
-                  companyName: project.projectCompanies.find(c => c.companyId === eq.companyId)?.companyName || 'Unknown',
-                  items: [],
+                  companyName: project.projectCompanies.find((c) => c.companyId === eq.companyId)?.companyName || 'Unknown',
+                  items: []
                 };
               }
               acc[eq.companyId].items.push(eq);
@@ -944,23 +944,23 @@ const ProjectDetail = () => {
                   <Input
                     placeholder="Search equipment..."
                     value={equipmentSearch}
-                    onChange={e => setEquipmentSearch(e.target.value)}
-                    className="pl-9"
-                  />
+                    onChange={(e) => setEquipmentSearch(e.target.value)}
+                    className="pl-9" />
+                  
                 </div>
 
-                {groupEntries.length === 0 ? (
-                  <p className="text-center text-muted-foreground py-8">No equipment matches your search.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {groupEntries.map(([companyId, group]) => (
-                      <Collapsible key={`${companyId}-${hasSearch}`} defaultOpen={true}>
+                {groupEntries.length === 0 ?
+                <p className="text-center text-muted-foreground py-8">No equipment matches your search.</p> :
+
+                <div className="space-y-2">
+                    {groupEntries.map(([companyId, group]) =>
+                  <Collapsible key={`${companyId}-${hasSearch}`} defaultOpen={true}>
                         <CollapsibleTrigger className="flex items-center justify-between w-full rounded-md border px-4 py-3 text-sm font-medium hover:bg-muted/50 transition-colors [&[data-state=open]_svg.chevron]:rotate-90">
                           <div className="flex items-center gap-2">
                             <ChevronRight className="chevron h-4 w-4 shrink-0 transition-transform duration-200" />
-                            <span>{(group as { companyName: string; items: CustomerEquipment[] }).companyName}</span>
+                            <span>{(group as {companyName: string;items: CustomerEquipment[];}).companyName}</span>
                             <Badge variant="secondary" className="ml-1">
-                              {(group as { companyName: string; items: CustomerEquipment[] }).items.length} {(group as { companyName: string; items: CustomerEquipment[] }).items.length === 1 ? 'machine' : 'machines'}
+                              {(group as {companyName: string;items: CustomerEquipment[];}).items.length} {(group as {companyName: string;items: CustomerEquipment[];}).items.length === 1 ? 'machine' : 'machines'}
                             </Badge>
                           </div>
                         </CollapsibleTrigger>
@@ -990,8 +990,8 @@ const ProjectDetail = () => {
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              {sortEquipment((group as { companyName: string; items: CustomerEquipment[] }).items).map(eq => (
-                                <TableRow key={eq.id}>
+                              {sortEquipment((group as {companyName: string;items: CustomerEquipment[];}).items).map((eq) =>
+                          <TableRow key={eq.id}>
                                   <TableCell>{eq.equipmentType}</TableCell>
                                   <TableCell>{eq.make}</TableCell>
                                   <TableCell>{eq.model}</TableCell>
@@ -1003,22 +1003,22 @@ const ProjectDetail = () => {
                                       <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEditEquipment(eq)}>
                                         <Pencil className="h-4 w-4" />
                                       </Button>
-                                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEquipmentToDelete(eq.id); setShowDeleteEquipmentDialog(true); }}>
+                                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {setEquipmentToDelete(eq.id);setShowDeleteEquipmentDialog(true);}}>
                                         <X className="h-4 w-4" />
                                       </Button>
                                     </div>
                                   </TableCell>
                                 </TableRow>
-                              ))}
+                          )}
                             </TableBody>
                           </Table>
                         </CollapsibleContent>
                       </Collapsible>
-                    ))}
+                  )}
                   </div>
-                )}
-              </>
-            );
+                }
+              </>);
+
           })()}
         </Card>
         <NotesSection
@@ -1028,41 +1028,41 @@ const ProjectDetail = () => {
           onUpdateNote={(noteId, noteData) => updateNote(project.id, noteId, noteData)}
           onDeleteNote={(noteId) => deleteNote(project.id, noteId)}
           getSalesRepName={getUserName}
-          projectId={project.id}
-        />
+          projectId={project.id} />
+        
       </main>
 
       <OpportunityDetailModal
         opportunity={selectedOpportunity}
         open={showOpportunityDetail}
-        onOpenChange={setShowOpportunityDetail}
-      />
+        onOpenChange={setShowOpportunityDetail} />
+      
 
       <AssociateOpportunityModal
         projectId={project.id}
-        currentOpportunityIds={project.associatedOpportunities.map(o => o.id)}
+        currentOpportunityIds={project.associatedOpportunities.map((o) => o.id)}
         open={showAssociateModal}
-        onOpenChange={setShowAssociateModal}
-      />
+        onOpenChange={setShowAssociateModal} />
+      
 
       <CreateOpportunityModal
         projectId={project.id}
         open={showCreateModal}
-        onOpenChange={setShowCreateModal}
-      />
+        onOpenChange={setShowCreateModal} />
+      
 
       <AddGCModal
         projectId={project.id}
         open={showAddGCModal}
-        onOpenChange={setShowAddGCModal}
-      />
+        onOpenChange={setShowAddGCModal} />
+      
 
       <AssociateCompanyModal
         projectId={project.id}
-        currentCompanyNames={project.projectCompanies.map(c => c.companyName)}
+        currentCompanyNames={project.projectCompanies.map((c) => c.companyName)}
         open={showAssociateCompanyModal}
-        onOpenChange={setShowAssociateCompanyModal}
-      />
+        onOpenChange={setShowAssociateCompanyModal} />
+      
 
       <AlertDialog open={showRemoveGCDialog} onOpenChange={setShowRemoveGCDialog}>
         <AlertDialogContent>
@@ -1097,25 +1097,25 @@ const ProjectDetail = () => {
       <EditProjectModal
         project={project}
         open={showEditModal}
-        onOpenChange={setShowEditModal}
-      />
+        onOpenChange={setShowEditModal} />
+      
 
-      {primaryGC && (
-        <EditGCModal
-          projectId={project.id}
-          currentGC={primaryGC}
-          open={showEditGCModal}
-          onOpenChange={setShowEditGCModal}
-        />
-      )}
+      {primaryGC &&
+      <EditGCModal
+        projectId={project.id}
+        currentGC={primaryGC}
+        open={showEditGCModal}
+        onOpenChange={setShowEditGCModal} />
+
+      }
 
       <ActivityModal
         open={showActivityModal}
         onOpenChange={setShowActivityModal}
         projectId={project.id}
         activity={selectedActivity}
-        mode={activityModalMode}
-      />
+        mode={activityModalMode} />
+      
 
       <AlertDialog open={showDeleteActivityDialog} onOpenChange={setShowDeleteActivityDialog}>
         <AlertDialogContent>
@@ -1134,10 +1134,10 @@ const ProjectDetail = () => {
 
       <AssociateActivityModal
         projectId={project.id}
-        currentActivityIds={project.activities?.map(a => a.id) || []}
+        currentActivityIds={project.activities?.map((a) => a.id) || []}
         open={showAssociateActivityModal}
-        onOpenChange={setShowAssociateActivityModal}
-      />
+        onOpenChange={setShowAssociateActivityModal} />
+      
 
       <AddCustomerEquipmentModal
         open={showEquipmentModal}
@@ -1145,8 +1145,8 @@ const ProjectDetail = () => {
         onSave={handleSaveEquipment}
         equipment={selectedEquipment}
         mode={equipmentModalMode}
-        projectCompanies={project.projectCompanies}
-      />
+        projectCompanies={project.projectCompanies} />
+      
 
       <AlertDialog open={showDeleteEquipmentDialog} onOpenChange={setShowDeleteEquipmentDialog}>
         <AlertDialogContent>
@@ -1162,8 +1162,8 @@ const ProjectDetail = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
-  );
+    </div>);
+
 };
 
 export default ProjectDetail;
