@@ -399,7 +399,7 @@ export const ProjectTable = () => {
       </div>
 
       {/* Pagination Footer */}
-      <div className="flex items-center justify-between px-4 py-3 border-t">
+      <div className="flex items-center justify-between px-4 py-3 border-t shrink-0">
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">Rows per page:</span>
           <Select value={String(pageSize)} onValueChange={handlePageSizeChange}>
