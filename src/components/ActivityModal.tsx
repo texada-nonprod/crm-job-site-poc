@@ -175,7 +175,8 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode, f
       notes: notes.trim(),
       customerId: selectedCompanyId || undefined,
       campaignId: campaignId && campaignId !== 'none' ? parseInt(campaignId) : undefined,
-      issueId: issueId && issueId !== 'none' ? parseInt(issueId) : undefined
+      issueId: issueId && issueId !== 'none' ? parseInt(issueId) : undefined,
+      previousRelatedActivityId: followUpFrom?.id
     };
 
     if (mode === 'create') {
