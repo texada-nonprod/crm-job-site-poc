@@ -249,7 +249,7 @@
                 { "id": 4, "content": "Emergency vehicle access lane must be maintained at all times during night work operations.", "createdAt": "2025-03-05T21:45:00.000Z", "createdById": 303, "tagIds": ["SAFETY", "COMPLIANCE"], "attachments": [] }
             ],
             "activities": [
-                { "id": 1006, "assigneeId": 303, "activityType": "Phone Call", "date": "2025-02-28T00:00:00.000Z", "description": "Confirmed delivery schedule for paving equipment" }
+                { "id": 1006, "statusId": 2, "salesRepId": 303, "typeId": "P", "date": "2025-02-28T20:30:00.000Z", "description": "Confirmed delivery schedule for paving equipment", "contactName": "Wesley Moss", "notes": "Delivery confirmed for March 3rd at 10 PM." }
             ],
             "customerEquipment": [1010, 1011, 1012],
             "externalReference": {
