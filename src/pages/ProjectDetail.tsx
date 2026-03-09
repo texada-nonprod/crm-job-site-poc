@@ -304,6 +304,7 @@ const ProjectDetail = () => {
         case 'year':cmp = (a.year || 0) - (b.year || 0);break;
         case 'serial':cmp = (a.serialNumber || '').localeCompare(b.serialNumber || '');break;
         case 'hours':cmp = (a.hours || 0) - (b.hours || 0);break;
+        case 'ownership':cmp = (a.ownershipStatus || '').localeCompare(b.ownershipStatus || '');break;
       }
       return eqSortDirection === 'asc' ? cmp : -cmp;
     });
