@@ -251,11 +251,7 @@
             "activities": [
                 { "id": 1006, "assigneeId": 303, "activityType": "Phone Call", "date": "2025-02-28T00:00:00.000Z", "description": "Confirmed delivery schedule for paving equipment" }
             ],
-            "customerEquipment": [
-                { "id": 1, "companyId": "NON-DBS", "equipmentType": "Paver", "make": "Caterpillar", "model": "AP655F", "year": 2018, "serialNumber": "CATAP655FM1", "hours": 6200 },
-                { "id": 2, "companyId": "NON-DBS", "equipmentType": "Roller", "make": "Volvo", "model": "DD120C", "year": 2020, "serialNumber": "VLVDD120CX3", "hours": 3500 },
-                { "id": 3, "companyId": "NON-DBS", "equipmentType": "Skid Steer", "make": "Case", "model": "SV340B", "year": 2021, "serialNumber": "CASESV340B7", "hours": 2100 }
-            ],
+            "customerEquipment": [1010, 1011, 1012],
             "externalReference": {
                 "source": "Dodge Data & Analytics",
                 "url": "https://www.construction.com/projects/5001030/i-55-highway-resurfacing",
