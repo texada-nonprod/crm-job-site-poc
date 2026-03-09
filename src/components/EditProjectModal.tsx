@@ -108,15 +108,7 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
       toast({ title: "Error", description: "Please select at least one assignee.", variant: "destructive" }); return;
     }
 
-    // Dodge Project validation: both fields required if either is filled
-    if ((dodgeProjectName.trim() && !dodgeProjectUrl.trim()) || (!dodgeProjectName.trim() && dodgeProjectUrl.trim())) {
-      toast({ title: "Error", description: "Dodge Project requires both a name and URL.", variant: "destructive" }); return;
-    }
-
     const parsedValuation = valuation ? parseFloat(valuation.replace(/,/g, '')) : undefined;
-    const dodgeProject = dodgeProjectName.trim() && dodgeProjectUrl.trim()
-      ? { name: dodgeProjectName.trim(), url: dodgeProjectUrl.trim() }
-      : undefined;
 
     updateProject(project.id, {
       assigneeIds,
