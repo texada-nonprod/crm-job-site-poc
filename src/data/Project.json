@@ -818,14 +818,7 @@
                 { "id": 1016, "assigneeId": 305, "activityType": "Site Visit", "date": "2025-02-20T00:00:00.000Z", "description": "Equipment assessment for overburden removal" },
                 { "id": 1017, "assigneeId": 305, "activityType": "Meeting", "date": "2025-03-05T00:00:00.000Z", "description": "Quarterly review with quarry operations team" }
             ],
-            "customerEquipment": [
-                { "id": 1, "companyId": "1067200", "equipmentType": "Haul Truck", "make": "Caterpillar", "model": "777G", "year": 2016, "serialNumber": "CAT777GFXR9", "hours": 18400 },
-                { "id": 2, "companyId": "1067200", "equipmentType": "Excavator", "make": "Komatsu", "model": "PC490", "year": 2019, "serialNumber": "KMTPC490MNT", "hours": 7600 },
-                { "id": 3, "companyId": "1293500", "equipmentType": "Jaw Crusher", "make": "Sandvik", "model": "QJ341", "year": 2020, "serialNumber": "SVK341QJ002", "hours": 5200 },
-                { "id": 4, "companyId": "1293500", "equipmentType": "Drill Rig", "make": "Epiroc", "model": "D65", "year": 2020, "serialNumber": "EPRD65KM121", "hours": 4500 },
-                { "id": 5, "companyId": "NON-DBS", "equipmentType": "Roller", "make": "Caterpillar", "model": "CB54B", "year": 2021, "serialNumber": "CATCB54BXX1", "hours": 2300 },
-                { "id": 6, "companyId": "1067200", "equipmentType": "Wheel Loader", "make": "Komatsu", "model": "WA380", "year": 2018, "serialNumber": "KMTWA380ZT1", "hours": 9800 }
-            ]
+            "customerEquipment": [1036, 1037, 1038, 1039, 1040, 1041]
         }
     ],
     "sorting": "id",
