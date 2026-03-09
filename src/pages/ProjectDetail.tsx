@@ -80,7 +80,7 @@ const ProjectDetail = () => {
   const [actSortDirection, setActSortDirection] = useState<'asc' | 'desc' | null>('desc');
 
   // Sort state for Equipment table
-  const [eqSortColumn, setEqSortColumn] = useState<'type' | 'make' | 'model' | 'year' | 'serial' | 'hours' | 'ownership' | null>(null);
+  const [eqSortColumn, setEqSortColumn] = useState<'type' | 'make' | 'model' | 'year' | 'serial' | 'smu' | 'ownership' | null>(null);
   const [eqSortDirection, setEqSortDirection] = useState<'asc' | 'desc' | null>(null);
 
   const project = projects.find((p) => p.id === parseInt(id || '0'));
@@ -325,7 +325,7 @@ const ProjectDetail = () => {
         case 'model':cmp = (a.model || '').localeCompare(b.model || '');break;
         case 'year':cmp = (a.year || 0) - (b.year || 0);break;
         case 'serial':cmp = (a.serialNumber || '').localeCompare(b.serialNumber || '');break;
-        case 'hours':cmp = (a.hours || 0) - (b.hours || 0);break;
+        case 'smu':cmp = (a.smu || 0) - (b.smu || 0);break;
         case 'ownership':cmp = (a.ownershipStatus || '').localeCompare(b.ownershipStatus || '');break;
       }
       return eqSortDirection === 'asc' ? cmp : -cmp;
@@ -1045,8 +1045,8 @@ const ProjectDetail = () => {
                                 <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleEqSort('serial')}>
                                   <div className="flex items-center">Serial #<SortIcon active={eqSortColumn === 'serial'} direction={eqSortDirection} /></div>
                                 </TableHead>
-                                <TableHead className="text-right cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleEqSort('hours')}>
-                                  <div className="flex items-center justify-end">Hours<SortIcon active={eqSortColumn === 'hours'} direction={eqSortDirection} /></div>
+                                <TableHead className="text-right cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleEqSort('smu')}>
+                                  <div className="flex items-center justify-end">SMU<SortIcon active={eqSortColumn === 'smu'} direction={eqSortDirection} /></div>
                                 </TableHead>
                                 <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleEqSort('ownership')}>
                                   <div className="flex items-center">Ownership<SortIcon active={eqSortColumn === 'ownership'} direction={eqSortDirection} /></div>
@@ -1062,7 +1062,7 @@ const ProjectDetail = () => {
                                   <TableCell>{eq.model}</TableCell>
                                   <TableCell>{eq.year || '—'}</TableCell>
                                   <TableCell className="font-mono text-sm">{eq.serialNumber || '—'}</TableCell>
-                                  <TableCell className="text-right">{eq.hours?.toLocaleString() || '—'}</TableCell>
+                                  <TableCell className="text-right">{eq.smu?.toLocaleString() || '—'}</TableCell>
                                   <TableCell>
                                     <Badge variant={eq.ownershipStatus === 'owned' ? 'default' : 'secondary'}>
                                       {eq.ownershipStatus === 'owned' ? 'Owned' : 'Rented'}

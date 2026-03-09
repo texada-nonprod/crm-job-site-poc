@@ -1,26 +1,39 @@
 
 
-## Plan: Rename "Hours" to "SMU" for Equipment
+# Remove PAR (Planned Annual Rate) from Projects
 
-### Changes
+PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
 
-**1. `src/pages/ProjectDetail.tsx`**
-- Line 83: Change sort column type from `'hours'` to `'smu'`
-- Line 328: Change sort case from `'hours'` to `'smu'`
-- Lines 1048-1049: Change header label from "Hours" to "SMU" and sort references from `'hours'` to `'smu'`
-- Line 1065: No code change needed (still reads `eq.hours`)
+## Changes
 
-**2. `src/components/AddCustomerEquipmentModal.tsx`**
-- Line 109: Change table header from "Hours" to "SMU"
+### 1. `src/types/index.ts`
+- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
+- Remove `showBehindPAR` from `Filters` interface
 
-**3. `src/types/index.ts`**
-- Line 11: Rename `hours` field to `smu` in `CustomerEquipment` interface
+### 2. `src/data/Project.json`
+- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
 
-**4. `src/data/CompanyEquipment.json`**
-- Rename all `"hours"` keys to `"smu"` across all 45 entries
+### 3. `src/contexts/DataContext.tsx`
+- Remove `showBehindPAR: false` from default filters
+- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
+- Remove changelog entry referencing `plannedAnnualRate` (id 18)
 
-**5. `src/components/OpportunityDetailModal.tsx`**
-- Line 203: Change label from "Hours:" to "SMU:" (this is for opportunity products, which also track usage)
+### 4. `src/components/FilterBar.tsx`
+- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
 
-All references to `eq.hours` in ProjectDetail and AddCustomerEquipmentModal will become `eq.smu` to match the renamed type field.
+### 5. `src/components/EditProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove their reset in `useEffect`
+- Remove the PAR validation check
+- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
+- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
+
+### 6. `src/components/CreateProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove PAR validation
+- Remove `plannedAnnualRate` and `parStartDate` from new project object
+- Remove the Planned Annual Rate input and PAR Start Date picker from the form
+
+### 7. `src/pages/ProjectDetail.tsx`
+- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
 

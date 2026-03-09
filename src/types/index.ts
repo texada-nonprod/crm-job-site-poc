@@ -8,7 +8,7 @@ export interface CustomerEquipment {
   model: string;
   year?: number;
   serialNumber?: string;
-  hours?: number;
+  smu?: number;
   ownershipStatus: 'owned' | 'rented';
 }
 

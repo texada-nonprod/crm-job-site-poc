@@ -200,7 +200,7 @@ export const OpportunityDetailModal = ({ opportunity, open, onOpenChange }: Oppo
                           <div className="grid grid-cols-3 gap-2 text-sm text-muted-foreground">
                             <p>Qty: {product.quantity}</p>
                             <p>Age: {product.age} years</p>
-                            <p>Hours: {product.hours.toLocaleString()}</p>
+                            <p>SMU: {product.hours.toLocaleString()}</p>
                           </div>
                           <p className="text-sm">
                             Duration: {product.rentDuration} months @ ${product.unitPrice.toLocaleString()}/mo
