@@ -70,7 +70,7 @@ export const AddCustomerEquipmentModal = ({ open, onOpenChange, onSave, projectI
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[800px] overflow-hidden">
+        <DialogContent className="sm:max-w-[800px]">
           <DialogHeader>
             <DialogTitle>Associate Existing Equipment</DialogTitle>
           </DialogHeader>
