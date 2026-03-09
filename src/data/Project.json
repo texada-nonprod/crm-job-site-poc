@@ -169,11 +169,7 @@
                 { "id": 1004, "assigneeId": 305, "activityType": "Email", "date": "2025-03-01T00:00:00.000Z", "description": "Sent proposal for excavator purchase" },
                 { "id": 1005, "assigneeId": 305, "activityType": "Site Visit", "date": "2025-03-10T00:00:00.000Z", "description": "Equipment demonstration scheduled" }
             ],
-            "customerEquipment": [
-                { "id": 1, "companyId": "1067200", "equipmentType": "Dozer", "make": "John Deere", "model": "700K", "year": 2019, "serialNumber": "JD700KFRT52", "hours": 5200 },
-                { "id": 2, "companyId": "998810", "equipmentType": "Generator", "make": "Caterpillar", "model": "XQ575", "year": 2021, "serialNumber": "CATXQ575PP1", "hours": 1800 },
-                { "id": 3, "companyId": "1067200", "equipmentType": "Excavator", "make": "Komatsu", "model": "PC138", "year": 2020, "serialNumber": "KMTPC138AB2", "hours": 4100 }
-            ]
+            "customerEquipment": [1008, 1007, 1009],
         },
         {
             "id": 500103,
