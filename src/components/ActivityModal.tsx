@@ -236,14 +236,87 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode }:
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="contactName">Contact Name</Label>
-            <Input
-              id="contactName"
-              value={contactName}
-              onChange={(e) => setContactName(e.target.value)}
-              placeholder="Enter contact name"
-            />
+            <Label>Company (optional)</Label>
+            <Popover open={companyPopoverOpen} onOpenChange={setCompanyPopoverOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  className={cn("w-full justify-between font-normal", !selectedCompanyId && "text-muted-foreground")}
+                >
+                  {selectedCompany?.companyName || "Select company..."}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                <Command>
+                  <CommandInput placeholder="Search companies..." />
+                  <CommandList>
+                    <CommandEmpty>No companies found.</CommandEmpty>
+                    <CommandGroup>
+                      {projectCompanies.map(company => (
+                        <CommandItem
+                          key={company.companyId}
+                          value={company.companyName}
+                          onSelect={() => handleCompanyChange(company.companyId)}
+                        >
+                          <Check className={cn("mr-2 h-4 w-4", selectedCompanyId === company.companyId ? "opacity-100" : "opacity-0")} />
+                          <span>{company.companyName}</span>
+                          <span className="ml-auto text-xs text-muted-foreground">{company.roleDescription}</span>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            {selectedCompanyId && (
+              <Button type="button" variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={() => { setSelectedCompanyId(''); setSelectedContactId(''); }}>
+                <X className="h-3 w-3 mr-1" /> Clear company
+              </Button>
+            )}
           </div>
+
+          {selectedCompanyId && companyContacts.length > 0 && (
+            <div className="space-y-2">
+              <Label>Contact</Label>
+              <Popover open={contactPopoverOpen} onOpenChange={setContactPopoverOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className={cn("w-full justify-between font-normal", !selectedContactId && "text-muted-foreground")}
+                  >
+                    {selectedContactId ? companyContacts.find(c => c.id === selectedContactId)?.name || "Select contact..." : "Select contact..."}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                  <Command>
+                    <CommandInput placeholder="Search contacts..." />
+                    <CommandList>
+                      <CommandEmpty>No contacts found.</CommandEmpty>
+                      <CommandGroup>
+                        {companyContacts.map(contact => (
+                          <CommandItem
+                            key={contact.id}
+                            value={contact.name}
+                            onSelect={() => { setSelectedContactId(contact.id); setContactPopoverOpen(false); }}
+                          >
+                            <Check className={cn("mr-2 h-4 w-4", selectedContactId === contact.id ? "opacity-100" : "opacity-0")} />
+                            <div>
+                              <div>{contact.name}</div>
+                              {contact.title && <div className="text-xs text-muted-foreground">{contact.title}</div>}
+                            </div>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
