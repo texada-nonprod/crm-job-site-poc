@@ -730,7 +730,7 @@
                 { "id": 2, "content": "University lab safety protocols will apply. All contractors must complete online safety orientation before site access.", "createdAt": "2025-03-20T14:30:00.000Z", "createdById": 313, "tagIds": ["SAFETY", "COMPLIANCE"], "attachments": [] }
             ],
             "activities": [
-                { "id": 1015, "assigneeId": 313, "activityType": "Email", "date": "2025-03-15T00:00:00.000Z", "description": "Sent equipment catalog and pricing" }
+                { "id": 1015, "statusId": 2, "salesRepId": 313, "typeId": "E", "date": "2025-03-15T16:45:00.000Z", "description": "Sent equipment catalog and pricing", "contactName": "Dr. Alan Grant", "notes": "Included compact equipment options suitable for campus setting.", "campaignId": 2 }
             ],
             "customerEquipment": [1033, 1034, 1035]
         },
