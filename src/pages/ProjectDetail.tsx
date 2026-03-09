@@ -1139,9 +1139,9 @@ const ProjectDetail = () => {
         open={showEquipmentModal}
         onOpenChange={setShowEquipmentModal}
         onSave={handleSaveEquipment}
-        equipment={selectedEquipment}
-        mode={equipmentModalMode}
-        projectCompanies={project.projectCompanies} />
+        projectId={project.id}
+        projectCompanies={project.projectCompanies}
+        existingEquipmentIds={project.customerEquipment} />
       
 
       <AlertDialog open={showDeleteEquipmentDialog} onOpenChange={setShowDeleteEquipmentDialog}>
