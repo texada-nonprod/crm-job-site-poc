@@ -461,15 +461,33 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return filteredProjects.reduce((total, project) => total + calculateProjectRevenue(project), 0);
   };
 
-  const getRevenueByType = (): { typeId: number; typeName: string; revenue: number }[] => {
-    const filteredProjects = getFilteredProjects();
-    const revenueMap = new Map<number, number>();
+  const classifyRevenue = (filteredProjects: Project[]) => {
+    let wonTotal = 0;
+    let pipelineTotal = 0;
+    const wonByType = new Map<number, number>();
+    const pipelineByType = new Map<number, number>();
+
     filteredProjects.forEach(project => {
       project.associatedOpportunities.forEach(ao => {
         const opp = opportunities.find(o => o.id === ao.id);
-        if (opp) revenueMap.set(opp.typeId, (revenueMap.get(opp.typeId) || 0) + ao.revenue);
+        if (!opp) return;
+        const stage = opportunityStages.find(s => s.stageid === ao.stageId);
+        if (!stage) return;
+
+        if (stage.stageid === 16) {
+          wonTotal += ao.revenue;
+          wonByType.set(opp.typeId, (wonByType.get(opp.typeId) || 0) + ao.revenue);
+        } else if (stage.phaseid === 1 || stage.phaseid === 2) {
+          pipelineTotal += ao.revenue;
+          pipelineByType.set(opp.typeId, (pipelineByType.get(opp.typeId) || 0) + ao.revenue);
+        }
       });
     });
+
+    return { wonTotal, pipelineTotal, wonByType, pipelineByType };
+  };
+
+  const buildRevenueByType = (revenueMap: Map<number, number>) => {
     return Array.from(revenueMap.entries())
       .filter(([, revenue]) => revenue > 0)
       .map(([typeId, revenue]) => {
@@ -479,6 +497,23 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       .sort((a: any, b: any) => a.displayOrder - b.displayOrder)
       .map(({ typeId, typeName, revenue }) => ({ typeId, typeName, revenue }));
   };
+
+  const getRevenueByType = (): { typeId: number; typeName: string; revenue: number }[] => {
+    const filteredProjects = getFilteredProjects();
+    const revenueMap = new Map<number, number>();
+    filteredProjects.forEach(project => {
+      project.associatedOpportunities.forEach(ao => {
+        const opp = opportunities.find(o => o.id === ao.id);
+        if (opp) revenueMap.set(opp.typeId, (revenueMap.get(opp.typeId) || 0) + ao.revenue);
+      });
+    });
+    return buildRevenueByType(revenueMap);
+  };
+
+  const getWonRevenue = (): number => classifyRevenue(getFilteredProjects()).wonTotal;
+  const getPipelineRevenue = (): number => classifyRevenue(getFilteredProjects()).pipelineTotal;
+  const getWonRevenueByType = () => buildRevenueByType(classifyRevenue(getFilteredProjects()).wonByType);
+  const getPipelineRevenueByType = () => buildRevenueByType(classifyRevenue(getFilteredProjects()).pipelineByType);
 
   const addOpportunityToProject = (projectId: number, opportunityId: number) => {
     const opp = opportunities.find(o => o.id === opportunityId);
