@@ -78,6 +78,29 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode, f
       setCampaignId(activity.campaignId?.toString() || '');
       setIssueId(activity.issueId?.toString() || '');
       setShowMoreFields(!!(activity.campaignId || activity.issueId));
+    } else if (mode === 'create' && followUpFrom) {
+      setSalesRepId(followUpFrom.salesRepId.toString());
+      setTypeId(followUpFrom.typeId);
+      setDate(undefined);
+      setTimeValue('12:00');
+      setDescription('');
+      setNotes('');
+      if (followUpFrom.customerId) {
+        setSelectedCompanyId(followUpFrom.customerId);
+        const company = projectCompanies.find(c => c.companyId === followUpFrom.customerId);
+        if (company && followUpFrom.contactName) {
+          const contact = company.companyContacts.find(c => c.name === followUpFrom.contactName);
+          setSelectedContactId(contact?.id ?? '');
+        } else {
+          setSelectedContactId('');
+        }
+      } else {
+        setSelectedCompanyId('');
+        setSelectedContactId('');
+      }
+      setCampaignId('');
+      setIssueId('');
+      setShowMoreFields(false);
     } else {
       setSalesRepId('');
       setTypeId('');
@@ -91,7 +114,7 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode, f
       setIssueId('');
       setShowMoreFields(false);
     }
-  }, [activity, mode, open]);
+  }, [activity, mode, open, followUpFrom]);
 
   const handleDateSelect = (selectedDay: Date | undefined) => {
     if (!selectedDay) { setDate(undefined); return; }
