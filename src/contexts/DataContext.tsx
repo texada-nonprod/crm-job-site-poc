@@ -66,6 +66,8 @@ interface DataContextType {
   getStage: (id: number) => OpportunityStage | undefined;
   getTypeName: (typeId: number) => string;
   calculateProjectRevenue: (project: Project) => number;
+  calculateProjectWonRevenue: (project: Project) => number;
+  calculateProjectPipelineRevenue: (project: Project) => number;
   getFilteredProjects: () => Project[];
   getTotalPipelineRevenue: () => number;
   getRevenueByType: () => { typeId: number; typeName: string; revenue: number }[];
