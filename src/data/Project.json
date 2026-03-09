@@ -503,7 +503,7 @@
                 { "id": 3, "content": "Municipal security protocols in effect. All visitors must sign in at guard station and display visitor badges.", "createdAt": "2025-05-25T14:00:00.000Z", "createdById": 304, "tagIds": ["SECURITY"], "attachments": [] }
             ],
             "activities": [
-                { "id": 1011, "assigneeId": 304, "activityType": "Email", "date": "2025-05-15T00:00:00.000Z", "description": "Sent service contract renewal proposal" }
+                { "id": 1011, "statusId": 2, "salesRepId": 304, "typeId": "E", "date": "2025-05-15T10:00:00.000Z", "description": "Sent service contract renewal proposal", "contactName": "Harold Meyers", "notes": "Proposal covers preventive maintenance for all pump station motors." }
             ],
             "customerEquipment": [1022, 1023, 1024]
         },
