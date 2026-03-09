@@ -169,7 +169,7 @@
                 { "id": 1004, "assigneeId": 305, "activityType": "Email", "date": "2025-03-01T00:00:00.000Z", "description": "Sent proposal for excavator purchase" },
                 { "id": 1005, "assigneeId": 305, "activityType": "Site Visit", "date": "2025-03-10T00:00:00.000Z", "description": "Equipment demonstration scheduled" }
             ],
-            "customerEquipment": [1008, 1007, 1009],
+            "customerEquipment": [1008, 1007, 1009]
         },
         {
             "id": 500103,
