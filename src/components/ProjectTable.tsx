@@ -325,6 +325,15 @@ export const ProjectTable = () => {
         <p className="text-sm text-muted-foreground shrink-0">
           {totalProjects} project{totalProjects !== 1 ? 's' : ''} total
         </p>
+        <div className="relative shrink-0">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Input
+            placeholder="Search projects..."
+            value={searchQuery}
+            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+            className="h-8 w-48 pl-8 text-sm"
+          />
+        </div>
         <div className="flex-1 min-w-0">
           <ActiveFilterBadges />
         </div>
