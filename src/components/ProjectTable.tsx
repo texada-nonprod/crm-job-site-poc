@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '@/contexts/DataContext';
 import { useStatusColors } from '@/hooks/useStatusColors';
 import { useColumnVisibility, ColumnId } from '@/hooks/useColumnVisibility';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Card, CardHeader } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ColumnVisibilitySelector } from '@/components/ColumnVisibilitySelector';
-import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Project } from '@/types';
 
 type SortColumn =
@@ -56,6 +58,8 @@ interface RenderHelpers {
   formatDate: (d?: string) => string;
 }
 
+const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
+
 export const ProjectTable = () => {
   const navigate = useNavigate();
   const {
@@ -66,9 +70,11 @@ export const ProjectTable = () => {
     getLookupLabel,
   } = useData();
   const { getStatusColorClasses } = useStatusColors();
-  const { visibleColumns, isVisible } = useColumnVisibility();
+  const { visibleColumns } = useColumnVisibility();
   const [sortColumn, setSortColumn] = useState<SortColumn | null>('status');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
 
   const filteredProjects = getFilteredProjects();
 
@@ -276,6 +282,23 @@ export const ProjectTable = () => {
     return sortDirection === 'asc' ? comparison : -comparison;
   });
 
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [sortedProjects.length]);
+
+  // Pagination calculations
+  const totalProjects = sortedProjects.length;
+  const totalPages = Math.ceil(totalProjects / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, totalProjects);
+  const paginatedProjects = sortedProjects.slice(startIndex, endIndex);
+
+  const handlePageSizeChange = (value: string) => {
+    setPageSize(Number(value));
+    setCurrentPage(1);
+  };
+
   const SortIcon = ({ column }: { column: SortColumn }) => {
     if (sortColumn !== column) {
       return (
@@ -292,73 +315,124 @@ export const ProjectTable = () => {
     <Card>
       <div className="flex items-center justify-between px-4 py-3 border-b">
         <p className="text-sm text-muted-foreground">
-          Showing {sortedProjects.length} project{sortedProjects.length !== 1 ? 's' : ''}
+          {totalProjects} project{totalProjects !== 1 ? 's' : ''} total
         </p>
         <ColumnVisibilitySelector />
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {/* Project Name — always visible */}
-            <TableHead
-              className="cursor-pointer select-none group hover:bg-muted/50"
-              onClick={() => handleSort('name')}
-            >
-              <div className="flex items-center">
-                Project Name
-                <SortIcon column="name" />
-              </div>
-            </TableHead>
-
-            {activeColumns.map((col) => (
+      
+      <div className="max-h-[70vh] overflow-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {/* Project Name — always visible */}
               <TableHead
-                key={col.id}
-                className={`cursor-pointer select-none group hover:bg-muted/50 ${
-                  col.align === 'right' ? 'text-right' : ''
-                }`}
-                onClick={() => handleSort(col.sortKey)}
+                className="cursor-pointer select-none group hover:bg-muted/50"
+                onClick={() => handleSort('name')}
               >
-                <div
-                  className={`flex items-center ${col.align === 'right' ? 'justify-end' : ''}`}
-                >
-                  {col.header}
-                  <SortIcon column={col.sortKey} />
+                <div className="flex items-center">
+                  Project Name
+                  <SortIcon column="name" />
                 </div>
               </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {sortedProjects.length === 0 ? (
-            <TableRow>
-              <TableCell
-                colSpan={1 + activeColumns.length}
-                className="text-center text-muted-foreground py-8"
-              >
-                No projects found matching the current filters.
-              </TableCell>
-            </TableRow>
-          ) : (
-            sortedProjects.map((project) => (
-              <TableRow
-                key={project.id}
-                className="cursor-pointer hover:bg-muted/50"
-                onClick={() => navigate(`/project/${project.id}`)}
-              >
-                <TableCell className="font-medium">{project.name}</TableCell>
-                {activeColumns.map((col) => (
-                  <TableCell
-                    key={col.id}
-                    className={col.align === 'right' ? 'text-right font-medium' : ''}
+
+              {activeColumns.map((col) => (
+                <TableHead
+                  key={col.id}
+                  className={`cursor-pointer select-none group hover:bg-muted/50 ${
+                    col.align === 'right' ? 'text-right' : ''
+                  }`}
+                  onClick={() => handleSort(col.sortKey)}
+                >
+                  <div
+                    className={`flex items-center ${col.align === 'right' ? 'justify-end' : ''}`}
                   >
-                    {col.render(project, helpers)}
-                  </TableCell>
-                ))}
+                    {col.header}
+                    <SortIcon column={col.sortKey} />
+                  </div>
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {paginatedProjects.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={1 + activeColumns.length}
+                  className="text-center text-muted-foreground py-8"
+                >
+                  No projects found matching the current filters.
+                </TableCell>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+            ) : (
+              paginatedProjects.map((project) => (
+                <TableRow
+                  key={project.id}
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => navigate(`/project/${project.id}`)}
+                >
+                  <TableCell className="font-medium">{project.name}</TableCell>
+                  {activeColumns.map((col) => (
+                    <TableCell
+                      key={col.id}
+                      className={col.align === 'right' ? 'text-right font-medium' : ''}
+                    >
+                      {col.render(project, helpers)}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Pagination Footer */}
+      <div className="flex items-center justify-between px-4 py-3 border-t">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Rows per page:</span>
+          <Select value={String(pageSize)} onValueChange={handlePageSizeChange}>
+            <SelectTrigger className="h-8 w-[70px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {PAGE_SIZE_OPTIONS.map((size) => (
+                <SelectItem key={size} value={String(size)}>
+                  {size}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <span className="text-sm text-muted-foreground">
+            {totalProjects > 0 
+              ? `Showing ${startIndex + 1}–${endIndex} of ${totalProjects}`
+              : 'No results'
+            }
+          </span>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage >= totalPages}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
     </Card>
   );
 };
