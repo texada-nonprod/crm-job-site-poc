@@ -65,7 +65,7 @@ export const ProjectTable = () => {
     getLookupLabel,
   } = useData();
   const { getStatusColorClasses } = useStatusColors();
-  const { isVisible } = useColumnVisibility();
+  const { visibleColumns, isVisible } = useColumnVisibility();
   const [sortColumn, setSortColumn] = useState<SortColumn | null>('status');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
