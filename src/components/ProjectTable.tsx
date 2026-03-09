@@ -8,7 +8,9 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ColumnVisibilitySelector } from '@/components/ColumnVisibilitySelector';
-import { ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { FilterModal } from '@/components/FilterModal';
+import { ActiveFilterBadges } from '@/components/ActiveFilterBadges';
+import { ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 import { Project } from '@/types';
 
 type SortColumn =
