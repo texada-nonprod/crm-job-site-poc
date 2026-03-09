@@ -9,6 +9,7 @@ export interface CustomerEquipment {
   year?: number;
   serialNumber?: string;
   hours?: number;
+  ownershipStatus: 'owned' | 'rented';
 }
 
 export interface Activity {
