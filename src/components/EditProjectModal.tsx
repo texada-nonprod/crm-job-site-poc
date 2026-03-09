@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ExternalReferenceSearch } from '@/components/ExternalReferenceSearch';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -57,9 +58,8 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
   const [targetStartOpen, setTargetStartOpen] = useState(false);
   const [targetCompletionOpen, setTargetCompletionOpen] = useState(false);
 
-  // Dodge Project fields
-  const [dodgeProjectName, setDodgeProjectName] = useState(project.dodgeProject?.name || '');
-  const [dodgeProjectUrl, setDodgeProjectUrl] = useState(project.dodgeProject?.url || '');
+  // External Reference
+  const [externalReference, setExternalReference] = useState<{ source: string; name: string; url: string } | undefined>(project.externalReference);
 
   const allCompanies = getAllKnownCompanies();
   const selectedOwnerCompany = ownerCompanyId ? getCompanyById(ownerCompanyId) : undefined;
@@ -86,8 +86,7 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
       setBidDate(project.bidDate ? parseISO(project.bidDate) : undefined);
       setTargetStartDate(project.targetStartDate ? parseISO(project.targetStartDate) : undefined);
       setTargetCompletionDate(project.targetCompletionDate ? parseISO(project.targetCompletionDate) : undefined);
-      setDodgeProjectName(project.dodgeProject?.name || '');
-      setDodgeProjectUrl(project.dodgeProject?.url || '');
+      setExternalReference(project.externalReference);
     }
   }, [open, project]);
 
@@ -110,15 +109,7 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
       toast({ title: "Error", description: "Please select at least one assignee.", variant: "destructive" }); return;
     }
 
-    // Dodge Project validation: both fields required if either is filled
-    if ((dodgeProjectName.trim() && !dodgeProjectUrl.trim()) || (!dodgeProjectName.trim() && dodgeProjectUrl.trim())) {
-      toast({ title: "Error", description: "Dodge Project requires both a name and URL.", variant: "destructive" }); return;
-    }
-
     const parsedValuation = valuation ? parseFloat(valuation.replace(/,/g, '')) : undefined;
-    const dodgeProject = dodgeProjectName.trim() && dodgeProjectUrl.trim()
-      ? { name: dodgeProjectName.trim(), url: dodgeProjectUrl.trim() }
-      : undefined;
 
     updateProject(project.id, {
       assigneeIds,
@@ -143,7 +134,7 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
       bidDate: bidDate ? format(bidDate, 'yyyy-MM-dd') : undefined,
       targetStartDate: targetStartDate ? format(targetStartDate, 'yyyy-MM-dd') : undefined,
       targetCompletionDate: targetCompletionDate ? format(targetCompletionDate, 'yyyy-MM-dd') : undefined,
-      dodgeProject,
+      externalReference,
     });
 
     toast({ title: "Success", description: "Project updated successfully." });
@@ -318,24 +309,10 @@ export const EditProjectModal = ({ project, open, onOpenChange }: EditProjectMod
             </div>
           </div>
 
-          {/* Dodge Project Linkage */}
+          {/* External Reference */}
           <div className="space-y-4 pb-4 border-b">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold">Dodge Project</h3>
-              {(dodgeProjectName || dodgeProjectUrl) && (
-                <Button type="button" variant="ghost" size="sm" className="h-6 text-xs" onClick={() => { setDodgeProjectName(''); setDodgeProjectUrl(''); }}>Clear</Button>
-              )}
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="edit-dodge-name">Dodge Project Name</Label>
-                <Input id="edit-dodge-name" value={dodgeProjectName} onChange={(e) => setDodgeProjectName(e.target.value)} placeholder="e.g. St. Mary's West Wing" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-dodge-url">Dodge Project URL</Label>
-                <Input id="edit-dodge-url" value={dodgeProjectUrl} onChange={(e) => setDodgeProjectUrl(e.target.value)} placeholder="https://dodge.construction.com/..." />
-              </div>
-            </div>
+            <h3 className="font-semibold">External Reference</h3>
+            <ExternalReferenceSearch value={externalReference} onChange={setExternalReference} />
           </div>
 
           <div className="space-y-4 pt-4 border-t">

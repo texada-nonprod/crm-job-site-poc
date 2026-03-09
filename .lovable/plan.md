@@ -1,95 +1,39 @@
 
-## Overview
 
-Two changes combined into one implementation:
-1. Rename `dodgeProject` → generic `externalReference` (with a `source` field) so it can point to Dodge, IIR PEC Reports, or any future external system
-2. Replace the two plain text inputs with an async search/lookup widget that simulates calling an external API (easy to wire to a real endpoint later)
+# Remove PAR (Planned Annual Rate) from Projects
 
----
+PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
 
-## Data Model Change
+## Changes
 
-```text
-// Before
-dodgeProject?: { url: string; name: string }
+### 1. `src/types/index.ts`
+- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
+- Remove `showBehindPAR` from `Filters` interface
 
-// After
-externalReference?: { source: string; url: string; name: string }
-// source examples: "Dodge Data & Analytics", "IIR PEC Reports"
-```
+### 2. `src/data/Project.json`
+- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
 
----
+### 3. `src/contexts/DataContext.tsx`
+- Remove `showBehindPAR: false` from default filters
+- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
+- Remove changelog entry referencing `plannedAnnualRate` (id 18)
 
-## New Files
+### 4. `src/components/FilterBar.tsx`
+- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
 
-### `src/hooks/useExternalReferenceSearch.ts`
-A self-contained async search hook. Simulates an API call with a 300ms debounce + 400ms fake network delay. Returns `{ results, isLoading }`. Mock dataset includes ~14 records across both Dodge and IIR PEC. This is the single place to swap in a real `fetch()` call later.
+### 5. `src/components/EditProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove their reset in `useEffect`
+- Remove the PAR validation check
+- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
+- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
 
-### `src/components/ExternalReferenceSearch.tsx`
-A reusable controlled component used in both modals:
+### 6. `src/components/CreateProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove PAR validation
+- Remove `plannedAnnualRate` and `parStartDate` from new project object
+- Remove the Planned Annual Rate input and PAR Start Date picker from the form
 
-```text
-Props:
-  value: { source; name; url } | undefined
-  onChange: (val: { source; name; url } | undefined) => void
+### 7. `src/pages/ProjectDetail.tsx`
+- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
 
-Empty state:
-  [ 🔍 Search for external project...   ]
-        (type 2+ chars to search)
-
-Loading state:
-  [ 🔍 st. mary's...          ⏳ ]
-
-Results dropdown (inline, no Popover overhead):
-  ┌──────────────────────────────────────────┐
-  │  St. Mary's Hospital West Wing Exp.      │
-  │  Dodge Data & Analytics                  │
-  ├──────────────────────────────────────────┤
-  │  St. Mary's South Tower Renovation       │
-  │  IIR PEC Reports                         │
-  └──────────────────────────────────────────┘
-
-Selected state (replaces search input entirely):
-  ┌──────────────────────────────────────────┐
-  │  Dodge Data & Analytics  [badge]         │
-  │  St. Mary's Hospital West Wing Exp.  ↗   │
-  │                                [Remove]  │
-  └──────────────────────────────────────────┘
-```
-
----
-
-## Modified Files
-
-### `src/types/index.ts`
-- Remove `dodgeProject?: { url; name }`
-- Add `externalReference?: { source: string; url: string; name: string }`
-
-### `src/data/Project.json`
-- For all 4 linked projects: rename key, add `"source": "Dodge Data & Analytics"`
-
-### `src/pages/ProjectDetail.tsx`
-- Change `project.dodgeProject` → `project.externalReference`
-- Section header becomes `project.externalReference.source` (not hard-coded "Dodge Project")
-
-### `src/components/EditProjectModal.tsx`
-- Remove `dodgeProjectName`, `dodgeProjectUrl` state variables and their validation
-- Replace the two `<Input>` fields with `<ExternalReferenceSearch value={...} onChange={...} />`
-- Initialize from `project.externalReference`
-
-### `src/components/CreateProjectModal.tsx`
-- Same treatment as Edit modal
-- Initializes empty on open
-
-**`src/contexts/DataContext.tsx`**: No changes — it uses `Partial<Project>` for all updates so the renamed field flows through automatically.
-
----
-
-## Key UX Details
-
-- Search triggers at ≥2 characters
-- Debounce of 300ms prevents firing on every keystroke
-- Simulated 400ms "network" delay shows a loading spinner (prepares for real API swap)
-- Each result row shows the project name prominently + source as a muted label below
-- Once selected, the search input is replaced by a styled card — user must click "Remove" to change, preventing accidental overwrites
-- The hook's mock data file is structured identically to what a real API response would return, so the swap is a 1-line change from `setTimeout` to `fetch`

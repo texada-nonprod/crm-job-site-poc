@@ -89,7 +89,8 @@
                 { "id": 4, "companyId": "1019550", "equipmentType": "Skid Steer", "make": "Bobcat", "model": "T770", "year": 2022, "serialNumber": "BCT770KL921", "hours": 950 },
                 { "id": 5, "companyId": "998810", "equipmentType": "Compactor", "make": "Caterpillar", "model": "CS56B", "year": 2020, "serialNumber": "CATCS56BXMR", "hours": 3400 }
             ],
-            "dodgeProject": {
+            "externalReference": {
+                "source": "Dodge Data & Analytics",
                 "url": "https://www.construction.com/projects/5001010/st-marys-hospital-west-wing-expansion",
                 "name": "St. Mary's Medical Center West Wing Expansion"
             }
@@ -265,7 +266,8 @@
                 { "id": 2, "companyId": "NON-DBS", "equipmentType": "Roller", "make": "Volvo", "model": "DD120C", "year": 2020, "serialNumber": "VLVDD120CX3", "hours": 3500 },
                 { "id": 3, "companyId": "NON-DBS", "equipmentType": "Skid Steer", "make": "Case", "model": "SV340B", "year": 2021, "serialNumber": "CASESV340B7", "hours": 2100 }
             ],
-            "dodgeProject": {
+            "externalReference": {
+                "source": "Dodge Data & Analytics",
                 "url": "https://www.construction.com/projects/5001030/i-55-highway-resurfacing",
                 "name": "I-55 Highway Resurfacing Project (MM 20-35)"
             }
@@ -444,7 +446,8 @@
                 { "id": 5, "companyId": "1035040", "equipmentType": "Forklift", "make": "Caterpillar", "model": "DP50", "year": 2020, "serialNumber": "CATDP50NWJ2", "hours": 5100 },
                 { "id": 6, "companyId": "1067200", "equipmentType": "Compactor", "make": "Bomag", "model": "BW211D", "year": 2021, "serialNumber": "BMGBW211DA1", "hours": 2900 }
             ],
-            "dodgeProject": {
+            "externalReference": {
+                "source": "Dodge Data & Analytics",
                 "url": "https://www.construction.com/projects/5001050/amazon-fulfillment-center-ord5",
                 "name": "Amazon Fulfillment Center ORD5 - Chicago"
             }
@@ -612,7 +615,8 @@
                 { "id": 4, "companyId": "1035040", "equipmentType": "Boom Lift", "make": "Genie", "model": "S-65", "year": 2022, "serialNumber": "GENS65XC141", "hours": 1200 },
                 { "id": 5, "companyId": "1174395", "equipmentType": "Dozer", "make": "Komatsu", "model": "D39PX", "year": 2020, "serialNumber": "KMTD39PXRR1", "hours": 3600 }
             ],
-            "dodgeProject": {
+            "externalReference": {
+                "source": "Dodge Data & Analytics",
                 "url": "https://www.construction.com/projects/5001070/willow-creek-residential-subdivision",
                 "name": "Willow Creek Residential Subdivision Phase 2"
             }

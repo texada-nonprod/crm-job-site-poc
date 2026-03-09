@@ -135,7 +135,8 @@ export interface Project {
   bidDate?: string;
   targetStartDate?: string;
   targetCompletionDate?: string;
-  dodgeProject?: {
+  externalReference?: {
+    source: string;
     url: string;
     name: string;
   };

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ExternalReferenceSearch } from '@/components/ExternalReferenceSearch';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -55,9 +56,8 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
   const [targetStartOpen, setTargetStartOpen] = useState(false);
   const [targetCompletionOpen, setTargetCompletionOpen] = useState(false);
 
-  // Dodge Project fields
-  const [dodgeProjectName, setDodgeProjectName] = useState('');
-  const [dodgeProjectUrl, setDodgeProjectUrl] = useState('');
+  // External Reference
+  const [externalReference, setExternalReference] = useState<{ source: string; name: string; url: string } | undefined>(undefined);
 
   const allCompanies = getAllKnownCompanies();
   const selectedOwnerCompany = ownerCompanyId ? getCompanyById(ownerCompanyId) : undefined;
@@ -84,8 +84,7 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
     setBidDate(undefined);
     setTargetStartDate(undefined);
     setTargetCompletionDate(undefined);
-    setDodgeProjectName('');
-    setDodgeProjectUrl('');
+    setExternalReference(undefined);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -120,16 +119,7 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
       }
     }
 
-    // Dodge Project validation
-    if ((dodgeProjectName.trim() && !dodgeProjectUrl.trim()) || (!dodgeProjectName.trim() && dodgeProjectUrl.trim())) {
-      toast({ title: "Error", description: "Dodge Project requires both a name and URL.", variant: "destructive" });
-      return;
-    }
-
     const parsedValuation = valuation ? parseFloat(valuation.replace(/,/g, '')) : undefined;
-    const dodgeProject = dodgeProjectName.trim() && dodgeProjectUrl.trim()
-      ? { name: dodgeProjectName.trim(), url: dodgeProjectUrl.trim() }
-      : undefined;
 
     createProject({
       name: name.trim(),
@@ -155,7 +145,7 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
       bidDate: bidDate ? format(bidDate, 'yyyy-MM-dd') : undefined,
       targetStartDate: targetStartDate ? format(targetStartDate, 'yyyy-MM-dd') : undefined,
       targetCompletionDate: targetCompletionDate ? format(targetCompletionDate, 'yyyy-MM-dd') : undefined,
-      dodgeProject,
+      externalReference,
     });
 
     toast({ title: "Success", description: `Project "${name.trim()}" created successfully.` });
@@ -357,24 +347,10 @@ export const CreateProjectModal = ({ open, onOpenChange }: CreateProjectModalPro
             </div>
           </div>
 
-          {/* Dodge Project Linkage */}
+          {/* External Reference */}
           <div className="space-y-4 pb-4 border-b">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold">Dodge Project</h3>
-              {(dodgeProjectName || dodgeProjectUrl) && (
-                <Button type="button" variant="ghost" size="sm" className="h-6 text-xs" onClick={() => { setDodgeProjectName(''); setDodgeProjectUrl(''); }}>Clear</Button>
-              )}
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="create-dodge-name">Dodge Project Name</Label>
-                <Input id="create-dodge-name" value={dodgeProjectName} onChange={(e) => setDodgeProjectName(e.target.value)} placeholder="e.g. St. Mary's West Wing" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="create-dodge-url">Dodge Project URL</Label>
-                <Input id="create-dodge-url" value={dodgeProjectUrl} onChange={(e) => setDodgeProjectUrl(e.target.value)} placeholder="https://dodge.construction.com/..." />
-              </div>
-            </div>
+            <h3 className="font-semibold">External Reference</h3>
+            <ExternalReferenceSearch value={externalReference} onChange={setExternalReference} />
           </div>
 
           <div className="space-y-4 pt-4 border-t">
