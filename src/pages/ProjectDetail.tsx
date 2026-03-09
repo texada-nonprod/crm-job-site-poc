@@ -661,9 +661,9 @@ const ProjectDetail = () => {
         </div>
 
         <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
             <h2 className="text-lg font-semibold">Opportunities</h2>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <Button
                 variant="outline"
                 size="sm"
@@ -733,6 +733,7 @@ const ProjectDetail = () => {
                   </Label>
                 </div>
               </div>
+              <div className="overflow-x-auto -mx-6 px-6">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -742,13 +743,13 @@ const ProjectDetail = () => {
                     <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleOppSort('description')}>
                       <div className="flex items-center">Description<SortIcon active={oppSortColumn === 'description'} direction={oppSortDirection} /></div>
                     </TableHead>
-                    <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleOppSort('division')}>
+                    <TableHead className="cursor-pointer select-none group hover:bg-muted/50 hidden lg:table-cell" onClick={() => handleOppSort('division')}>
                       <div className="flex items-center">Division<SortIcon active={oppSortColumn === 'division'} direction={oppSortDirection} /></div>
                     </TableHead>
                     <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleOppSort('stage')}>
                       <div className="flex items-center">Stage<SortIcon active={oppSortColumn === 'stage'} direction={oppSortDirection} /></div>
                     </TableHead>
-                    <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleOppSort('salesRep')}>
+                    <TableHead className="cursor-pointer select-none group hover:bg-muted/50 hidden lg:table-cell" onClick={() => handleOppSort('salesRep')}>
                       <div className="flex items-center">Sales Rep<SortIcon active={oppSortColumn === 'salesRep'} direction={oppSortDirection} /></div>
                     </TableHead>
                     <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleOppSort('estClose')}>
@@ -772,13 +773,13 @@ const ProjectDetail = () => {
                           <Badge variant="secondary">{opp.type}</Badge>
                         </TableCell>
                         <TableCell>{opp.description}</TableCell>
-                        <TableCell>
+                        <TableCell className="hidden lg:table-cell">
                           <Badge variant="secondary">{fullOpp?.divisionId || '-'}</Badge>
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline">{getStageName(opp.stageId)}</Badge>
                         </TableCell>
-                        <TableCell>{fullOpp ? getSalesRepName(fullOpp.salesRepId) : '-'}</TableCell>
+                        <TableCell className="hidden lg:table-cell">{fullOpp ? getSalesRepName(fullOpp.salesRepId) : '-'}</TableCell>
                         <TableCell>
                           {fullOpp?.estimateDeliveryMonth && fullOpp?.estimateDeliveryYear ?
                         `${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][fullOpp.estimateDeliveryMonth - 1]} ${fullOpp.estimateDeliveryYear}` :
@@ -793,13 +794,15 @@ const ProjectDetail = () => {
                 </TableBody>
                 <TableFooter>
                   <TableRow>
-                    <TableCell colSpan={6} className="text-right font-bold">Total</TableCell>
+                    <TableCell colSpan={4} className="text-right font-bold lg:hidden">Total</TableCell>
+                    <TableCell colSpan={6} className="text-right font-bold hidden lg:table-cell">Total</TableCell>
                     <TableCell className="text-right font-bold">
                       ${sortedOpportunities.reduce((sum, o) => sum + (o.revenue || 0), 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}
                     </TableCell>
                   </TableRow>
                 </TableFooter>
               </Table>
+              </div>
             </>
           }
         </Card>
