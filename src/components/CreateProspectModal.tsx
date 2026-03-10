@@ -235,7 +235,7 @@ export const CreateProspectModal = ({ open, onOpenChange, onSave }: CreateProspe
     if (!submitted) return {};
     const e: Record<string, string> = {};
     if (!companyName.trim()) e.companyName = 'Required';
-    if (!divisionId) e.division = 'Required';
+    if (divisionIds.length === 0) e.division = 'Select at least one division';
     if (!phone.trim()) e.phone = 'Required';
     else if (hasMaskedCountry && !validatePhone(phone, countryCode)) e.phone = 'Invalid format';
     if (!addressValid) e.address = 'At least one address line is required';
