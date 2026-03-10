@@ -17,7 +17,7 @@ import { CreateOpportunityModal } from '@/components/CreateOpportunityModal';
 
 import { AssociateCompanyModal } from '@/components/AssociateCompanyModal';
 import { EditProjectModal } from '@/components/EditProjectModal';
-import { EditGCModal } from '@/components/EditGCModal';
+
 import { ActivityModal } from '@/components/ActivityModal';
 import { AssociateActivityModal } from '@/components/AssociateActivityModal';
 import { NotesSection } from '@/components/NotesSection';
