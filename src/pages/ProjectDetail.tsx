@@ -1065,11 +1065,6 @@ const ProjectDetail = () => {
         onOpenChange={setShowCreateModal} />
       
 
-      <AddGCModal
-        projectId={project.id}
-        open={showAddGCModal}
-        onOpenChange={setShowAddGCModal} />
-      
 
       <AssociateCompanyModal
         projectId={project.id}
