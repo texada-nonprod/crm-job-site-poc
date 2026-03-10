@@ -27,7 +27,7 @@ const MOCK_EXTERNAL_REFERENCES: ExternalReferenceResult[] = [
 export const useExternalReferenceSearch = (query: string) => {
   const [results, setResults] = useState<ExternalReferenceResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     // Clear any pending timeout
