@@ -87,6 +87,7 @@ export const ProjectCompaniesTable = ({ projectId, companies, onRemoveCompany }:
             <TableHead className="w-[40px]"></TableHead>
             <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleSort('company')}><div className="flex items-center">Company<SortIcon column="company" /></div></TableHead>
             <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleSort('role')}><div className="flex items-center">Role<SortIcon column="role" /></div></TableHead>
+            <TableHead>Divisions</TableHead>
             <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleSort('contacts')}><div className="flex items-center">Contacts<SortIcon column="contacts" /></div></TableHead>
             <TableHead className="w-[120px]"></TableHead>
           </TableRow>
