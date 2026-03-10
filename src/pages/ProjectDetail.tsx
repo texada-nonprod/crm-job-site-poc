@@ -1100,19 +1100,6 @@ const ProjectDetail = () => {
         }}
       />
 
-      <AlertDialog open={showRemoveGCDialog} onOpenChange={setShowRemoveGCDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove General Contractor?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to remove {primaryGC?.companyName} as the general contractor for this project? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleRemoveGC}>Remove</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
       </AlertDialog>
 
       <AlertDialog open={showRemoveCompanyDialog} onOpenChange={setShowRemoveCompanyDialog}>
