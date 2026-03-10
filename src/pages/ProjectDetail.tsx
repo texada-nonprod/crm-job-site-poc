@@ -117,18 +117,6 @@ const ProjectDetail = () => {
     }
   };
 
-  const primaryGC = project.projectCompanies.find((c) => c.roleId === 'GC' && c.isPrimaryContact);
-
-  const handleRemoveGC = () => {
-    if (primaryGC) {
-      removeProjectCompany(project.id, primaryGC.companyName);
-      toast({
-        title: "Success",
-        description: "General Contractor removed successfully."
-      });
-      setShowRemoveGCDialog(false);
-    }
-  };
 
   const handleRemoveCompany = () => {
     if (companyToRemove) {
