@@ -360,8 +360,8 @@ const ProjectDetail = () => {
       </header>
 
       <main className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <Card className="p-6 lg:col-span-2">
+        <div className="mb-8">
+          <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Project Information</h2>
               <Button
