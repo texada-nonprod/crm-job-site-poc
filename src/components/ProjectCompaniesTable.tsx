@@ -116,7 +116,7 @@ export const ProjectCompaniesTable = ({ projectId, companies, onRemoveCompany }:
                     </TableCell>
                   </TableRow>
                   <CollapsibleContent asChild>
-                    <tr><td colSpan={6} className="p-0">
+                    <tr><td colSpan={5} className="p-0">
                       <div className="bg-muted/30 border-b px-6 py-4">
                         <div className="grid gap-3">
                           {contacts.map((contact, contactIdx) => (
