@@ -450,9 +450,10 @@ const ManageDropdowns = () => {
                       {currentValues.map((item, index) => {
                         const editIndex = isEditing ? editedValues.findIndex(e => e.id === item.id) : index;
                         const colorConfig = STATUS_COLORS.find(c => c.id === item.color) || STATUS_COLORS[0];
+                        const isProtectedGC = selectedDropdown === 'subcontractorRole' && item.id === 'GC';
                         return <TableRow key={item.id}>
                           <TableCell>
-                            {isEditing ? <Input value={editedValues[editIndex]?.label || ''} onChange={e => handleEditValue(editIndex, 'label', e.target.value)} className="h-8" /> : item.label}
+                            {isEditing ? <Input value={editedValues[editIndex]?.label || ''} onChange={e => handleEditValue(editIndex, 'label', e.target.value)} className="h-8" readOnly={isProtectedGC} disabled={isProtectedGC} /> : item.label}
                           </TableCell>
                           {(selectedDropdown === 'projectStatus' || selectedDropdown === 'noteTags') && (
                             <TableCell>
