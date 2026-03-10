@@ -14,10 +14,10 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { OpportunityDetailModal } from '@/components/OpportunityDetailModal';
 import { AssociateOpportunityModal } from '@/components/AssociateOpportunityModal';
 import { CreateOpportunityModal } from '@/components/CreateOpportunityModal';
-import { AddGCModal } from '@/components/AddGCModal';
+
 import { AssociateCompanyModal } from '@/components/AssociateCompanyModal';
 import { EditProjectModal } from '@/components/EditProjectModal';
-import { EditGCModal } from '@/components/EditGCModal';
+
 import { ActivityModal } from '@/components/ActivityModal';
 import { AssociateActivityModal } from '@/components/AssociateActivityModal';
 import { NotesSection } from '@/components/NotesSection';
@@ -44,13 +44,11 @@ const ProjectDetail = () => {
   const [showOpportunityDetail, setShowOpportunityDetail] = useState(false);
   const [showAssociateModal, setShowAssociateModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showAddGCModal, setShowAddGCModal] = useState(false);
-  const [showRemoveGCDialog, setShowRemoveGCDialog] = useState(false);
   const [showAssociateCompanyModal, setShowAssociateCompanyModal] = useState(false);
   const [showRemoveCompanyDialog, setShowRemoveCompanyDialog] = useState(false);
   const [companyToRemove, setCompanyToRemove] = useState<string | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showEditGCModal, setShowEditGCModal] = useState(false);
+  
   const [locationViewType, setLocationViewType] = useState<LocationViewType>('address');
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
@@ -119,18 +117,6 @@ const ProjectDetail = () => {
     }
   };
 
-  const primaryGC = project.projectCompanies.find((c) => c.roleId === 'GC' && c.isPrimaryContact);
-
-  const handleRemoveGC = () => {
-    if (primaryGC) {
-      removeProjectCompany(project.id, primaryGC.companyName);
-      toast({
-        title: "Success",
-        description: "General Contractor removed successfully."
-      });
-      setShowRemoveGCDialog(false);
-    }
-  };
 
   const handleRemoveCompany = () => {
     if (companyToRemove) {
@@ -374,8 +360,8 @@ const ProjectDetail = () => {
       </header>
 
       <main className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <Card className="p-6 lg:col-span-2">
+        <div className="mb-8">
+          <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Project Information</h2>
               <Button
@@ -567,97 +553,26 @@ const ProjectDetail = () => {
                   </div>
                 </>
               }
+              <Separator />
+
+              <div className="flex items-start gap-3">
+                <User className="h-5 w-5 text-muted-foreground mt-0.5" />
+                <div className="flex-1">
+                  <p className="font-medium">Assignment</p>
+                  <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm mt-1">
+                    <div>
+                      <span className="text-muted-foreground">Assignee{project.assigneeIds.length > 1 ? 's' : ''}</span>
+                      <p className="font-medium">{getUserNames(project.assigneeIds)}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Current Opportunities</span>
+                      <p className="font-medium">{project.associatedOpportunities.length}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </Card>
-
-          <div className="space-y-6">
-            <Card className="p-6">
-              <h3 className="font-semibold mb-3">Assignment</h3>
-              <div className="space-y-3 text-sm">
-                <div>
-                <span className="text-muted-foreground">Assignee{project.assigneeIds.length > 1 ? 's' : ''}</span>
-                  <p className="font-medium">{getUserNames(project.assigneeIds)}</p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Current Opportunities</span>
-                  <p className="font-medium">{project.associatedOpportunities.length}</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Building2 className="h-4 w-4" />
-                  <h3 className="font-semibold">General Contractor</h3>
-                </div>
-                {primaryGC &&
-                <div className="flex gap-1">
-                    <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => setShowEditGCModal(true)}>
-                    
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => setShowRemoveGCDialog(true)}>
-                    
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                }
-              </div>
-              {primaryGC ?
-              (() => {
-                const gcPrimaryContact = primaryGC.companyContacts?.[primaryGC.primaryContactIndex || 0];
-                const gcContactCount = primaryGC.companyContacts?.length || 0;
-                return (
-                  <div className="space-y-2 text-sm">
-                      <p className="font-medium">{primaryGC.companyName}</p>
-                      {gcPrimaryContact &&
-                    <>
-                          <p className="text-muted-foreground">{gcPrimaryContact.name}</p>
-                          {gcPrimaryContact.title && <p className="text-muted-foreground">{gcPrimaryContact.title}</p>}
-                          <div className="pt-2 space-y-1">
-                            {gcPrimaryContact.phone &&
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                                <Phone className="h-3 w-3" />
-                                <span>{gcPrimaryContact.phone}</span>
-                              </div>
-                        }
-                            <div className="flex items-center gap-1 text-muted-foreground">
-                              <Mail className="h-3 w-3" />
-                              <a href={`mailto:${gcPrimaryContact.email}`} className="text-primary hover:underline">
-                                {gcPrimaryContact.email}
-                              </a>
-                            </div>
-                          </div>
-                          {gcContactCount > 1 &&
-                      <p className="text-xs text-muted-foreground pt-1">
-                              + {gcContactCount - 1} more contact{gcContactCount > 2 ? 's' : ''}
-                            </p>
-                      }
-                        </>
-                    }
-                    </div>);
-
-              })() :
-
-              <div className="space-y-3">
-                  <p className="text-sm text-muted-foreground">No general contractor assigned</p>
-                  <Button size="sm" onClick={() => setShowAddGCModal(true)}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add GC
-                  </Button>
-                </div>
-              }
-            </Card>
-          </div>
         </div>
 
         <Card className="p-6">
@@ -1150,11 +1065,6 @@ const ProjectDetail = () => {
         onOpenChange={setShowCreateModal} />
       
 
-      <AddGCModal
-        projectId={project.id}
-        open={showAddGCModal}
-        onOpenChange={setShowAddGCModal} />
-      
 
       <AssociateCompanyModal
         projectId={project.id}
@@ -1185,20 +1095,6 @@ const ProjectDetail = () => {
         }}
       />
 
-      <AlertDialog open={showRemoveGCDialog} onOpenChange={setShowRemoveGCDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove General Contractor?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to remove {primaryGC?.companyName} as the general contractor for this project? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleRemoveGC}>Remove</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       <AlertDialog open={showRemoveCompanyDialog} onOpenChange={setShowRemoveCompanyDialog}>
         <AlertDialogContent>
@@ -1221,14 +1117,6 @@ const ProjectDetail = () => {
         onOpenChange={setShowEditModal} />
       
 
-      {primaryGC &&
-      <EditGCModal
-        projectId={project.id}
-        currentGC={primaryGC}
-        open={showEditGCModal}
-        onOpenChange={setShowEditGCModal} />
-
-      }
 
       <ActivityModal
         open={showActivityModal}

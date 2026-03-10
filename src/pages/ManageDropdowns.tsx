@@ -222,6 +222,12 @@ const ManageDropdowns = () => {
   };
   const handleConfirmDelete = () => {
     if (deleteConfirm.item && selectedDropdown) {
+      // Prevent deletion of protected General Contractor role
+      if (selectedDropdown === 'subcontractorRole' && deleteConfirm.item.id === 'GC') {
+        toast({ title: 'Protected item', description: 'The General Contractor role cannot be deleted.', variant: 'destructive' });
+        setDeleteConfirm({ open: false, item: null });
+        return;
+      }
       if (isEditing) {
         setEditedValues(prev => prev.filter(v => v.id !== deleteConfirm.item!.id));
       } else {
@@ -444,9 +450,10 @@ const ManageDropdowns = () => {
                       {currentValues.map((item, index) => {
                         const editIndex = isEditing ? editedValues.findIndex(e => e.id === item.id) : index;
                         const colorConfig = STATUS_COLORS.find(c => c.id === item.color) || STATUS_COLORS[0];
+                        const isProtectedGC = selectedDropdown === 'subcontractorRole' && item.id === 'GC';
                         return <TableRow key={item.id}>
                           <TableCell>
-                            {isEditing ? <Input value={editedValues[editIndex]?.label || ''} onChange={e => handleEditValue(editIndex, 'label', e.target.value)} className="h-8" /> : item.label}
+                            {isEditing ? <Input value={editedValues[editIndex]?.label || ''} onChange={e => handleEditValue(editIndex, 'label', e.target.value)} className="h-8" readOnly={isProtectedGC} disabled={isProtectedGC} /> : item.label}
                           </TableCell>
                           {(selectedDropdown === 'projectStatus' || selectedDropdown === 'noteTags') && (
                             <TableCell>
@@ -473,9 +480,11 @@ const ManageDropdowns = () => {
                             {isEditing ? <Input type="number" value={editedValues[editIndex]?.displayOrder || 0} onChange={e => handleEditValue(editIndex, 'displayOrder', e.target.value)} className="h-8 w-20" /> : item.displayOrder}
                           </TableCell>
                           <TableCell>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => handleDeleteClick(item)}>
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                            {!isProtectedGC && (
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => handleDeleteClick(item)}>
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
                           </TableCell>
                         </TableRow>;
                       })}

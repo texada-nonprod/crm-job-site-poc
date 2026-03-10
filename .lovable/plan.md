@@ -1,44 +1,39 @@
 
 
-## Remove GC Card, Redesign Layout, Protect GC Role
+# Remove PAR (Planned Annual Rate) from Projects
 
-### Current State
-The detail page top section is a 3-column grid: Project Information (2 cols) + right sidebar (1 col) containing Assignment card and GC card. Removing the GC card leaves only a small Assignment card on the right, wasting space.
+PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
 
-### Proposed Layout Change
+## Changes
 
-**Merge Assignment into the Project Information card** and make it full-width (no more right sidebar column).
+### 1. `src/types/index.ts`
+- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
+- Remove `showBehindPAR` from `Filters` interface
 
-```text
-BEFORE:                              AFTER:
-┌──────────────────┐ ┌────────┐     ┌─────────────────────────────────┐
-│ Project Info     │ │Assignmt│     │ Project Information        [Edit]│
-│ (2 cols)         │ ├────────┤     │                                 │
-│                  │ │ GC Card│     │ Location  │ Assignment          │
-│                  │ │        │     │ Owner     │ Assignees: ...      │
-│                  │ └────────┘     │ Desc      │ Opportunities: 5    │
-└──────────────────┘               └─────────────────────────────────┘
-```
+### 2. `src/data/Project.json`
+- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
 
-The Assignment fields (Assignees, Current Opportunities count) move into the Project Information card as another section after the existing content, separated by a divider.
+### 3. `src/contexts/DataContext.tsx`
+- Remove `showBehindPAR: false` from default filters
+- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
+- Remove changelog entry referencing `plannedAnnualRate` (id 18)
 
-GC companies are already shown in the Companies table below -- no information is lost.
+### 4. `src/components/FilterBar.tsx`
+- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
 
-### Changes
+### 5. `src/components/EditProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove their reset in `useEffect`
+- Remove the PAR validation check
+- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
+- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
 
-**1. `src/pages/ProjectDetail.tsx`**
-- Remove the `lg:grid-cols-3` grid and right sidebar column entirely (lines ~573-660: Assignment card + GC card)
-- Change top card from `lg:col-span-2` to full-width
-- Add Assignment section (Assignees + Opportunity count) inside the Project Information card, after the existing content, with a `<Separator />`
-- Remove GC-related state variables (`showAddGCModal`, `showRemoveGCDialog`, `showEditGCModal`) and handlers (`handleRemoveGC`, `primaryGC` logic)
-- Remove GC-related modal renders (`AddGCModal`, `EditGCModal`, GC remove `AlertDialog`)
-- Remove unused imports (`AddGCModal`, `EditGCModal`)
+### 6. `src/components/CreateProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove PAR validation
+- Remove `plannedAnnualRate` and `parStartDate` from new project object
+- Remove the Planned Annual Rate input and PAR Start Date picker from the form
 
-**2. `src/pages/ManageDropdowns.tsx`**
-- Make the "General Contractor" (id: `GC`) row in the Subcontractor Role dropdown non-editable and non-deletable
-- When rendering rows, if `selectedDropdown === 'subcontractorRole'` and `item.id === 'GC'`:
-  - In edit mode: disable the label input (make it read-only)
-  - Hide the delete button
-- When deleting via confirmation: block deletion if item.id === 'GC' (safety net)
-- In edit mode label inputs: make the GC row's input `readOnly` with muted styling
+### 7. `src/pages/ProjectDetail.tsx`
+- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
 
