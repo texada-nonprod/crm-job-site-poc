@@ -1100,7 +1100,6 @@ const ProjectDetail = () => {
         }}
       />
 
-      </AlertDialog>
 
       <AlertDialog open={showRemoveCompanyDialog} onOpenChange={setShowRemoveCompanyDialog}>
         <AlertDialogContent>
