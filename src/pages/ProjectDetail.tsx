@@ -375,7 +375,7 @@ const ProjectDetail = () => {
               </Button>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Column 1: Location */}
               <div className="rounded-lg border bg-muted/20 p-4 flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
@@ -633,7 +633,7 @@ const ProjectDetail = () => {
                     <DollarSign className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div className="flex-1">
                       <p className="font-medium">Revenue</p>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-2 text-sm mt-1">
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-2 text-sm mt-1">
                         <div>
                           <span className="text-muted-foreground">Open Leads & Opportunities</span>
                           <p className="font-medium">{openOpps.length}</p>
@@ -809,7 +809,7 @@ const ProjectDetail = () => {
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Companies</h2>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -861,6 +861,7 @@ const ProjectDetail = () => {
               No activities recorded for this project yet.
             </p> :
 
+          <div className="overflow-x-auto -mx-6 px-6">
           <Table>
               <TableHeader>
                 <TableRow>
@@ -876,7 +877,7 @@ const ProjectDetail = () => {
                   <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleActSort('status')}>
                     <div className="flex items-center">Status<SortIcon active={actSortColumn === 'status'} direction={actSortDirection} /></div>
                   </TableHead>
-                  <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleActSort('description')}>
+                  <TableHead className="hidden lg:table-cell cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleActSort('description')}>
                     <div className="flex items-center">Description<SortIcon active={actSortColumn === 'description'} direction={actSortDirection} /></div>
                   </TableHead>
                   <TableHead className="w-[80px]"></TableHead>
@@ -907,7 +908,7 @@ const ProjectDetail = () => {
                         {activity.statusId === 2 ? 'Completed' : 'Outstanding'}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-sm">
+                    <TableCell className="hidden lg:table-cell text-sm">
                       <div className="flex items-center gap-1.5">
                         {parentActivity && (
                           <TooltipProvider>
@@ -963,6 +964,7 @@ const ProjectDetail = () => {
               })}
               </TableBody>
             </Table>
+          </div>
           }
         </Card>
 
