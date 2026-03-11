@@ -28,7 +28,7 @@ import { Input } from '@/components/ui/input';
 import { MultiSelectFilter } from '@/components/MultiSelectFilter';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { ArrowLeft, MapPin, User, Phone, Mail, Building2, Plus, Link as LinkIcon, X, Pencil, Calendar, Wrench, Search, ChevronRight, ArrowUpDown, ArrowUp, ArrowDown, History, ExternalLink, CornerDownRight, Link2, DollarSign, FileText } from 'lucide-react';
+import { ArrowLeft, MapPin, User, Phone, Mail, Building2, Plus, Link as LinkIcon, X, Pencil, Calendar, Wrench, Search, ChevronRight, ArrowUpDown, ArrowUp, ArrowDown, History, ExternalLink, CornerDownRight, Link2, DollarSign, FileText, ClipboardList } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Activity, ProjectCompany, CustomerEquipment } from '@/types';
 
@@ -549,7 +549,7 @@ const ProjectDetail = () => {
               <>
                   <Separator />
                   <div>
-                    <p className="font-medium mb-3">Project Details</p>
+                    <p className="font-medium mb-3 flex items-center gap-2"><ClipboardList className="h-5 w-5 text-muted-foreground shrink-0" />Project Details</p>
                     <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
                       {project.valuation != null &&
                     <div>
