@@ -377,7 +377,7 @@ const ProjectDetail = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Column 1: Location */}
-              <div className="flex items-start gap-3">
+              <div className="rounded-lg border bg-muted/20 p-4 flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
@@ -424,7 +424,7 @@ const ProjectDetail = () => {
               </div>
 
               {/* Column 2: Project Owner */}
-              <div className="flex items-start gap-3">
+              <div className="rounded-lg border bg-muted/20 p-4 flex items-start gap-3">
                 <Building2 className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="font-medium">Project Owner</p>
@@ -479,7 +479,7 @@ const ProjectDetail = () => {
               </div>
 
               {/* Column 3: Assignees + Description stacked */}
-              <div className="space-y-4">
+              <div className="rounded-lg border bg-muted/20 p-4 space-y-4">
                 <div className="flex items-start gap-3">
                   <User className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
                   <div className="min-w-0">

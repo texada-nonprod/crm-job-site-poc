@@ -1,19 +1,39 @@
 
 
-## Add Subtle Bordered Cards to Project Information Columns
+# Remove PAR (Planned Annual Rate) from Projects
 
-Wrap each of the 3 grid columns in a lightly bordered, rounded container with a faint background to visually distinguish sections.
+PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
 
-### Changes to `src/pages/ProjectDetail.tsx`
+## Changes
 
-**Line 380** — Column 1 (Location):
-- Change `<div className="flex items-start gap-3">` to `<div className="rounded-lg border bg-muted/20 p-4 flex items-start gap-3">`
+### 1. `src/types/index.ts`
+- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
+- Remove `showBehindPAR` from `Filters` interface
 
-**Line 427** — Column 2 (Project Owner):
-- Same change: add `rounded-lg border bg-muted/20 p-4` to the outer div
+### 2. `src/data/Project.json`
+- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
 
-**Line 482** — Column 3 (Assignees + Description):
-- Change `<div className="space-y-4">` to `<div className="rounded-lg border bg-muted/20 p-4 space-y-4">`
+### 3. `src/contexts/DataContext.tsx`
+- Remove `showBehindPAR: false` from default filters
+- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
+- Remove changelog entry referencing `plannedAnnualRate` (id 18)
 
-Three lines changed total. Cards stack naturally on mobile.
+### 4. `src/components/FilterBar.tsx`
+- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
+
+### 5. `src/components/EditProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove their reset in `useEffect`
+- Remove the PAR validation check
+- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
+- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
+
+### 6. `src/components/CreateProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove PAR validation
+- Remove `plannedAnnualRate` and `parStartDate` from new project object
+- Remove the Planned Annual Rate input and PAR Start Date picker from the form
+
+### 7. `src/pages/ProjectDetail.tsx`
+- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
 
