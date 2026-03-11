@@ -364,7 +364,10 @@ const ProjectDetail = () => {
         <div className="mb-8">
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Project Information</h2>
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                <ClipboardList className="h-5 w-5 text-muted-foreground" />
+                Project Information
+              </h2>
               <Button
                 variant="outline"
                 size="sm"
