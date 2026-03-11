@@ -377,7 +377,7 @@ const ProjectDetail = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Column 1: Location */}
-              <div className="flex items-start gap-3">
+              <div className="rounded-lg border bg-muted/20 p-4 flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
