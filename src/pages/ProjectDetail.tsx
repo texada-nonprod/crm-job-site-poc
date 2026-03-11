@@ -636,7 +636,7 @@ const ProjectDetail = () => {
                           <p className="font-medium">{openOpps.length}</p>
                         </div>
                         <div>
-                          <span className="text-muted-foreground">Total Leads / Opportunities</span>
+                          <span className="text-muted-foreground">Total Leads & Opportunities</span>
                           <p className="font-medium">{projectOpps.length}</p>
                         </div>
                         <div>
