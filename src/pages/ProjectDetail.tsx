@@ -877,7 +877,7 @@ const ProjectDetail = () => {
                   <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleActSort('status')}>
                     <div className="flex items-center">Status<SortIcon active={actSortColumn === 'status'} direction={actSortDirection} /></div>
                   </TableHead>
-                  <TableHead className="cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleActSort('description')}>
+                  <TableHead className="hidden lg:table-cell cursor-pointer select-none group hover:bg-muted/50" onClick={() => handleActSort('description')}>
                     <div className="flex items-center">Description<SortIcon active={actSortColumn === 'description'} direction={actSortDirection} /></div>
                   </TableHead>
                   <TableHead className="w-[80px]"></TableHead>
