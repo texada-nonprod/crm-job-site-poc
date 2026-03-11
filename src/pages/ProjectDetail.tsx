@@ -375,10 +375,11 @@ const ProjectDetail = () => {
               </Button>
             </div>
             
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Column 1: Location */}
               <div className="flex items-start gap-3">
-                <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
-                <div className="flex-1">
+                <MapPin className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
                     <p className="font-medium">Location</p>
                     {(hasAddress || hasCoordinates) &&
@@ -390,7 +391,6 @@ const ProjectDetail = () => {
                         className="rounded-none h-7 text-xs"
                         onClick={() => setLocationViewType('address')}
                         disabled={!hasAddress}>
-                        
                           Address
                         </Button>
                         <Button
@@ -400,7 +400,6 @@ const ProjectDetail = () => {
                         className="rounded-none h-7 text-xs"
                         onClick={() => setLocationViewType('coordinates')}
                         disabled={!hasCoordinates}>
-                        
                           Coordinates
                         </Button>
                       </div>
@@ -413,41 +412,38 @@ const ProjectDetail = () => {
                         {project.address.city}, {project.address.state} {project.address.zipCode}<br />
                         {project.address.country}
                       </p> :
-
                   <p className="text-sm text-muted-foreground italic">No address available</p> :
-
-
                   hasCoordinates ?
                   <p className="text-sm text-muted-foreground">
                         Latitude: {project.address.latitude}<br />
                         Longitude: {project.address.longitude}
                       </p> :
-
                   <p className="text-sm text-muted-foreground italic">No coordinates available</p>
-
                   }
                 </div>
               </div>
 
-              <Separator />
-
+              {/* Column 2: Project Owner */}
               <div className="flex items-start gap-3">
-                <Building2 className="h-5 w-5 text-muted-foreground mt-0.5" />
-                <div className="flex-1">
+                <Building2 className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
+                <div className="flex-1 min-w-0">
                   <p className="font-medium">Project Owner</p>
                   {(() => {
                     const ownerCompany = project.projectOwner?.companyId ? getCompanyById(project.projectOwner.companyId) : undefined;
                     if (!ownerCompany) return <p className="text-sm text-muted-foreground italic">No owner assigned</p>;
                     const selectedContacts = ownerCompany.companyContacts.filter((c) => project.projectOwner.contactIds.includes(c.id));
+                    const isExpanded = expandedSections.has('owner');
+                    const visibleContacts = isExpanded ? selectedContacts : selectedContacts.slice(0, 2);
+                    const hasMore = selectedContacts.length > 2;
                     return (
                       <div>
                         <p className="text-sm font-medium">{ownerCompany.companyName}</p>
                         {selectedContacts.length > 0 ?
                         <div className="mt-2 space-y-2">
-                            {selectedContacts.map((contact) =>
+                            {visibleContacts.map((contact) =>
                           <div key={contact.id} className="text-sm">
                                 <p>{contact.name}{contact.title ? ` — ${contact.title}` : ''}</p>
-                                <div className="flex items-center gap-4 text-muted-foreground">
+                                <div className="flex items-center gap-4 text-muted-foreground flex-wrap">
                                   {contact.phone &&
                               <div className="flex items-center gap-1">
                                       <Phone className="h-3 w-3" />
@@ -463,32 +459,87 @@ const ProjectDetail = () => {
                                 </div>
                               </div>
                           )}
+                            {hasMore &&
+                              <button
+                                className="text-primary text-xs cursor-pointer hover:underline"
+                                onClick={() => setExpandedSections(prev => {
+                                  const next = new Set(prev);
+                                  isExpanded ? next.delete('owner') : next.add('owner');
+                                  return next;
+                                })}>
+                                {isExpanded ? 'Show less' : `Show ${selectedContacts.length - 2} more`}
+                              </button>
+                            }
                           </div> :
-
                         <p className="text-sm text-muted-foreground italic mt-1">No contacts selected</p>
                         }
                       </div>);
-
                   })()}
                 </div>
               </div>
 
-              <Separator />
+              {/* Column 3: Assignees + Description stacked */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <User className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
+                  <div className="min-w-0">
+                    <p className="font-medium">Assignee{project.assigneeIds.length > 1 ? 's' : ''}</p>
+                    {(() => {
+                      const assigneeText = getUserNames(project.assigneeIds);
+                      const isExpanded = expandedSections.has('assignees');
+                      const isLong = assigneeText.length > 80;
+                      return (
+                        <div>
+                          <p className={`text-sm text-muted-foreground ${isLong && !isExpanded ? 'line-clamp-2' : ''}`}>
+                            {assigneeText}
+                          </p>
+                          {isLong &&
+                            <button
+                              className="text-primary text-xs cursor-pointer hover:underline mt-1"
+                              onClick={() => setExpandedSections(prev => {
+                                const next = new Set(prev);
+                                isExpanded ? next.delete('assignees') : next.add('assignees');
+                                return next;
+                              })}>
+                              {isExpanded ? 'Show less' : 'Show more'}
+                            </button>
+                          }
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
 
-              <div className="flex items-start gap-3">
-                <User className="h-5 w-5 text-muted-foreground mt-0.5" />
                 <div>
-                  <p className="font-medium">Assignee{project.assigneeIds.length > 1 ? 's' : ''}</p>
-                  <p className="text-sm text-muted-foreground">{getUserNames(project.assigneeIds)}</p>
+                  <p className="font-medium mb-2">Description</p>
+                  {(() => {
+                    const desc = project.description || '';
+                    const isExpanded = expandedSections.has('description');
+                    const isLong = desc.length > 120;
+                    return (
+                      <div>
+                        <p className={`text-sm text-muted-foreground ${isLong && !isExpanded ? 'line-clamp-3' : ''}`}>
+                          {desc || <span className="italic">No description</span>}
+                        </p>
+                        {isLong &&
+                          <button
+                            className="text-primary text-xs cursor-pointer hover:underline mt-1"
+                            onClick={() => setExpandedSections(prev => {
+                              const next = new Set(prev);
+                              isExpanded ? next.delete('description') : next.add('description');
+                              return next;
+                            })}>
+                            {isExpanded ? 'Show less' : 'Show more'}
+                          </button>
+                        }
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
+            </div>
 
-              <Separator />
-
-              <div>
-                <p className="font-medium mb-2">Description</p>
-                <p className="text-sm text-muted-foreground">{project.description}</p>
-              </div>
+            <div className="space-y-4 mt-6">
 
               {/* Project Details fields */}
               {(project.valuation || project.primaryStageId || project.primaryProjectTypeId || project.ownershipTypeId || project.bidDate || project.targetStartDate || project.targetCompletionDate) &&
