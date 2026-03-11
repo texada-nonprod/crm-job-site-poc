@@ -28,7 +28,7 @@ import { Input } from '@/components/ui/input';
 import { MultiSelectFilter } from '@/components/MultiSelectFilter';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { ArrowLeft, MapPin, User, Phone, Mail, Building2, Plus, Link as LinkIcon, X, Pencil, Calendar, Wrench, Search, ChevronRight, ArrowUpDown, ArrowUp, ArrowDown, History, ExternalLink, CornerDownRight, Link2, DollarSign, FileText, ClipboardList } from 'lucide-react';
+import { ArrowLeft, MapPin, User, Phone, Mail, Building2, Plus, Link as LinkIcon, X, Pencil, Calendar, Wrench, Search, ChevronRight, ArrowUpDown, ArrowUp, ArrowDown, History, ExternalLink, CornerDownRight, Link2, DollarSign, FileText } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Activity, ProjectCompany, CustomerEquipment } from '@/types';
 
@@ -364,10 +364,7 @@ const ProjectDetail = () => {
         <div className="mb-8">
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold flex items-center gap-2">
-                <ClipboardList className="h-5 w-5 text-muted-foreground" />
-                Project Information
-              </h2>
+              <h2 className="text-lg font-semibold">Project Information</h2>
               <Button
                 variant="outline"
                 size="sm"
