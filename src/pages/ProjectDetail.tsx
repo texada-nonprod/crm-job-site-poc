@@ -1364,7 +1364,17 @@ const ProjectDetail = () => {
         currentActivityIds={project.activities?.map((a) => a.id) || []}
         open={showAssociateActivityModal}
         onOpenChange={setShowAssociateActivityModal} />
-      
+
+      <ActivityFilterModal
+        open={showActFilterModal}
+        onOpenChange={setShowActFilterModal}
+        filters={actFilters}
+        setFilters={setActFilters}
+        activities={project.activities || []}
+        projectCompanies={project.projectCompanies || []}
+        getSalesRepName={getSalesRepName}
+      />
+
 
       <AddCustomerEquipmentModal
         open={showEquipmentModal}
