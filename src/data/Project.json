@@ -46,9 +46,9 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Michael Ross", "title": "Site Superintendent", "phone": "312-555-8821", "email": "mross@turnerconstruction.com" },
-                        { "id": 2, "name": "Jennifer Walsh", "title": "Project Manager", "phone": "312-555-8822", "email": "jwalsh@turnerconstruction.com" },
-                        { "id": 3, "name": "Robert Chen", "title": "Safety Director", "phone": "312-555-8823", "email": "rchen@turnerconstruction.com" }
+                        { "id": 1, "name": "Michael Ross", "title": "Site Superintendent", "phone": "312-555-8821", "email": "mross@turnerconstruction.com", "divisionIds": ["G"] },
+                        { "id": 2, "name": "Jennifer Walsh", "title": "Project Manager", "phone": "312-555-8822", "email": "jwalsh@turnerconstruction.com", "divisionIds": ["G", "C"] },
+                        { "id": 3, "name": "Robert Chen", "title": "Safety Director", "phone": "312-555-8823", "email": "rchen@turnerconstruction.com", "divisionIds": ["G", "R"] }
                     ],
                     "primaryContactIndex": 0
                 },
