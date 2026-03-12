@@ -1,39 +1,54 @@
 
 
-# Remove PAR (Planned Annual Rate) from Projects
+## Add Mail Codes & Address Toggle to Create Contact Form
 
-PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
+### Changes
 
-## Changes
+**1. Create `src/data/MailCodes.json`**
+- Store the 43 mail codes as `{ code: string, description: string }[]` with trimmed code values.
 
-### 1. `src/types/index.ts`
-- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
-- Remove `showBehindPAR` from `Filters` interface
+**2. Update `src/types/index.ts`**
+- Add `mailCodes?: string[]` to `CompanyContact`.
 
-### 2. `src/data/Project.json`
-- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
+**3. Update `src/components/CreateContactForm.tsx`**
 
-### 3. `src/contexts/DataContext.tsx`
-- Remove `showBehindPAR: false` from default filters
-- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
-- Remove changelog entry referencing `plannedAnnualRate` (id 18)
+**Address toggle** — Replace the current "Address (Optional)" section with a two-option button group: "Same as Company" (default, selected) | "Different Address". Only show the address fields when "Different Address" is selected. Track via `addressType: 'same' | 'different'` state.
 
-### 4. `src/components/FilterBar.tsx`
-- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
+**Additional Fields section** — After the Divisions section and the address toggle/fields, add a collapsible "Additional Fields" section (collapsed by default, toggled via a text button with chevron). This section contains only:
+- **Mail Codes** — A searchable multi-select using Popover + Command pattern (43 items warrant search). Selected codes displayed as removable badges. Uses `mailCodes` state (`string[]`).
 
-### 5. `src/components/EditProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove their reset in `useEffect`
-- Remove the PAR validation check
-- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
-- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
+**Layout sketch:**
+```text
+[Required fields...]
+[Divisions]
 
-### 6. `src/components/CreateProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove PAR validation
-- Remove `plannedAnnualRate` and `parStartDate` from new project object
-- Remove the Planned Annual Rate input and PAR Start Date picker from the form
+── Address ──────────────────────
+[ Same as Company | Different Address ]   ← toggle button group
+  (address fields shown only if "Different Address")
 
-### 7. `src/pages/ProjectDetail.tsx`
-- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
+▸ Additional Fields              ← collapsed by default
+  Mail Codes
+  [Search mail codes...        ]
+  [6] [A] [MC]  ×  ×  ×         ← removable badges
+```
+
+**4. Update `src/components/ManageCompanyContactsModal.tsx`**
+- Add `mailCodes` to `editForm` state, pre-populate from contact.
+- Show mail code badges on read-only contact cards when present.
+- In edit form, add the same "Additional Fields" collapsible with Mail Codes selector.
+
+### Technical Details
+- Address toggle uses the existing `Button` with `variant="outline"` / `variant="default"` for the selected state (inline button group pattern).
+- When "Same as Company" is selected, address fields are cleared and not sent in the payload.
+- Mail Codes multi-select: Popover containing a Command with CommandInput for search, CommandList of checkable items. Badge + X for removing selected codes.
+- Include `mailCodes` in the simulated API payload and saved `CompanyContact` object.
+
+### Files
+
+| File | Action |
+|------|--------|
+| `src/data/MailCodes.json` | Create |
+| `src/types/index.ts` | Edit — add `mailCodes` to CompanyContact |
+| `src/components/CreateContactForm.tsx` | Edit — add address toggle, collapsible "Additional Fields" with Mail Codes |
+| `src/components/ManageCompanyContactsModal.tsx` | Edit — add mailCodes to edit form, display badges |
 
