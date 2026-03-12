@@ -83,6 +83,7 @@ const ProjectDetail = () => {
 
   // Sort state for Activities table
   const [actSortColumn, setActSortColumn] = useState<'assignee' | 'company' | 'contact' | 'role' | 'activityType' | 'date' | 'status' | 'description' | null>('date');
+  const actColVis = useActivityColumnVisibility();
   const [actSortDirection, setActSortDirection] = useState<'asc' | 'desc' | null>('desc');
 
   // Sort state for Equipment table
