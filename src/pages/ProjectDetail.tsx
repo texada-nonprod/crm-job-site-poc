@@ -1387,7 +1387,8 @@ const ProjectDetail = () => {
       <CreateEquipmentModal
         open={showCreateEquipmentModal}
         onOpenChange={setShowCreateEquipmentModal}
-        onSave={handleSaveNewEquipment} />
+        onSave={handleSaveNewEquipment}
+        projectCompanies={project.projectCompanies} />
       
 
       <AlertDialog open={showDeleteEquipmentDialog} onOpenChange={setShowDeleteEquipmentDialog}>
