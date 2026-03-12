@@ -761,8 +761,8 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Fred Flint", "title": "Quarry Manager", "phone": "815-555-0011", "email": "fred@rocksolidmaterials.com" },
-                        { "id": 2, "name": "Barney Stone", "title": "Operations Director", "phone": "815-555-0012", "email": "bstone@rocksolidmaterials.com" }
+                        { "id": 1, "name": "Fred Flint", "title": "Quarry Manager", "phone": "815-555-0011", "email": "fred@rocksolidmaterials.com", "divisionIds": ["G"] },
+                        { "id": 2, "name": "Barney Stone", "title": "Operations Director", "phone": "815-555-0012", "email": "bstone@rocksolidmaterials.com", "divisionIds": ["G", "R"] }
                     ],
                     "primaryContactIndex": 0
                 },
