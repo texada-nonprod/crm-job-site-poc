@@ -11,7 +11,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Calendar as CalendarIcon, Check, ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { ProjectCompany } from '@/types';
+import { ProjectCompany, CustomerEquipment } from '@/types';
 
 // ── API Stubs ──
 
