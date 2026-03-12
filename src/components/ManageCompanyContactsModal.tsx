@@ -56,7 +56,7 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
   const handleSaveEdit = (contactId: number) => {
     if (!editForm.name.trim() || !editForm.email.trim()) { toast({ title: "Missing Information", description: "Name and email are required.", variant: "destructive" }); return; }
     if (editForm.divisionIds.length === 0) { toast({ title: "Division Required", description: "At least one division must be selected.", variant: "destructive" }); return; }
-    setContacts(prev => prev.map(c => c.id === contactId ? { ...c, name: editForm.name.trim(), title: editForm.title.trim(), phone: editForm.phone.trim(), email: editForm.email.trim(), divisionIds: editForm.divisionIds } : c));
+    setContacts(prev => prev.map(c => c.id === contactId ? { ...c, name: editForm.name.trim(), title: editForm.title.trim(), phone: editForm.phone.trim(), email: editForm.email.trim(), divisionIds: editForm.divisionIds, mailCodes: editForm.mailCodes.length > 0 ? editForm.mailCodes : undefined } : c));
     setEditingId(null); setEditForm(emptyContact);
   };
   const handleRemoveContact = (contactId: number) => {
