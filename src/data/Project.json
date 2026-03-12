@@ -773,7 +773,7 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 6, "name": "Frank Thompson", "title": "Safety Manager", "phone": "815-555-0337", "email": "f.thompson@mortenson.com" }
+                        { "id": 6, "name": "Frank Thompson", "title": "Safety Manager", "phone": "815-555-0337", "email": "f.thompson@mortenson.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 },
