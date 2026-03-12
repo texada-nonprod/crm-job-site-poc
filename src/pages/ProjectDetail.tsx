@@ -88,6 +88,8 @@ const ProjectDetail = () => {
   const [actSortColumn, setActSortColumn] = useState<'assignee' | 'company' | 'contact' | 'role' | 'activityType' | 'date' | 'status' | 'description' | null>('date');
   const actColVis = useActivityColumnVisibility();
   const [actSortDirection, setActSortDirection] = useState<'asc' | 'desc' | null>('desc');
+  const [actFilters, setActFilters] = useState<ActivityFilters>(DEFAULT_ACTIVITY_FILTERS);
+  const [showActFilterModal, setShowActFilterModal] = useState(false);
 
   // Sort state for Equipment table
   const [eqSortColumn, setEqSortColumn] = useState<'type' | 'make' | 'model' | 'year' | 'serial' | 'smu' | 'ownership' | null>(null);
