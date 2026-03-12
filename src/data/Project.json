@@ -916,7 +916,7 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Victoria Meyers", "title": "Managing Partner", "phone": "312-555-2200", "email": "vmeyers@halsteddev.com" }
+                        { "id": 1, "name": "Victoria Meyers", "title": "Managing Partner", "phone": "312-555-2200", "email": "vmeyers@halsteddev.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 },
