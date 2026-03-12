@@ -478,9 +478,9 @@
                     "roleDescription": "Subcontractor - Electrical",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 3, "name": "Barbara Hughes", "title": "Safety Coordinator", "phone": "630-555-0994", "email": "b.hughes@rosendin.com" },
-                        { "id": 4, "name": "Charles Wright", "title": "Foreman", "phone": "630-555-0995", "email": "c.wright@rosendin.com" },
-                        { "id": 5, "name": "Diana Lopez", "title": "Procurement Manager", "phone": "630-555-0996", "email": "d.lopez@rosendin.com" }
+                        { "id": 3, "name": "Barbara Hughes", "title": "Safety Coordinator", "phone": "630-555-0994", "email": "b.hughes@rosendin.com", "divisionIds": ["S"] },
+                        { "id": 4, "name": "Charles Wright", "title": "Foreman", "phone": "630-555-0995", "email": "c.wright@rosendin.com", "divisionIds": ["S", "X"] },
+                        { "id": 5, "name": "Diana Lopez", "title": "Procurement Manager", "phone": "630-555-0996", "email": "d.lopez@rosendin.com", "divisionIds": ["S"] }
                     ],
                     "primaryContactIndex": 0
                 }
