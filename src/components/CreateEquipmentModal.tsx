@@ -451,6 +451,7 @@ export function CreateEquipmentModal({ open, onOpenChange, onSave, projectId, pr
       };
 
       const newId = await createEquipmentApi(payload);
+      await associateEquipmentToProjectApi(projectId, newId);
       onSave(newId);
       handleClose(false);
     } finally {
