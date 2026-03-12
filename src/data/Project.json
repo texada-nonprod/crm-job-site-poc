@@ -222,7 +222,7 @@
                     "primaryContactIndex": 0
                 },
                 {
-                    "companyId": "NON-DBS",
+                    "companyId": "$NON-DBS-CC",
                     "companyName": "Curran Contracting Company",
                     "roleId": "SUB-PAV",
                     "roleDescription": "Subcontractor - Paving",
