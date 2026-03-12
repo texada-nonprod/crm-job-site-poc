@@ -1,39 +1,36 @@
 
 
-# Remove PAR (Planned Annual Rate) from Projects
+## Updated: Multi-Contact and Multi-Role in Associate Company Modal
 
-PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
+Same plan as before, with one UI correction for primary contact designation.
 
-## Changes
+### Primary Contact Change
 
-### 1. `src/types/index.ts`
-- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
-- Remove `showBehindPAR` from `Filters` interface
+Replace the single "Set as primary contact" checkbox with a **star icon on each contact row**. When multiple contacts are selected, clicking the star on one marks it as primary (deselects any other). This matches the existing star-icon pattern in the Project Companies table.
 
-### 2. `src/data/Project.json`
-- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
+```text
+┌─────────────────────────────┐
+│ Company *    [combobox]     │
+│ Role(s) *   [multi-select]  │
+│   [Badge: GC ×] [Badge: …] │
+│ Contacts (optional)         │
+│   ☐ ★ John Smith            │
+│   ☐ ☆ Jane Doe              │
+└─────────────────────────────┘
+```
 
-### 3. `src/contexts/DataContext.tsx`
-- Remove `showBehindPAR: false` from default filters
-- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
-- Remove changelog entry referencing `plannedAnnualRate` (id 18)
+Star is only clickable for checked contacts. `primaryContactId` state replaces the boolean `isPrimaryContact`.
 
-### 4. `src/components/FilterBar.tsx`
-- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
+### All Other Changes (unchanged from prior plan)
 
-### 5. `src/components/EditProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove their reset in `useEffect`
-- Remove the PAR validation check
-- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
-- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
+- **Multi-role**: Replace single Select with Popover+Command checkboxes using managed dropdown roles. `selectedRoles: string[]`. Removable badges.
+- **Contact selection**: After company chosen, show its `companyContacts` as checkboxes. `selectedContactIds: number[]`.
+- **Submit**: Require ≥1 role. Pass `roleIds`/`roleDescriptions` arrays. Pass only selected contacts (or all if none selected). Set `isPrimaryContact` on the designated contact.
+- **Reset**: Clear selections on company change or modal close.
 
-### 6. `src/components/CreateProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove PAR validation
-- Remove `plannedAnnualRate` and `parStartDate` from new project object
-- Remove the Planned Annual Rate input and PAR Start Date picker from the form
+### Files
 
-### 7. `src/pages/ProjectDetail.tsx`
-- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
+| File | Action |
+|------|--------|
+| `src/components/AssociateCompanyModal.tsx` | Modify |
 
