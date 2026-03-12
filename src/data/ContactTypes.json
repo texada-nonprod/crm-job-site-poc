@@ -1,0 +1,12 @@
+[
+  { "code": "10", "description": "SERVICE CONTACT" },
+  { "code": "11", "description": "PARTS CONTACT" },
+  { "code": "12", "description": "SALES CONTACT" },
+  { "code": "13", "description": "PRESIDENT" },
+  { "code": "14", "description": "TOROMONT PERSONNEL" },
+  { "code": "15", "description": "PLANT MANAGER" },
+  { "code": "16", "description": "FORESTRY SUPERVISOR" },
+  { "code": "17", "description": "MILL PROJECT MANAGER" },
+  { "code": "18", "description": "CHIEF EXECUTIVE OFFICER (CEO)" },
+  { "code": "19", "description": "CHIEF ADMINISTRATIVE OFFICER (CAO)" }
+]
