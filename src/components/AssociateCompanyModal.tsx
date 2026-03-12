@@ -171,47 +171,12 @@ export const AssociateCompanyModal = ({ projectId, currentCompanyNames, open, on
                 {/* Multi-Role Selection */}
                 <div className="grid gap-2">
                   <Label>Role(s) *</Label>
-                  <Popover open={rolesOpen} onOpenChange={setRolesOpen}>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" role="combobox" aria-expanded={rolesOpen} className="w-full justify-between">
-                        {selectedRoles.length === 0
-                          ? "Select role(s)..."
-                          : `${selectedRoles.length} role${selectedRoles.length > 1 ? 's' : ''} selected`}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-popover z-50">
-                      <Command>
-                        <CommandInput placeholder="Search roles..." />
-                        <CommandList>
-                          <CommandEmpty>No role found.</CommandEmpty>
-                          <CommandGroup>
-                            {ROLE_OPTIONS.map((role) => (
-                              <CommandItem key={role.id} value={role.label} onSelect={() => toggleRole(role.id)}>
-                                <Check className={cn("mr-2 h-4 w-4", selectedRoles.includes(role.id) ? "opacity-100" : "opacity-0")} />
-                                {role.label}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  {selectedRoles.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {selectedRoles.map(roleId => {
-                        const role = ROLE_OPTIONS.find(r => r.id === roleId);
-                        return (
-                          <Badge key={roleId} variant="secondary" className="text-xs gap-1">
-                            {role?.label || roleId}
-                            <button type="button" onClick={() => removeRole(roleId)} className="ml-0.5 hover:text-destructive">
-                              <X className="h-3 w-3" />
-                            </button>
-                          </Badge>
-                        );
-                      })}
-                    </div>
-                  )}
+                  <RoleMultiSelect
+                    selectedRoles={selectedRoles}
+                    onRolesChange={setSelectedRoles}
+                    placeholder="Select role(s)..."
+                    required
+                  />
                 </div>
 
                 {/* Contact Selection (optional, shown after company selected) */}
