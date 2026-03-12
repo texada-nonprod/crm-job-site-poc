@@ -125,7 +125,16 @@ export const ProjectCompaniesTable = ({ projectId, companies, onRemoveCompany, s
                         {prospect && <Badge className="bg-amber-500/15 text-amber-700 border-amber-300 hover:bg-amber-500/25 text-[10px] px-1.5 py-0">Prospect</Badge>}
                       </div>
                     </TableCell>
-                    <TableCell><Badge variant={company.roleId === 'GC' ? 'default' : 'secondary'}>{company.roleDescription}</Badge></TableCell>
+                    <TableCell>
+                      <div className="flex gap-1 flex-wrap">
+                        {(() => {
+                          const roles = getCompanyRoles(company);
+                          return roles.descriptions.map((desc, i) => (
+                            <Badge key={roles.ids[i]} variant={roles.ids[i] === 'GC' ? 'default' : 'secondary'}>{desc}</Badge>
+                          ));
+                        })()}
+                      </div>
+                    </TableCell>
                     {showCustomerNumber && (
                       <TableCell className="text-sm text-muted-foreground font-mono">{company.companyId}</TableCell>
                     )}
