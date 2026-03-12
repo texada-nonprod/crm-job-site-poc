@@ -797,8 +797,8 @@
                     "roleDescription": "Subcontractor - Paving",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 4, "name": "Kevin Rodriguez", "title": "Quality Assurance", "phone": "630-555-0444", "email": "k.rodriguez@currancontracting.com" },
-                        { "id": 5, "name": "Linda Chang", "title": "Project Coordinator", "phone": "630-555-0445", "email": "l.chang@currancontracting.com" }
+                        { "id": 4, "name": "Kevin Rodriguez", "title": "Quality Assurance", "phone": "630-555-0444", "email": "k.rodriguez@currancontracting.com", "divisionIds": ["P"] },
+                        { "id": 5, "name": "Linda Chang", "title": "Project Coordinator", "phone": "630-555-0445", "email": "l.chang@currancontracting.com", "divisionIds": ["P", "G"] }
                     ],
                     "primaryContactIndex": 0
                 }
