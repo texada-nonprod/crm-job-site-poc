@@ -1053,7 +1053,7 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "James Whitfield", "title": "Aviation Division Lead", "phone": "773-555-4410", "email": "jwhitfield@turnerconstruction.com" }
+                        { "id": 1, "name": "James Whitfield", "title": "Aviation Division Lead", "phone": "773-555-4410", "email": "jwhitfield@turnerconstruction.com", "divisionIds": ["G", "S"] }
                     ],
                     "primaryContactIndex": 0
                 }
