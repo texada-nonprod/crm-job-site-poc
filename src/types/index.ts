@@ -72,6 +72,7 @@ export interface CompanyContact {
   title?: string;
   phone: string;
   email: string;
+  divisionIds?: string[];
 }
 
 export interface ProjectCompany {

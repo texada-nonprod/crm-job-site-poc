@@ -139,10 +139,17 @@ export const ProjectCompaniesTable = ({ projectId, companies, onRemoveCompany, s
                           {contacts.map((contact, contactIdx) => (
                             <div key={contact.id} className={cn("flex items-start justify-between p-3 rounded-lg bg-background border", contactIdx === (company.primaryContactIndex || 0) && "ring-2 ring-primary")}>
                               <div className="space-y-1">
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 flex-wrap">
                                   {contactIdx === (company.primaryContactIndex || 0) && <Star className="h-4 w-4 text-primary fill-primary" />}
                                   <span className="font-medium">{contact.name}</span>
                                   {contact.title && <span className="text-muted-foreground text-sm">• {contact.title}</span>}
+                                  {contact.divisionIds && contact.divisionIds.length > 0 && (
+                                    <div className="flex gap-1">
+                                      {contact.divisionIds.map(div => (
+                                        <Badge key={div} variant="outline" className="text-[10px] px-1.5 py-0 font-mono" title={getDivisionName(div)}>{div}</Badge>
+                                      ))}
+                                    </div>
+                                  )}
                                 </div>
                                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                   {contact.phone && <div className="flex items-center gap-1"><Phone className="h-3 w-3" /><span>{contact.phone}</span></div>}
