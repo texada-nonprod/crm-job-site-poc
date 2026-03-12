@@ -72,7 +72,12 @@ export const ProjectCompaniesTable = ({ projectId, companies, onRemoveCompany, s
     let cmp = 0;
     switch (sortColumn) {
       case 'company': cmp = a.companyName.localeCompare(b.companyName); break;
-      case 'role': cmp = (a.roleDescription || '').localeCompare(b.roleDescription || ''); break;
+      case 'role': {
+        const rolesA = getCompanyRoles(a).descriptions.join(', ');
+        const rolesB = getCompanyRoles(b).descriptions.join(', ');
+        cmp = rolesA.localeCompare(rolesB);
+        break;
+      }
       case 'contacts': cmp = (a.companyContacts?.length || 0) - (b.companyContacts?.length || 0); break;
       case 'customerNumber': cmp = (a.companyId || '').localeCompare(b.companyId || ''); break;
     }
