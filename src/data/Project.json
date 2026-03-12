@@ -34,8 +34,8 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Sarah Jenkins", "title": "Senior Project Manager", "phone": "312-555-0101", "email": "sjenkins@stmarysprojects.com" },
-                        { "id": 2, "name": "Dr. Raymond Park", "title": "Chief of Facilities", "phone": "312-555-0102", "email": "rpark@stmarysmed.com" }
+                        { "id": 1, "name": "Sarah Jenkins", "title": "Senior Project Manager", "phone": "312-555-0101", "email": "sjenkins@stmarysprojects.com", "divisionIds": ["G", "S"] },
+                        { "id": 2, "name": "Dr. Raymond Park", "title": "Chief of Facilities", "phone": "312-555-0102", "email": "rpark@stmarysmed.com", "divisionIds": ["S"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -46,9 +46,9 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Michael Ross", "title": "Site Superintendent", "phone": "312-555-8821", "email": "mross@turnerconstruction.com" },
-                        { "id": 2, "name": "Jennifer Walsh", "title": "Project Manager", "phone": "312-555-8822", "email": "jwalsh@turnerconstruction.com" },
-                        { "id": 3, "name": "Robert Chen", "title": "Safety Director", "phone": "312-555-8823", "email": "rchen@turnerconstruction.com" }
+                        { "id": 1, "name": "Michael Ross", "title": "Site Superintendent", "phone": "312-555-8821", "email": "mross@turnerconstruction.com", "divisionIds": ["G"] },
+                        { "id": 2, "name": "Jennifer Walsh", "title": "Project Manager", "phone": "312-555-8822", "email": "jwalsh@turnerconstruction.com", "divisionIds": ["G", "C"] },
+                        { "id": 3, "name": "Robert Chen", "title": "Safety Director", "phone": "312-555-8823", "email": "rchen@turnerconstruction.com", "divisionIds": ["G", "R"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -59,8 +59,8 @@
                     "roleDescription": "Subcontractor - Excavation",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Latisha Tyler", "title": "Fleet Manager", "phone": "312-555-0192", "email": "latisha.tyler@graniteexcavation.com" },
-                        { "id": 2, "name": "Marcus Johnson", "title": "Site Foreman", "phone": "312-555-0193", "email": "m.johnson@graniteexcavation.com" }
+                        { "id": 1, "name": "Latisha Tyler", "title": "Fleet Manager", "phone": "312-555-0192", "email": "latisha.tyler@graniteexcavation.com", "divisionIds": ["G"] },
+                        { "id": 2, "name": "Marcus Johnson", "title": "Site Foreman", "phone": "312-555-0193", "email": "m.johnson@graniteexcavation.com", "divisionIds": ["G", "R"] }
                     ],
                     "primaryContactIndex": 0
                 }
@@ -123,8 +123,8 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "David Ortiz", "title": "Facilities Director", "phone": "312-555-9988", "email": "dortiz@riverfrontstadium.com" },
-                        { "id": 2, "name": "Maria Chen", "title": "Operations Manager", "phone": "312-555-9989", "email": "mchen@riverfrontstadium.com" }
+                        { "id": 1, "name": "David Ortiz", "title": "Facilities Director", "phone": "312-555-9988", "email": "dortiz@riverfrontstadium.com", "divisionIds": ["G"] },
+                        { "id": 2, "name": "Maria Chen", "title": "Operations Manager", "phone": "312-555-9989", "email": "mchen@riverfrontstadium.com", "divisionIds": ["G", "V"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -135,9 +135,9 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Aisha Bartlett", "title": "Procurement Manager", "phone": "815-555-0332", "email": "aisha.bartlett@mortenson.com" },
-                        { "id": 2, "name": "Brian Sullivan", "title": "Project Executive", "phone": "815-555-0333", "email": "b.sullivan@mortenson.com" },
-                        { "id": 3, "name": "Christine Ng", "title": "Field Engineer", "phone": "815-555-0334", "email": "c.ng@mortenson.com" }
+                        { "id": 1, "name": "Aisha Bartlett", "title": "Procurement Manager", "phone": "815-555-0332", "email": "aisha.bartlett@mortenson.com", "divisionIds": ["G", "C"] },
+                        { "id": 2, "name": "Brian Sullivan", "title": "Project Executive", "phone": "815-555-0333", "email": "b.sullivan@mortenson.com", "divisionIds": ["G"] },
+                        { "id": 3, "name": "Christine Ng", "title": "Field Engineer", "phone": "815-555-0334", "email": "c.ng@mortenson.com", "divisionIds": ["G", "P"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -148,8 +148,8 @@
                     "roleDescription": "Subcontractor - Steel",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 4, "name": "Amanda Foster", "title": "Procurement Specialist", "phone": "312-555-8824", "email": "afoster@turnerconstruction.com" },
-                        { "id": 5, "name": "David Kim", "title": "Assistant Project Manager", "phone": "312-555-8825", "email": "dkim@turnerconstruction.com" }
+                        { "id": 4, "name": "Amanda Foster", "title": "Procurement Specialist", "phone": "312-555-8824", "email": "afoster@turnerconstruction.com", "divisionIds": ["G", "R"] },
+                        { "id": 5, "name": "David Kim", "title": "Assistant Project Manager", "phone": "312-555-8825", "email": "dkim@turnerconstruction.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 }
@@ -204,8 +204,8 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Richard Hale", "title": "District Engineer", "phone": "217-555-0000", "email": "dist3@idot.gov" },
-                        { "id": 2, "name": "Patricia Nguyen", "title": "Project Liaison", "phone": "217-555-0001", "email": "p.nguyen@idot.gov" }
+                        { "id": 1, "name": "Richard Hale", "title": "District Engineer", "phone": "217-555-0000", "email": "dist3@idot.gov", "divisionIds": ["P"] },
+                        { "id": 2, "name": "Patricia Nguyen", "title": "Project Liaison", "phone": "217-555-0001", "email": "p.nguyen@idot.gov", "divisionIds": ["P", "G"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -216,8 +216,8 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Wesley Moss", "title": "Site Foreman", "phone": "309-555-0821", "email": "wesley.moss@gallagherasphalt.com" },
-                        { "id": 2, "name": "Patricia Lane", "title": "Project Manager", "phone": "309-555-0822", "email": "p.lane@gallagherasphalt.com" }
+                        { "id": 1, "name": "Wesley Moss", "title": "Site Foreman", "phone": "309-555-0821", "email": "wesley.moss@gallagherasphalt.com", "divisionIds": ["P"] },
+                        { "id": 2, "name": "Patricia Lane", "title": "Project Manager", "phone": "309-555-0822", "email": "p.lane@gallagherasphalt.com", "divisionIds": ["P", "G"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -228,9 +228,9 @@
                     "roleDescription": "Subcontractor - Paving",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Angelia Sexton", "title": "Owner", "phone": "630-555-0441", "email": "angelia.s@currancontracting.com" },
-                        { "id": 2, "name": "Howard Klein", "title": "Operations Manager", "phone": "630-555-0442", "email": "h.klein@currancontracting.com" },
-                        { "id": 3, "name": "Jessica Palmer", "title": "Paving Crew Lead", "phone": "630-555-0443", "email": "j.palmer@currancontracting.com" }
+                        { "id": 1, "name": "Angelia Sexton", "title": "Owner", "phone": "630-555-0441", "email": "angelia.s@currancontracting.com", "divisionIds": ["P"] },
+                        { "id": 2, "name": "Howard Klein", "title": "Operations Manager", "phone": "630-555-0442", "email": "h.klein@currancontracting.com", "divisionIds": ["P", "G"] },
+                        { "id": 3, "name": "Jessica Palmer", "title": "Paving Crew Lead", "phone": "630-555-0443", "email": "j.palmer@currancontracting.com", "divisionIds": ["P"] }
                     ],
                     "primaryContactIndex": 0
                 }
@@ -285,8 +285,8 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Karen Fields", "title": "Property Manager", "phone": "630-555-1234", "email": "kfields@centennialre.com" },
-                        { "id": 2, "name": "James Whitfield", "title": "VP of Facilities", "phone": "630-555-1235", "email": "jwhitfield@centennialre.com" }
+                        { "id": 1, "name": "Karen Fields", "title": "Property Manager", "phone": "630-555-1234", "email": "kfields@centennialre.com", "divisionIds": ["C"] },
+                        { "id": 2, "name": "James Whitfield", "title": "VP of Facilities", "phone": "630-555-1235", "email": "jwhitfield@centennialre.com", "divisionIds": ["C", "G"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -297,8 +297,8 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Michael Trent", "title": "Landscape Architect", "phone": "217-555-0221", "email": "michael.trent@christywebber.com" },
-                        { "id": 2, "name": "Nancy Rivera", "title": "Project Manager", "phone": "217-555-0222", "email": "n.rivera@christywebber.com" }
+                        { "id": 1, "name": "Michael Trent", "title": "Landscape Architect", "phone": "217-555-0221", "email": "michael.trent@christywebber.com", "divisionIds": ["C"] },
+                        { "id": 2, "name": "Nancy Rivera", "title": "Project Manager", "phone": "217-555-0222", "email": "n.rivera@christywebber.com", "divisionIds": ["C", "G"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -309,9 +309,9 @@
                     "roleDescription": "Subcontractor - Excavation",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 3, "name": "Carlos Mendez", "title": "Equipment Operator Lead", "phone": "312-555-0194", "email": "c.mendez@graniteexcavation.com" },
-                        { "id": 4, "name": "Tanya Brooks", "title": "Safety Coordinator", "phone": "312-555-0195", "email": "t.brooks@graniteexcavation.com" },
-                        { "id": 5, "name": "William Park", "title": "Project Estimator", "phone": "312-555-0196", "email": "w.park@graniteexcavation.com" }
+                        { "id": 3, "name": "Carlos Mendez", "title": "Equipment Operator Lead", "phone": "312-555-0194", "email": "c.mendez@graniteexcavation.com", "divisionIds": ["G"] },
+                        { "id": 4, "name": "Tanya Brooks", "title": "Safety Coordinator", "phone": "312-555-0195", "email": "t.brooks@graniteexcavation.com", "divisionIds": ["G", "R"] },
+                        { "id": 5, "name": "William Park", "title": "Project Estimator", "phone": "312-555-0196", "email": "w.park@graniteexcavation.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 }
@@ -358,8 +358,8 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Greg Harmon", "title": "Regional Construction Lead", "phone": "206-555-9999", "email": "construction-ord5@amazon.com" },
-                        { "id": 2, "name": "Priya Patel", "title": "Facilities Program Manager", "phone": "206-555-9998", "email": "ppatel@amazon.com" }
+                        { "id": 1, "name": "Greg Harmon", "title": "Regional Construction Lead", "phone": "206-555-9999", "email": "construction-ord5@amazon.com", "divisionIds": ["G", "S"] },
+                        { "id": 2, "name": "Priya Patel", "title": "Facilities Program Manager", "phone": "206-555-9998", "email": "ppatel@amazon.com", "divisionIds": ["S", "X"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -370,8 +370,8 @@
                     "roleDescription": "Subcontractor - Electrical",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Wendi Delacruz", "title": "Project Engineer", "phone": "630-555-0992", "email": "wendi.d@rosendin.com" },
-                        { "id": 2, "name": "Aaron Mitchell", "title": "Electrical Superintendent", "phone": "630-555-0993", "email": "a.mitchell@rosendin.com" }
+                        { "id": 1, "name": "Wendi Delacruz", "title": "Project Engineer", "phone": "630-555-0992", "email": "wendi.d@rosendin.com", "divisionIds": ["S", "X"] },
+                        { "id": 2, "name": "Aaron Mitchell", "title": "Electrical Superintendent", "phone": "630-555-0993", "email": "a.mitchell@rosendin.com", "divisionIds": ["S"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -382,9 +382,9 @@
                     "roleDescription": "Subcontractor - Mechanical",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Victoria Flowers", "title": "Purchasing Agent", "phone": "217-555-0774", "email": "v.flowers@southlandind.com" },
-                        { "id": 2, "name": "Edward Stone", "title": "Project Manager", "phone": "217-555-0775", "email": "e.stone@southlandind.com" },
-                        { "id": 3, "name": "Fiona Campbell", "title": "HVAC Specialist", "phone": "217-555-0776", "email": "f.campbell@southlandind.com" }
+                        { "id": 1, "name": "Victoria Flowers", "title": "Purchasing Agent", "phone": "217-555-0774", "email": "v.flowers@southlandind.com", "divisionIds": ["S"] },
+                        { "id": 2, "name": "Edward Stone", "title": "Project Manager", "phone": "217-555-0775", "email": "e.stone@southlandind.com", "divisionIds": ["S", "G"] },
+                        { "id": 3, "name": "Fiona Campbell", "title": "HVAC Specialist", "phone": "217-555-0776", "email": "f.campbell@southlandind.com", "divisionIds": ["S"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -395,8 +395,8 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 4, "name": "Derek Washington", "title": "Superintendent", "phone": "815-555-0335", "email": "d.washington@mortenson.com" },
-                        { "id": 5, "name": "Elena Martinez", "title": "Quality Control Manager", "phone": "815-555-0336", "email": "e.martinez@mortenson.com" }
+                        { "id": 4, "name": "Derek Washington", "title": "Superintendent", "phone": "815-555-0335", "email": "d.washington@mortenson.com", "divisionIds": ["G"] },
+                        { "id": 5, "name": "Elena Martinez", "title": "Quality Control Manager", "phone": "815-555-0336", "email": "e.martinez@mortenson.com", "divisionIds": ["G", "C"] }
                     ],
                     "primaryContactIndex": 0
                 }
@@ -454,8 +454,8 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Harold Meyers", "title": "Public Works Director", "phone": "217-555-1122", "email": "publicworks@springfield.il.us" },
-                        { "id": 2, "name": "Linda Torres", "title": "Water Utilities Superintendent", "phone": "217-555-1123", "email": "ltorres@springfield.il.us" }
+                        { "id": 1, "name": "Harold Meyers", "title": "Public Works Director", "phone": "217-555-1122", "email": "publicworks@springfield.il.us", "divisionIds": ["S"] },
+                        { "id": 2, "name": "Linda Torres", "title": "Water Utilities Superintendent", "phone": "217-555-1123", "email": "ltorres@springfield.il.us", "divisionIds": ["S", "G"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -466,8 +466,8 @@
                     "roleDescription": "Subcontractor - Specialized",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Robert Vance", "title": "Owner", "phone": "217-555-0991", "email": "robert.vance@laynechristensen.com" },
-                        { "id": 2, "name": "Irene Collins", "title": "Drilling Supervisor", "phone": "217-555-0992", "email": "i.collins@laynechristensen.com" }
+                        { "id": 1, "name": "Robert Vance", "title": "Owner", "phone": "217-555-0991", "email": "robert.vance@laynechristensen.com", "divisionIds": ["S"] },
+                        { "id": 2, "name": "Irene Collins", "title": "Drilling Supervisor", "phone": "217-555-0992", "email": "i.collins@laynechristensen.com", "divisionIds": ["G", "S"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -478,9 +478,9 @@
                     "roleDescription": "Subcontractor - Electrical",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 3, "name": "Barbara Hughes", "title": "Safety Coordinator", "phone": "630-555-0994", "email": "b.hughes@rosendin.com" },
-                        { "id": 4, "name": "Charles Wright", "title": "Foreman", "phone": "630-555-0995", "email": "c.wright@rosendin.com" },
-                        { "id": 5, "name": "Diana Lopez", "title": "Procurement Manager", "phone": "630-555-0996", "email": "d.lopez@rosendin.com" }
+                        { "id": 3, "name": "Barbara Hughes", "title": "Safety Coordinator", "phone": "630-555-0994", "email": "b.hughes@rosendin.com", "divisionIds": ["S"] },
+                        { "id": 4, "name": "Charles Wright", "title": "Foreman", "phone": "630-555-0995", "email": "c.wright@rosendin.com", "divisionIds": ["S", "X"] },
+                        { "id": 5, "name": "Diana Lopez", "title": "Procurement Manager", "phone": "630-555-0996", "email": "d.lopez@rosendin.com", "divisionIds": ["S"] }
                     ],
                     "primaryContactIndex": 0
                 }
@@ -534,8 +534,8 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Tom Builders", "title": "Development Manager", "phone": "815-555-7788", "email": "tom@willowcreekdev.com" },
-                        { "id": 2, "name": "Sandra Kowalski", "title": "Land Acquisition VP", "phone": "815-555-7789", "email": "s.kowalski@willowcreekdev.com" }
+                        { "id": 1, "name": "Tom Builders", "title": "Development Manager", "phone": "815-555-7788", "email": "tom@willowcreekdev.com", "divisionIds": ["G"] },
+                        { "id": 2, "name": "Sandra Kowalski", "title": "Land Acquisition VP", "phone": "815-555-7789", "email": "s.kowalski@willowcreekdev.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -546,8 +546,8 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Angelina Cline", "title": "Equipment Manager", "phone": "815-555-0112", "email": "angelina.cline@ryancompanies.com" },
-                        { "id": 2, "name": "Mark Stevens", "title": "Project Manager", "phone": "815-555-0113", "email": "m.stevens@ryancompanies.com" }
+                        { "id": 1, "name": "Angelina Cline", "title": "Equipment Manager", "phone": "815-555-0112", "email": "angelina.cline@ryancompanies.com", "divisionIds": ["G", "C"] },
+                        { "id": 2, "name": "Mark Stevens", "title": "Project Manager", "phone": "815-555-0113", "email": "m.stevens@ryancompanies.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -558,8 +558,8 @@
                     "roleDescription": "Subcontractor - Mechanical",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 4, "name": "George Harris", "title": "Plumbing Lead", "phone": "217-555-0777", "email": "g.harris@southlandind.com" },
-                        { "id": 5, "name": "Helen Brown", "title": "Estimator", "phone": "217-555-0778", "email": "h.brown@southlandind.com" }
+                        { "id": 4, "name": "George Harris", "title": "Plumbing Lead", "phone": "217-555-0777", "email": "g.harris@southlandind.com", "divisionIds": ["G"] },
+                        { "id": 5, "name": "Helen Brown", "title": "Estimator", "phone": "217-555-0778", "email": "h.brown@southlandind.com", "divisionIds": ["G", "S"] }
                     ],
                     "primaryContactIndex": 0
                 }
@@ -613,8 +613,8 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Margaret Sinclair", "title": "Chief Engineer", "phone": "309-555-4433", "email": "eng@cityblm.org" },
-                        { "id": 2, "name": "Dennis Cole", "title": "Bridge Program Manager", "phone": "309-555-4434", "email": "dcole@cityblm.org" }
+                        { "id": 1, "name": "Margaret Sinclair", "title": "Chief Engineer", "phone": "309-555-4433", "email": "eng@cityblm.org", "divisionIds": ["G"] },
+                        { "id": 2, "name": "Dennis Cole", "title": "Bridge Program Manager", "phone": "309-555-4434", "email": "dcole@cityblm.org", "divisionIds": ["G", "R"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -625,9 +625,9 @@
                     "roleDescription": "Subcontractor - Steel",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Betsy Owens", "title": "Parts Coordinator", "phone": "309-555-0663", "email": "betsy.owens@stuppbridge.com" },
-                        { "id": 2, "name": "Steven Price", "title": "Project Manager", "phone": "309-555-0664", "email": "s.price@stuppbridge.com" },
-                        { "id": 3, "name": "Tracy Nelson", "title": "Structural Engineer", "phone": "309-555-0665", "email": "t.nelson@stuppbridge.com" }
+                        { "id": 1, "name": "Betsy Owens", "title": "Parts Coordinator", "phone": "309-555-0663", "email": "betsy.owens@stuppbridge.com", "divisionIds": ["G"] },
+                        { "id": 2, "name": "Steven Price", "title": "Project Manager", "phone": "309-555-0664", "email": "s.price@stuppbridge.com", "divisionIds": ["G", "R"] },
+                        { "id": 3, "name": "Tracy Nelson", "title": "Structural Engineer", "phone": "309-555-0665", "email": "t.nelson@stuppbridge.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -638,9 +638,9 @@
                     "roleDescription": "Subcontractor - Paving",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 3, "name": "Raymond Cruz", "title": "Night Shift Supervisor", "phone": "309-555-0823", "email": "r.cruz@gallagherasphalt.com" },
-                        { "id": 4, "name": "Samantha White", "title": "Safety Director", "phone": "309-555-0824", "email": "s.white@gallagherasphalt.com" },
-                        { "id": 5, "name": "Thomas Grant", "title": "Equipment Manager", "phone": "309-555-0825", "email": "t.grant@gallagherasphalt.com" }
+                        { "id": 3, "name": "Raymond Cruz", "title": "Night Shift Supervisor", "phone": "309-555-0823", "email": "r.cruz@gallagherasphalt.com", "divisionIds": ["P"] },
+                        { "id": 4, "name": "Samantha White", "title": "Safety Director", "phone": "309-555-0824", "email": "s.white@gallagherasphalt.com", "divisionIds": ["P", "G"] },
+                        { "id": 5, "name": "Thomas Grant", "title": "Equipment Manager", "phone": "309-555-0825", "email": "t.grant@gallagherasphalt.com", "divisionIds": ["P", "R"] }
                     ],
                     "primaryContactIndex": 0
                 }
@@ -688,8 +688,8 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Dr. Alan Grant", "title": "University Liaison", "phone": "217-555-3993", "email": "agrant@university.edu" },
-                        { "id": 2, "name": "Susan Cho", "title": "Director of Capital Programs", "phone": "217-555-3994", "email": "scho@university.edu" }
+                        { "id": 1, "name": "Dr. Alan Grant", "title": "University Liaison", "phone": "217-555-3993", "email": "agrant@university.edu", "divisionIds": ["G"] },
+                        { "id": 2, "name": "Susan Cho", "title": "Director of Capital Programs", "phone": "217-555-3994", "email": "scho@university.edu", "divisionIds": ["G", "S"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -700,9 +700,9 @@
                     "roleDescription": "Subcontractor - Specialized",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 3, "name": "Oscar Bennett", "title": "Crew Supervisor", "phone": "217-555-0223", "email": "o.bennett@christywebber.com" },
-                        { "id": 4, "name": "Paula Simmons", "title": "Irrigation Specialist", "phone": "217-555-0224", "email": "p.simmons@christywebber.com" },
-                        { "id": 5, "name": "Quincy Adams", "title": "Arborist", "phone": "217-555-0225", "email": "q.adams@christywebber.com" }
+                        { "id": 3, "name": "Oscar Bennett", "title": "Crew Supervisor", "phone": "217-555-0223", "email": "o.bennett@christywebber.com", "divisionIds": ["C"] },
+                        { "id": 4, "name": "Paula Simmons", "title": "Irrigation Specialist", "phone": "217-555-0224", "email": "p.simmons@christywebber.com", "divisionIds": ["C"] },
+                        { "id": 5, "name": "Quincy Adams", "title": "Arborist", "phone": "217-555-0225", "email": "q.adams@christywebber.com", "divisionIds": ["C", "G"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -713,9 +713,9 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 3, "name": "Nicole Foster", "title": "Site Engineer", "phone": "815-555-0114", "email": "n.foster@ryancompanies.com" },
-                        { "id": 4, "name": "Oliver Green", "title": "Superintendent", "phone": "815-555-0115", "email": "o.green@ryancompanies.com" },
-                        { "id": 5, "name": "Rachel Torres", "title": "Scheduling Coordinator", "phone": "815-555-0116", "email": "r.torres@ryancompanies.com" }
+                        { "id": 3, "name": "Nicole Foster", "title": "Site Engineer", "phone": "815-555-0114", "email": "n.foster@ryancompanies.com", "divisionIds": ["G"] },
+                        { "id": 4, "name": "Oliver Green", "title": "Superintendent", "phone": "815-555-0115", "email": "o.green@ryancompanies.com", "divisionIds": ["G", "C"] },
+                        { "id": 5, "name": "Rachel Torres", "title": "Scheduling Coordinator", "phone": "815-555-0116", "email": "r.torres@ryancompanies.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 }
@@ -761,8 +761,8 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Fred Flint", "title": "Quarry Manager", "phone": "815-555-0011", "email": "fred@rocksolidmaterials.com" },
-                        { "id": 2, "name": "Barney Stone", "title": "Operations Director", "phone": "815-555-0012", "email": "bstone@rocksolidmaterials.com" }
+                        { "id": 1, "name": "Fred Flint", "title": "Quarry Manager", "phone": "815-555-0011", "email": "fred@rocksolidmaterials.com", "divisionIds": ["G"] },
+                        { "id": 2, "name": "Barney Stone", "title": "Operations Director", "phone": "815-555-0012", "email": "bstone@rocksolidmaterials.com", "divisionIds": ["G", "R"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -773,7 +773,7 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 6, "name": "Frank Thompson", "title": "Safety Manager", "phone": "815-555-0337", "email": "f.thompson@mortenson.com" }
+                        { "id": 6, "name": "Frank Thompson", "title": "Safety Manager", "phone": "815-555-0337", "email": "f.thompson@mortenson.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -784,9 +784,9 @@
                     "roleDescription": "Subcontractor - Specialized",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 3, "name": "Jack Morrison", "title": "Hydrogeologist", "phone": "217-555-0993", "email": "j.morrison@laynechristensen.com" },
-                        { "id": 4, "name": "Karen Shaw", "title": "Project Coordinator", "phone": "217-555-0994", "email": "k.shaw@laynechristensen.com" },
-                        { "id": 5, "name": "Larry Watson", "title": "Equipment Operator", "phone": "217-555-0995", "email": "l.watson@laynechristensen.com" }
+                        { "id": 3, "name": "Jack Morrison", "title": "Hydrogeologist", "phone": "217-555-0993", "email": "j.morrison@laynechristensen.com", "divisionIds": ["G"] },
+                        { "id": 4, "name": "Karen Shaw", "title": "Project Coordinator", "phone": "217-555-0994", "email": "k.shaw@laynechristensen.com", "divisionIds": ["G", "S"] },
+                        { "id": 5, "name": "Larry Watson", "title": "Equipment Operator", "phone": "217-555-0995", "email": "l.watson@laynechristensen.com", "divisionIds": ["G", "R"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -797,8 +797,8 @@
                     "roleDescription": "Subcontractor - Paving",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 4, "name": "Kevin Rodriguez", "title": "Quality Assurance", "phone": "630-555-0444", "email": "k.rodriguez@currancontracting.com" },
-                        { "id": 5, "name": "Linda Chang", "title": "Project Coordinator", "phone": "630-555-0445", "email": "l.chang@currancontracting.com" }
+                        { "id": 4, "name": "Kevin Rodriguez", "title": "Quality Assurance", "phone": "630-555-0444", "email": "k.rodriguez@currancontracting.com", "divisionIds": ["P"] },
+                        { "id": 5, "name": "Linda Chang", "title": "Project Coordinator", "phone": "630-555-0445", "email": "l.chang@currancontracting.com", "divisionIds": ["P", "G"] }
                     ],
                     "primaryContactIndex": 0
                 }
@@ -854,7 +854,7 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Derek Hall", "title": "VP of Facilities", "phone": "630-555-1010", "email": "dhall@midwaylogistics.com" }
+                        { "id": 1, "name": "Derek Hall", "title": "VP of Facilities", "phone": "630-555-1010", "email": "dhall@midwaylogistics.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -865,7 +865,7 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Amanda Price", "title": "Project Director", "phone": "630-555-1020", "email": "a.price@ryancompanies.com" }
+                        { "id": 1, "name": "Amanda Price", "title": "Project Director", "phone": "630-555-1020", "email": "a.price@ryancompanies.com", "divisionIds": ["G", "C"] }
                     ],
                     "primaryContactIndex": 0
                 }
@@ -916,7 +916,7 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Victoria Meyers", "title": "Managing Partner", "phone": "312-555-2200", "email": "vmeyers@halsteddev.com" }
+                        { "id": 1, "name": "Victoria Meyers", "title": "Managing Partner", "phone": "312-555-2200", "email": "vmeyers@halsteddev.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -927,7 +927,7 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Marcus Bell", "title": "Senior Superintendent", "phone": "312-555-2210", "email": "mbell@turnerconstruction.com" }
+                        { "id": 1, "name": "Marcus Bell", "title": "Senior Superintendent", "phone": "312-555-2210", "email": "mbell@turnerconstruction.com", "divisionIds": ["G", "R"] }
                     ],
                     "primaryContactIndex": 0
                 }
@@ -980,7 +980,7 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Thomas Keane", "title": "District Engineer", "phone": "815-555-3300", "email": "tkeane@illinois.gov" }
+                        { "id": 1, "name": "Thomas Keane", "title": "District Engineer", "phone": "815-555-3300", "email": "tkeane@illinois.gov", "divisionIds": ["G", "P"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -991,7 +991,7 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Steve Novak", "title": "Bridge Division PM", "phone": "815-555-3310", "email": "s.novak@mortenson.com" }
+                        { "id": 1, "name": "Steve Novak", "title": "Bridge Division PM", "phone": "815-555-3310", "email": "s.novak@mortenson.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 }
@@ -1042,7 +1042,7 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Maria Santos", "title": "Capital Projects Manager", "phone": "773-555-4400", "email": "msantos@cityofchicago.org" }
+                        { "id": 1, "name": "Maria Santos", "title": "Capital Projects Manager", "phone": "773-555-4400", "email": "msantos@cityofchicago.org", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -1053,7 +1053,7 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "James Whitfield", "title": "Aviation Division Lead", "phone": "773-555-4410", "email": "jwhitfield@turnerconstruction.com" }
+                        { "id": 1, "name": "James Whitfield", "title": "Aviation Division Lead", "phone": "773-555-4410", "email": "jwhitfield@turnerconstruction.com", "divisionIds": ["G", "S"] }
                     ],
                     "primaryContactIndex": 0
                 }
@@ -1102,8 +1102,8 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Nathan Cole", "title": "Construction Director", "phone": "815-555-5500", "email": "ncole@prairiewindenergy.com" },
-                        { "id": 2, "name": "Samantha Lewis", "title": "Environmental Manager", "phone": "815-555-5501", "email": "slewis@prairiewindenergy.com" }
+                        { "id": 1, "name": "Nathan Cole", "title": "Construction Director", "phone": "815-555-5500", "email": "ncole@prairiewindenergy.com", "divisionIds": ["G", "S"] },
+                        { "id": 2, "name": "Samantha Lewis", "title": "Environmental Manager", "phone": "815-555-5501", "email": "slewis@prairiewindenergy.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 },
@@ -1114,7 +1114,7 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Chris Dawson", "title": "Renewables PM", "phone": "815-555-5510", "email": "c.dawson@mortenson.com" }
+                        { "id": 1, "name": "Chris Dawson", "title": "Renewables PM", "phone": "815-555-5510", "email": "c.dawson@mortenson.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 }
