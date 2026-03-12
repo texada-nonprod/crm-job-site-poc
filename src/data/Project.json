@@ -395,8 +395,8 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 4, "name": "Derek Washington", "title": "Superintendent", "phone": "815-555-0335", "email": "d.washington@mortenson.com" },
-                        { "id": 5, "name": "Elena Martinez", "title": "Quality Control Manager", "phone": "815-555-0336", "email": "e.martinez@mortenson.com" }
+                        { "id": 4, "name": "Derek Washington", "title": "Superintendent", "phone": "815-555-0335", "email": "d.washington@mortenson.com", "divisionIds": ["G"] },
+                        { "id": 5, "name": "Elena Martinez", "title": "Quality Control Manager", "phone": "815-555-0336", "email": "e.martinez@mortenson.com", "divisionIds": ["G", "C"] }
                     ],
                     "primaryContactIndex": 0
                 }
