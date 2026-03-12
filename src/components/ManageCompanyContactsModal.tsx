@@ -172,10 +172,9 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
             <Label className="text-xs text-muted-foreground font-medium">Roles</Label>
             <div className="flex gap-1.5 flex-wrap mt-1.5 items-center">
               {companyRoleIds.map(roleId => {
-                const role = ROLE_OPTIONS.find(r => r.id === roleId);
                 return (
                   <Badge key={roleId} variant={roleId === 'GC' ? 'default' : 'secondary'} className="text-xs px-2 py-0.5 gap-1">
-                    {role?.label || roleId}
+                    {getRoleLabel(roleId)}
                     <button type="button" onClick={() => handleRemoveRole(roleId)} className="ml-0.5 hover:text-destructive"><X className="h-3 w-3" /></button>
                   </Badge>
                 );
