@@ -830,14 +830,20 @@ const ProjectDetail = () => {
               </Button>
             </div>
           </div>
-          {project.projectCompanies.filter((c) => c.roleId !== 'OWNER').length === 0 ?
+          {project.projectCompanies.filter((c) => {
+            const roles = c.roleIds || [c.roleId];
+            return !roles.every(r => r === 'OWNER');
+          }).length === 0 ?
           <p className="text-center text-muted-foreground py-8">
               No companies associated with this project yet.
             </p> :
 
           <ProjectCompaniesTable
             projectId={project.id}
-            companies={project.projectCompanies.filter((c) => c.roleId !== 'OWNER')}
+            companies={project.projectCompanies.filter((c) => {
+              const roles = c.roleIds || [c.roleId];
+              return !roles.every(r => r === 'OWNER');
+            })}
             onRemoveCompany={initiateRemoveCompany}
             showCustomerNumber={showCustomerNumber} />
 

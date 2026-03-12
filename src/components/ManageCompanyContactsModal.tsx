@@ -10,13 +10,27 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { CompanyContact, ProjectCompany } from '@/types';
+import { CompanyContact, ProjectCompany, getCompanyRoles } from '@/types';
 import { Star, Pencil, Trash2, Plus, X, Check, UserPlus, ChevronDown, ChevronRight, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useData } from '@/contexts/DataContext';
 import { DIVISIONS, getDivisionName } from '@/contexts/DataContext';
 import { CreateContactForm } from './CreateContactForm';
 import mailCodesData from '@/data/MailCodes.json';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+const ROLE_OPTIONS = [
+  { id: 'GC', label: 'General Contractor' },
+  { id: 'SUB_PLUMBING', label: 'Plumbing Subcontractor' }, { id: 'SUB_ELECTRICAL', label: 'Electrical Subcontractor' },
+  { id: 'SUB_HVAC', label: 'HVAC Subcontractor' }, { id: 'SUB_CONCRETE', label: 'Concrete Subcontractor' },
+  { id: 'SUB_FRAMING', label: 'Framing Subcontractor' }, { id: 'SUB_ROOFING', label: 'Roofing Subcontractor' },
+  { id: 'SUB_DRYWALL', label: 'Drywall Subcontractor' }, { id: 'SUB_PAINTING', label: 'Painting Subcontractor' },
+  { id: 'SUB_FLOORING', label: 'Flooring Subcontractor' }, { id: 'SUPPLIER', label: 'Supplier' },
+  { id: 'SUB-EXC', label: 'Subcontractor - Excavation' }, { id: 'SUB-PAV', label: 'Subcontractor - Paving' },
+  { id: 'SUB-ELEC', label: 'Subcontractor - Electrical' }, { id: 'SUB-MECH', label: 'Subcontractor - Mechanical' },
+  { id: 'SUB-SPEC', label: 'Subcontractor - Specialized' }, { id: 'SUB-STEEL', label: 'Subcontractor - Steel' },
+  { id: 'ARCHITECT', label: 'Architect' }, { id: 'ENGINEER', label: 'Engineer' }, { id: 'OTHER', label: 'Other' },
+];
 interface ManageCompanyContactsModalProps {
   company: ProjectCompany;
   allCompanyContacts: CompanyContact[];
@@ -39,6 +53,9 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [selectedEmails, setSelectedEmails] = useState<Set<string>>(new Set());
 
+  const [companyRoleIds, setCompanyRoleIds] = useState<string[]>([]);
+  const [addRoleValue, setAddRoleValue] = useState('');
+
   const availableContacts = allCompanyContacts.filter(ac => !contacts.some(c => c.email === ac.email));
 
   // Filter divisions to only those the company belongs to
@@ -47,7 +64,16 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
     : DIVISIONS;
 
   useEffect(() => {
-    if (open && company) { setContacts([...(company.companyContacts || [])]); setPrimaryIndex(company.primaryContactIndex || 0); setEditingId(null); setShowAddSection(false); setShowCreateForm(false); setSelectedEmails(new Set()); }
+    if (open && company) {
+      setContacts([...(company.companyContacts || [])]);
+      setPrimaryIndex(company.primaryContactIndex || 0);
+      setEditingId(null);
+      setShowAddSection(false);
+      setShowCreateForm(false);
+      setSelectedEmails(new Set());
+      const roles = getCompanyRoles(company);
+      setCompanyRoleIds([...roles.ids]);
+    }
   }, [open, company]);
 
   const handleSetPrimary = (index: number) => setPrimaryIndex(index);
@@ -80,7 +106,30 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
   };
   const handleSave = () => {
     if (contacts.length === 0) { toast({ title: "No Contacts", description: "At least one contact is required.", variant: "destructive" }); return; }
-    onSave({ ...company, companyContacts: contacts, primaryContactIndex: primaryIndex }); onOpenChange(false);
+    if (companyRoleIds.length === 0) { toast({ title: "No Roles", description: "At least one role is required.", variant: "destructive" }); return; }
+    const roleDescriptions = companyRoleIds.map(id => ROLE_OPTIONS.find(r => r.id === id)?.label || id);
+    onSave({
+      ...company,
+      companyContacts: contacts,
+      primaryContactIndex: primaryIndex,
+      roleId: companyRoleIds[0],
+      roleDescription: roleDescriptions[0],
+      roleIds: companyRoleIds,
+      roleDescriptions,
+    });
+    onOpenChange(false);
+  };
+
+  const handleRemoveRole = (roleId: string) => {
+    if (companyRoleIds.length <= 1) { toast({ title: "Cannot Remove", description: "At least one role is required.", variant: "destructive" }); return; }
+    setCompanyRoleIds(prev => prev.filter(id => id !== roleId));
+  };
+
+  const handleAddRole = (roleId: string) => {
+    if (roleId && !companyRoleIds.includes(roleId)) {
+      setCompanyRoleIds(prev => [...prev, roleId]);
+    }
+    setAddRoleValue('');
   };
 
   const toggleDivision = (code: string) => {
@@ -127,8 +176,31 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
-        <DialogHeader><DialogTitle>Manage {company.companyName} Contacts</DialogTitle><DialogDescription><Badge variant="outline">{company.roleDescription}</Badge></DialogDescription></DialogHeader>
+        <DialogHeader><DialogTitle>Manage {company.companyName}</DialogTitle><DialogDescription>Edit roles and contacts for this company on the project.</DialogDescription></DialogHeader>
         <div className="space-y-4 py-4">
+          {/* Roles Section */}
+          <div>
+            <Label className="text-xs text-muted-foreground font-medium">Roles</Label>
+            <div className="flex gap-1.5 flex-wrap mt-1.5 items-center">
+              {companyRoleIds.map(roleId => {
+                const role = ROLE_OPTIONS.find(r => r.id === roleId);
+                return (
+                  <Badge key={roleId} variant={roleId === 'GC' ? 'default' : 'secondary'} className="text-xs px-2 py-0.5 gap-1">
+                    {role?.label || roleId}
+                    <button type="button" onClick={() => handleRemoveRole(roleId)} className="ml-0.5 hover:text-destructive"><X className="h-3 w-3" /></button>
+                  </Badge>
+                );
+              })}
+              <Select value={addRoleValue} onValueChange={handleAddRole}>
+                <SelectTrigger className="h-7 w-[140px] text-xs"><SelectValue placeholder="+ Add Role" /></SelectTrigger>
+                <SelectContent className="bg-popover z-50">
+                  {ROLE_OPTIONS.filter(r => !companyRoleIds.includes(r.id)).map(role => (
+                    <SelectItem key={role.id} value={role.id} className="text-xs">{role.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           <div className="flex items-center justify-between"><h3 className="font-medium text-sm text-muted-foreground">Contacts at this project ({contacts.length})</h3></div>
           {contacts.map((contact, index) => (
             <Card key={contact.id} className={cn("p-4 relative", index === primaryIndex && "ring-2 ring-primary")}>

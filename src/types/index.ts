@@ -96,6 +96,8 @@ export interface ProjectCompany {
   companyName: string;
   roleId: string;
   roleDescription: string;
+  roleIds?: string[];
+  roleDescriptions?: string[];
   isPrimaryContact: boolean;
   companyContacts: CompanyContact[];
   divisionIds?: string[];
@@ -108,6 +110,14 @@ export interface ProjectCompany {
     email: string;
   };
 }
+
+// Helper to get all roles for a company (handles legacy single-role data)
+export const getCompanyRoles = (company: ProjectCompany): { ids: string[]; descriptions: string[] } => {
+  if (company.roleIds && company.roleIds.length > 0) {
+    return { ids: company.roleIds, descriptions: company.roleDescriptions || [company.roleDescription] };
+  }
+  return { ids: [company.roleId], descriptions: [company.roleDescription] };
+};
 
 export interface User {
   id: number;

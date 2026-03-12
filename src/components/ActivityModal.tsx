@@ -319,7 +319,7 @@ export const ActivityModal = ({ open, onOpenChange, projectId, activity, mode, f
                           >
                             <Check className={cn("mr-2 h-4 w-4", selectedCompanyId === company.companyId ? "opacity-100" : "opacity-0")} />
                             <span>{company.companyName}</span>
-                            <span className="ml-auto text-xs text-muted-foreground">{company.roleDescription}</span>
+                            <span className="ml-auto text-xs text-muted-foreground">{(company.roleDescriptions || [company.roleDescription]).join(', ')}</span>
                           </CommandItem>
                         ))}
                       </CommandGroup>

@@ -44,7 +44,7 @@ export const EditGCModal = ({ projectId, currentGC, open, onOpenChange }: EditGC
     const companiesMap = new Map();
     projects.forEach(project => {
       project.projectCompanies.forEach(company => {
-        if (company.roleId === 'GC' && !companiesMap.has(company.companyName)) companiesMap.set(company.companyName, company);
+        if ((company.roleIds?.includes('GC') || company.roleId === 'GC') && !companiesMap.has(company.companyName)) companiesMap.set(company.companyName, company);
       });
     });
     return Array.from(companiesMap.values()).sort((a: ProjectCompany, b: ProjectCompany) => a.companyName.localeCompare(b.companyName));

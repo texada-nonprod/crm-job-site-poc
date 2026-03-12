@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ProjectCompany } from '@/types';
+import { ProjectCompany, getCompanyRoles } from '@/types';
 import { useData } from '@/contexts/DataContext';
 import { getDivisionName } from '@/contexts/DataContext';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -72,7 +72,12 @@ export const ProjectCompaniesTable = ({ projectId, companies, onRemoveCompany, s
     let cmp = 0;
     switch (sortColumn) {
       case 'company': cmp = a.companyName.localeCompare(b.companyName); break;
-      case 'role': cmp = (a.roleDescription || '').localeCompare(b.roleDescription || ''); break;
+      case 'role': {
+        const rolesA = getCompanyRoles(a).descriptions.join(', ');
+        const rolesB = getCompanyRoles(b).descriptions.join(', ');
+        cmp = rolesA.localeCompare(rolesB);
+        break;
+      }
       case 'contacts': cmp = (a.companyContacts?.length || 0) - (b.companyContacts?.length || 0); break;
       case 'customerNumber': cmp = (a.companyId || '').localeCompare(b.companyId || ''); break;
     }
@@ -120,7 +125,16 @@ export const ProjectCompaniesTable = ({ projectId, companies, onRemoveCompany, s
                         {prospect && <Badge className="bg-amber-500/15 text-amber-700 border-amber-300 hover:bg-amber-500/25 text-[10px] px-1.5 py-0">Prospect</Badge>}
                       </div>
                     </TableCell>
-                    <TableCell><Badge variant={company.roleId === 'GC' ? 'default' : 'secondary'}>{company.roleDescription}</Badge></TableCell>
+                    <TableCell>
+                      <div className="flex gap-1 flex-wrap">
+                        {(() => {
+                          const roles = getCompanyRoles(company);
+                          return roles.descriptions.map((desc, i) => (
+                            <Badge key={roles.ids[i]} variant={roles.ids[i] === 'GC' ? 'default' : 'secondary'}>{desc}</Badge>
+                          ));
+                        })()}
+                      </div>
+                    </TableCell>
                     {showCustomerNumber && (
                       <TableCell className="text-sm text-muted-foreground font-mono">{company.companyId}</TableCell>
                     )}
