@@ -261,10 +261,11 @@ export const CreateProspectModal = ({ open, onOpenChange, onSave }: CreateProspe
       return;
     }
 
-    onSave({
+    const companyData = {
       companyName: companyName.trim(),
       phone,
       divisionIds,
+      roleIds: selectedRoles,
       address1: address1.trim(),
       address2: address2.trim(),
       address3: address3.trim(),
