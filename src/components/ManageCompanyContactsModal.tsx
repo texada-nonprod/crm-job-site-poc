@@ -54,7 +54,7 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
   const [selectedEmails, setSelectedEmails] = useState<Set<string>>(new Set());
 
   const [companyRoleIds, setCompanyRoleIds] = useState<string[]>([]);
-  const [addRoleValue, setAddRoleValue] = useState('');
+  const [rolePopoverOpen, setRolePopoverOpen] = useState(false);
 
   const availableContacts = allCompanyContacts.filter(ac => !contacts.some(c => c.email === ac.email));
 
