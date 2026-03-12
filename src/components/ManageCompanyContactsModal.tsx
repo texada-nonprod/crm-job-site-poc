@@ -106,7 +106,30 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
   };
   const handleSave = () => {
     if (contacts.length === 0) { toast({ title: "No Contacts", description: "At least one contact is required.", variant: "destructive" }); return; }
-    onSave({ ...company, companyContacts: contacts, primaryContactIndex: primaryIndex }); onOpenChange(false);
+    if (companyRoleIds.length === 0) { toast({ title: "No Roles", description: "At least one role is required.", variant: "destructive" }); return; }
+    const roleDescriptions = companyRoleIds.map(id => ROLE_OPTIONS.find(r => r.id === id)?.label || id);
+    onSave({
+      ...company,
+      companyContacts: contacts,
+      primaryContactIndex: primaryIndex,
+      roleId: companyRoleIds[0],
+      roleDescription: roleDescriptions[0],
+      roleIds: companyRoleIds,
+      roleDescriptions,
+    });
+    onOpenChange(false);
+  };
+
+  const handleRemoveRole = (roleId: string) => {
+    if (companyRoleIds.length <= 1) { toast({ title: "Cannot Remove", description: "At least one role is required.", variant: "destructive" }); return; }
+    setCompanyRoleIds(prev => prev.filter(id => id !== roleId));
+  };
+
+  const handleAddRole = (roleId: string) => {
+    if (roleId && !companyRoleIds.includes(roleId)) {
+      setCompanyRoleIds(prev => [...prev, roleId]);
+    }
+    setAddRoleValue('');
   };
 
   const toggleDivision = (code: string) => {
