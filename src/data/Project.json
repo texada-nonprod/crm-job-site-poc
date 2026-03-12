@@ -854,7 +854,7 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Derek Hall", "title": "VP of Facilities", "phone": "630-555-1010", "email": "dhall@midwaylogistics.com" }
+                        { "id": 1, "name": "Derek Hall", "title": "VP of Facilities", "phone": "630-555-1010", "email": "dhall@midwaylogistics.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 },
