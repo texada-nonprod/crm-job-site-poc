@@ -466,8 +466,8 @@
                     "roleDescription": "Subcontractor - Specialized",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Robert Vance", "title": "Owner", "phone": "217-555-0991", "email": "robert.vance@laynechristensen.com" },
-                        { "id": 2, "name": "Irene Collins", "title": "Drilling Supervisor", "phone": "217-555-0992", "email": "i.collins@laynechristensen.com" }
+                        { "id": 1, "name": "Robert Vance", "title": "Owner", "phone": "217-555-0991", "email": "robert.vance@laynechristensen.com", "divisionIds": ["S"] },
+                        { "id": 2, "name": "Irene Collins", "title": "Drilling Supervisor", "phone": "217-555-0992", "email": "i.collins@laynechristensen.com", "divisionIds": ["G", "S"] }
                     ],
                     "primaryContactIndex": 0
                 },
