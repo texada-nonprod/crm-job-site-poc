@@ -382,9 +382,9 @@
                     "roleDescription": "Subcontractor - Mechanical",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Victoria Flowers", "title": "Purchasing Agent", "phone": "217-555-0774", "email": "v.flowers@southlandind.com" },
-                        { "id": 2, "name": "Edward Stone", "title": "Project Manager", "phone": "217-555-0775", "email": "e.stone@southlandind.com" },
-                        { "id": 3, "name": "Fiona Campbell", "title": "HVAC Specialist", "phone": "217-555-0776", "email": "f.campbell@southlandind.com" }
+                        { "id": 1, "name": "Victoria Flowers", "title": "Purchasing Agent", "phone": "217-555-0774", "email": "v.flowers@southlandind.com", "divisionIds": ["S"] },
+                        { "id": 2, "name": "Edward Stone", "title": "Project Manager", "phone": "217-555-0775", "email": "e.stone@southlandind.com", "divisionIds": ["S", "G"] },
+                        { "id": 3, "name": "Fiona Campbell", "title": "HVAC Specialist", "phone": "217-555-0776", "email": "f.campbell@southlandind.com", "divisionIds": ["S"] }
                     ],
                     "primaryContactIndex": 0
                 },
