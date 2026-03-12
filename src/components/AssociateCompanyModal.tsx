@@ -93,7 +93,7 @@ export const AssociateCompanyModal = ({ projectId, currentCompanyNames, open, on
     const company = selectedCompanyObj;
     if (!company) return;
 
-    const roleDescriptions = selectedRoles.map(id => ROLE_OPTIONS.find(r => r.id === id)?.label || id);
+    const roleDescriptions = selectedRoles.map(id => getRoleLabel(id));
     const allContacts = company.companyContacts || [];
     const contactsToInclude = selectedContactIds.length > 0
       ? allContacts.filter((c: any) => selectedContactIds.includes(c.id))
