@@ -191,14 +191,28 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
                   </Badge>
                 );
               })}
-              <Select value={addRoleValue} onValueChange={handleAddRole}>
-                <SelectTrigger className="h-7 w-[140px] text-xs"><SelectValue placeholder="+ Add Role" /></SelectTrigger>
-                <SelectContent className="bg-popover z-50">
-                  {ROLE_OPTIONS.filter(r => !companyRoleIds.includes(r.id)).map(role => (
-                    <SelectItem key={role.id} value={role.id} className="text-xs">{role.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Popover open={rolePopoverOpen} onOpenChange={setRolePopoverOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-7 text-xs gap-1">
+                    <Plus className="h-3 w-3" /> Add Role
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[220px] p-0" align="start">
+                  <Command>
+                    <CommandInput placeholder="Search roles..." className="h-8 text-xs" />
+                    <CommandList>
+                      <CommandEmpty>No roles found.</CommandEmpty>
+                      <CommandGroup>
+                        {ROLE_OPTIONS.filter(r => !companyRoleIds.includes(r.id)).map(role => (
+                          <CommandItem key={role.id} value={role.label} onSelect={() => { handleAddRole(role.id); setRolePopoverOpen(false); }} className="text-xs">
+                            {role.label}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
           <div className="flex items-center justify-between"><h3 className="font-medium text-sm text-muted-foreground">Contacts at this project ({contacts.length})</h3></div>
