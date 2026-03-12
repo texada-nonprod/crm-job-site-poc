@@ -18,13 +18,12 @@ interface ProjectCompaniesTableProps {
 
 const isProspect = (companyId: string) => companyId.startsWith('$');
 
-export const ProjectCompaniesTable = ({ projectId, companies, onRemoveCompany }: ProjectCompaniesTableProps) => {
+export const ProjectCompaniesTable = ({ projectId, companies, onRemoveCompany, showCustomerNumber }: ProjectCompaniesTableProps) => {
   const { updateProjectCompany, projects } = useData();
   const [expandedCompanies, setExpandedCompanies] = useState<Set<string>>(new Set());
   const [editingCompany, setEditingCompany] = useState<ProjectCompany | null>(null);
   const [sortColumn, setSortColumn] = useState<'company' | 'role' | 'contacts' | 'customerNumber' | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
-  const [showCustomerNumber, setShowCustomerNumber] = useState(false);
 
   const getAllCompanyContacts = (companyName: string) => {
     const contactsMap = new Map<string, typeof companies[0]['companyContacts'][0]>();
