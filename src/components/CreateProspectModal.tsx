@@ -5,25 +5,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Badge } from '@/components/ui/badge';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Check, ChevronsUpDown, X } from 'lucide-react';
+import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { DIVISIONS } from '@/contexts/DataContext';
 import { countries, pinnedCountryCodes, getCountryByCode, type Country } from '@/data/Countries';
 import { fetchStatesProvinces, hasStatesProvinces, type StateProvince } from '@/data/StatesProvinces';
-
-const ROLE_OPTIONS = [
-  { id: 'GC', label: 'General Contractor' },
-  { id: 'SUB-EXC', label: 'Subcontractor - Excavation' },
-  { id: 'SUB-PAV', label: 'Subcontractor - Paving' },
-  { id: 'SUB-ELEC', label: 'Subcontractor - Electrical' },
-  { id: 'SUB-MECH', label: 'Subcontractor - Mechanical' },
-  { id: 'SUB-SPEC', label: 'Subcontractor - Specialized' },
-  { id: 'SUB-STEEL', label: 'Subcontractor - Steel' },
-];
+import { RoleMultiSelect } from '@/components/RoleMultiSelect';
 
 // TODO: Replace with actual API call
 const createCompanyApi = async (data: ProspectData): Promise<string> => {
