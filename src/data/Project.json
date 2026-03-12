@@ -370,8 +370,8 @@
                     "roleDescription": "Subcontractor - Electrical",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Wendi Delacruz", "title": "Project Engineer", "phone": "630-555-0992", "email": "wendi.d@rosendin.com" },
-                        { "id": 2, "name": "Aaron Mitchell", "title": "Electrical Superintendent", "phone": "630-555-0993", "email": "a.mitchell@rosendin.com" }
+                        { "id": 1, "name": "Wendi Delacruz", "title": "Project Engineer", "phone": "630-555-0992", "email": "wendi.d@rosendin.com", "divisionIds": ["S", "X"] },
+                        { "id": 2, "name": "Aaron Mitchell", "title": "Electrical Superintendent", "phone": "630-555-0993", "email": "a.mitchell@rosendin.com", "divisionIds": ["S"] }
                     ],
                     "primaryContactIndex": 0
                 },
