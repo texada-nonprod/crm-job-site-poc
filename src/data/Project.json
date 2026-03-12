@@ -44,6 +44,8 @@
                     "companyName": "Turner Construction Company",
                     "roleId": "GC",
                     "roleDescription": "General Contractor",
+                    "roleIds": ["GC", "SUPPLIER"],
+                    "roleDescriptions": ["General Contractor", "Supplier"],
                     "isPrimaryContact": true,
                     "companyContacts": [
                         { "id": 1, "name": "Michael Ross", "title": "Site Superintendent", "phone": "312-555-8821", "email": "mross@turnerconstruction.com", "divisionIds": ["G"] },
