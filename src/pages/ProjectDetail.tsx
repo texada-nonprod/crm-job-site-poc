@@ -927,6 +927,24 @@ const ProjectDetail = () => {
                 return (
                 <TableRow key={activity.id}>
                     <TableCell className="font-medium">{getSalesRepName(activity.salesRepId)}</TableCell>
+                    {(() => {
+                      const actCompany = project.projectCompanies?.find(c => c.companyId === activity.customerId);
+                      return (
+                        <>
+                          <TableCell className="hidden lg:table-cell text-sm">{actCompany?.companyName || '—'}</TableCell>
+                          <TableCell className="hidden lg:table-cell text-sm">{activity.contactName || '—'}</TableCell>
+                          <TableCell className="hidden lg:table-cell">
+                            {actCompany ? (
+                              <div className="flex flex-wrap gap-1">
+                                {(actCompany.roleDescriptions || [actCompany.roleDescription]).filter(Boolean).map((role, i) => (
+                                  <Badge key={i} variant="outline" className="text-xs">{role}</Badge>
+                                ))}
+                              </div>
+                            ) : '—'}
+                          </TableCell>
+                        </>
+                      );
+                    })()}
                     <TableCell>
                       <Badge variant="outline">{({E:'Email',P:'Phone',F:'Face-to-Face',Q:'Quote'} as Record<string,string>)[activity.typeId] || activity.typeId}</Badge>
                     </TableCell>
