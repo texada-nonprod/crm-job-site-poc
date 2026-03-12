@@ -129,9 +129,7 @@ export const AssociateCompanyModal = ({ projectId, currentCompanyNames, open, on
       roleIds: selectedRoles,
       roleDescriptions,
       isPrimaryContact: primaryContactId !== null,
-      primaryContactIndex: primaryContactId !== null
-        ? finalContacts.findIndex((c: any) => c.id === primaryContactId)
-        : undefined,
+      ...(primaryContactId !== null ? { primaryContactIndex: finalContacts.findIndex((c: any) => c.id === primaryContactId) } : {}),
       companyContacts: finalContacts,
     });
     toast({ title: "Success", description: `${company.companyName} associated as ${roleDescriptions.join(', ')}.` });
