@@ -28,6 +28,7 @@ import { ActivityFilterBadges } from '@/components/ActivityFilterBadges';
 import { NotesSection } from '@/components/NotesSection';
 import { ProjectCompaniesTable } from '@/components/ProjectCompaniesTable';
 import { AddCustomerEquipmentModal } from '@/components/AddCustomerEquipmentModal';
+import { CreateEquipmentModal } from '@/components/CreateEquipmentModal';
 import { CreateProspectModal, type ProspectData } from '@/components/CreateProspectModal';
 import { getRoleLabel } from '@/components/RoleMultiSelect';
 import { Input } from '@/components/ui/input';
@@ -65,6 +66,7 @@ const ProjectDetail = () => {
   const [activityToDelete, setActivityToDelete] = useState<number | null>(null);
   
   const [showEquipmentModal, setShowEquipmentModal] = useState(false);
+  const [showCreateEquipmentModal, setShowCreateEquipmentModal] = useState(false);
   const [showDeleteEquipmentDialog, setShowDeleteEquipmentDialog] = useState(false);
   const [equipmentToDelete, setEquipmentToDelete] = useState<number | null>(null);
   const [equipmentSearch, setEquipmentSearch] = useState('');
@@ -195,7 +197,12 @@ const ProjectDetail = () => {
   };
 
   const handleCreateEquipment = () => {
-    setShowEquipmentModal(true);
+    setShowCreateEquipmentModal(true);
+  };
+
+  const handleSaveNewEquipment = (equipmentId: number) => {
+    addCustomerEquipment(project.id, equipmentId);
+    toast({ title: 'Success', description: 'Equipment created and added to project.' });
   };
 
   const handleDeleteEquipment = () => {
@@ -1376,6 +1383,11 @@ const ProjectDetail = () => {
         projectId={project.id}
         projectCompanies={project.projectCompanies}
         existingEquipmentIds={project.customerEquipment} />
+
+      <CreateEquipmentModal
+        open={showCreateEquipmentModal}
+        onOpenChange={setShowCreateEquipmentModal}
+        onSave={handleSaveNewEquipment} />
       
 
       <AlertDialog open={showDeleteEquipmentDialog} onOpenChange={setShowDeleteEquipmentDialog}>

@@ -1,43 +1,39 @@
 
 
-## Updated: Create New Equipment Modal
+# Remove PAR (Planned Annual Rate) from Projects
 
-Incorporating that **Engine Make**, **Industry Code**, and a new **Industry Group** field are all API-backed dropdowns, not free text.
+PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
 
-### Additional Fields section — updated fields
+## Changes
 
-**Industry Group** (new field, optional) — Select dropdown, must be selected before Industry Code. Stub `fetchIndustryGroups()` returns 18 entries (Agriculture, Mining, Waste, etc.).
+### 1. `src/types/index.ts`
+- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
+- Remove `showBehindPAR` from `Filters` interface
 
-**Industry Code** — Select dropdown, dependent on Industry Group selection. Stub `fetchIndustryCodes(groupId)` returns 11 entries (same mock list for all groups). Changing Industry Group clears Industry Code.
+### 2. `src/data/Project.json`
+- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
 
-**Engine Make** — Select dropdown. Stub `fetchEngineMakes()` returns: AA/Caterpillar, 2C/Doosan, DW/Daewoo.
+### 3. `src/contexts/DataContext.tsx`
+- Remove `showBehindPAR: false` from default filters
+- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
+- Remove changelog entry referencing `plannedAnnualRate` (id 18)
 
-### Full field layout for `CreateEquipmentModal.tsx`
+### 4. `src/components/FilterBar.tsx`
+- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
 
-**Required section:**
-Make → FPC (dep. on Make) → Compatibility Code (dep. on FPC) → Model → Serial Number → Year of Manufacture → Territory (toggle)
+### 5. `src/components/EditProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove their reset in `useEffect`
+- Remove the PAR validation check
+- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
+- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
 
-**Additional Fields section (collapsible, all optional):**
-Equipment Number, SMU, SMU Date, Industry Group → Industry Code (dep. on Industry Group), Principal Work Code (dropdown), Application Code (dropdown), Annual Use Hours, Engine Make (dropdown), Engine Model (text), Engine Serial Number (text), Purchase Date
+### 6. `src/components/CreateProjectModal.tsx`
+- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
+- Remove PAR validation
+- Remove `plannedAnnualRate` and `parStartDate` from new project object
+- Remove the Planned Annual Rate input and PAR Start Date picker from the form
 
-### API stubs summary
-
-| Stub | Trigger | Mock data |
-|------|---------|-----------|
-| `fetchMakes` | Modal open | 3 makes |
-| `fetchFPCs(makeId)` | Make change | 21 FPCs filtered by oem |
-| `fetchCompatibilityCodes(fpcId)` | FPC change | 33 codes (static) |
-| `fetchPrincipalWorkCodes` | Modal open | 22 entries |
-| `fetchApplicationCodes` | Modal open | 3 entries |
-| `fetchEngineMakes` | Modal open | 3 engine makes |
-| `fetchIndustryGroups` | Modal open | 18 groups |
-| `fetchIndustryCodes(groupId)` | Industry Group change | 11 codes (static) |
-| `createEquipmentApi(data)` | Submit | Logs + returns mock ID |
-
-### Files
-
-| File | Action |
-|------|--------|
-| `src/components/CreateEquipmentModal.tsx` | Create |
-| `src/pages/ProjectDetail.tsx` | Modify — add state + render new modal |
+### 7. `src/pages/ProjectDetail.tsx`
+- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
 
