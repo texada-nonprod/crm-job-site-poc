@@ -638,9 +638,9 @@
                     "roleDescription": "Subcontractor - Paving",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 3, "name": "Raymond Cruz", "title": "Night Shift Supervisor", "phone": "309-555-0823", "email": "r.cruz@gallagherasphalt.com" },
-                        { "id": 4, "name": "Samantha White", "title": "Safety Director", "phone": "309-555-0824", "email": "s.white@gallagherasphalt.com" },
-                        { "id": 5, "name": "Thomas Grant", "title": "Equipment Manager", "phone": "309-555-0825", "email": "t.grant@gallagherasphalt.com" }
+                        { "id": 3, "name": "Raymond Cruz", "title": "Night Shift Supervisor", "phone": "309-555-0823", "email": "r.cruz@gallagherasphalt.com", "divisionIds": ["P"] },
+                        { "id": 4, "name": "Samantha White", "title": "Safety Director", "phone": "309-555-0824", "email": "s.white@gallagherasphalt.com", "divisionIds": ["P", "G"] },
+                        { "id": 5, "name": "Thomas Grant", "title": "Equipment Manager", "phone": "309-555-0825", "email": "t.grant@gallagherasphalt.com", "divisionIds": ["P", "R"] }
                     ],
                     "primaryContactIndex": 0
                 }
