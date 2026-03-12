@@ -927,7 +927,7 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Marcus Bell", "title": "Senior Superintendent", "phone": "312-555-2210", "email": "mbell@turnerconstruction.com" }
+                        { "id": 1, "name": "Marcus Bell", "title": "Senior Superintendent", "phone": "312-555-2210", "email": "mbell@turnerconstruction.com", "divisionIds": ["G", "R"] }
                     ],
                     "primaryContactIndex": 0
                 }
