@@ -69,9 +69,24 @@ export interface NoteTag {
 export interface CompanyContact {
   id: number;
   name: string;
+  firstName?: string;
+  lastName?: string;
   title?: string;
+  typeCode?: string;
+  typeDescription?: string;
   phone: string;
+  mobilePhone?: string;
+  businessPhone?: string;
   email: string;
+  fax?: string;
+  spouse?: string;
+  address1?: string;
+  address2?: string;
+  address3?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  mainDivision?: string;
   divisionIds?: string[];
 }
 

@@ -7,11 +7,12 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { CompanyContact, ProjectCompany } from '@/types';
-import { Star, Pencil, Trash2, Plus, X, Check } from 'lucide-react';
+import { Star, Pencil, Trash2, Plus, X, Check, UserPlus } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 import { useData } from '@/contexts/DataContext';
 import { DIVISIONS, getDivisionName } from '@/contexts/DataContext';
+import { CreateContactForm } from './CreateContactForm';
 
 interface ManageCompanyContactsModalProps {
   company: ProjectCompany;
@@ -19,18 +20,20 @@ interface ManageCompanyContactsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSave: (updatedCompany: ProjectCompany) => void;
+  countryCode: string;
 }
 
 interface ContactFormData { name: string; title: string; phone: string; email: string; divisionIds: string[]; }
 const emptyContact: ContactFormData = { name: '', title: '', phone: '', email: '', divisionIds: [] };
 
-export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, onOpenChange, onSave }: ManageCompanyContactsModalProps) => {
+export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, onOpenChange, onSave, countryCode }: ManageCompanyContactsModalProps) => {
   const { toast } = useToast();
   const [contacts, setContacts] = useState<CompanyContact[]>([]);
   const [primaryIndex, setPrimaryIndex] = useState(0);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<ContactFormData>(emptyContact);
   const [showAddSection, setShowAddSection] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const [selectedEmails, setSelectedEmails] = useState<Set<string>>(new Set());
 
   const availableContacts = allCompanyContacts.filter(ac => !contacts.some(c => c.email === ac.email));
@@ -41,7 +44,7 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
     : DIVISIONS;
 
   useEffect(() => {
-    if (open && company) { setContacts([...(company.companyContacts || [])]); setPrimaryIndex(company.primaryContactIndex || 0); setEditingId(null); setShowAddSection(false); setSelectedEmails(new Set()); }
+    if (open && company) { setContacts([...(company.companyContacts || [])]); setPrimaryIndex(company.primaryContactIndex || 0); setEditingId(null); setShowAddSection(false); setShowCreateForm(false); setSelectedEmails(new Set()); }
   }, [open, company]);
 
   const handleSetPrimary = (index: number) => setPrimaryIndex(index);
@@ -66,6 +69,11 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
     const contactsToAdd = availableContacts.filter(c => selectedEmails.has(c.email));
     const maxId = Math.max(...contacts.map(c => c.id), 0);
     setContacts(prev => [...prev, ...contactsToAdd.map((c, idx) => ({ ...c, id: maxId + idx + 1 }))]); setShowAddSection(false); setSelectedEmails(new Set());
+  };
+  const handleCreateContact = (newContact: CompanyContact) => {
+    setContacts(prev => [...prev, newContact]);
+    setShowCreateForm(false);
+    toast({ title: "Contact Created", description: `${newContact.name} has been added.` });
   };
   const handleSave = () => {
     if (contacts.length === 0) { toast({ title: "No Contacts", description: "At least one contact is required.", variant: "destructive" }); return; }
@@ -145,6 +153,19 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
               )}
             </Card>
           ))}
+
+          {/* Create New Contact Form */}
+          {showCreateForm && (
+            <CreateContactForm
+              availableDivisions={[...availableDivisions]}
+              countryCode={countryCode}
+              companyId={company.companyId}
+              onSave={handleCreateContact}
+              onCancel={() => setShowCreateForm(false)}
+            />
+          )}
+
+          {/* Add Existing Contacts */}
           {showAddSection ? (
             <Card className="p-4 border-dashed">
               <h4 className="font-medium mb-3">Add Contacts from {company.companyName}</h4>
@@ -172,8 +193,15 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
                 </div>
               )}
             </Card>
-          ) : (
-            <Button variant="outline" className="w-full border-dashed" onClick={() => setShowAddSection(true)} disabled={availableContacts.length === 0}><Plus className="h-4 w-4 mr-2" /> {availableContacts.length === 0 ? "All company contacts already added" : "Add Another Contact"}</Button>
+          ) : !showCreateForm && (
+            <div className="flex gap-2">
+              <Button variant="outline" className="flex-1 border-dashed" onClick={() => setShowAddSection(true)} disabled={availableContacts.length === 0}>
+                <Plus className="h-4 w-4 mr-2" /> {availableContacts.length === 0 ? "All company contacts added" : "Add Existing Contact"}
+              </Button>
+              <Button variant="outline" className="flex-1 border-dashed" onClick={() => setShowCreateForm(true)}>
+                <UserPlus className="h-4 w-4 mr-2" /> Create New Contact
+              </Button>
+            </div>
           )}
         </div>
         <DialogFooter><Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button><Button onClick={handleSave}>Done</Button></DialogFooter>
