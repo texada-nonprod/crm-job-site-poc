@@ -26,8 +26,8 @@ interface ManageCompanyContactsModalProps {
   countryCode: string;
 }
 
-interface ContactFormData { name: string; title: string; phone: string; email: string; divisionIds: string[]; }
-const emptyContact: ContactFormData = { name: '', title: '', phone: '', email: '', divisionIds: [] };
+interface ContactFormData { name: string; title: string; phone: string; email: string; divisionIds: string[]; mailCodes: string[]; }
+const emptyContact: ContactFormData = { name: '', title: '', phone: '', email: '', divisionIds: [], mailCodes: [] };
 
 export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, onOpenChange, onSave, countryCode }: ManageCompanyContactsModalProps) => {
   const { toast } = useToast();
