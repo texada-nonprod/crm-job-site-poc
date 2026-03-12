@@ -865,7 +865,7 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Amanda Price", "title": "Project Director", "phone": "630-555-1020", "email": "a.price@ryancompanies.com" }
+                        { "id": 1, "name": "Amanda Price", "title": "Project Director", "phone": "630-555-1020", "email": "a.price@ryancompanies.com", "divisionIds": ["G", "C"] }
                     ],
                     "primaryContactIndex": 0
                 }
