@@ -92,6 +92,27 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
     }));
   };
 
+  const toggleEditMailCode = (code: string) => {
+    setEditForm(prev => ({
+      ...prev,
+      mailCodes: prev.mailCodes.includes(code)
+        ? prev.mailCodes.filter(c => c !== code)
+        : [...prev.mailCodes, code]
+    }));
+  };
+
+  const MailCodeBadges = ({ codes }: { codes?: string[] }) => {
+    if (!codes || codes.length === 0) return null;
+    return (
+      <div className="flex gap-1 flex-wrap">
+        {codes.map(code => (
+          <Badge key={code} variant="secondary" className="text-[10px] px-1.5 py-0 font-mono"
+            title={mailCodesData.find(m => m.code === code)?.description}>{code}</Badge>
+        ))}
+      </div>
+    );
+  };
+
   const DivisionBadges = ({ divisionIds }: { divisionIds?: string[] }) => {
     if (!divisionIds || divisionIds.length === 0) return null;
     return (
