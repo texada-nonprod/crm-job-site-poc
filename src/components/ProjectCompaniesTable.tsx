@@ -86,12 +86,6 @@ export const ProjectCompaniesTable = ({ projectId, companies, onRemoveCompany, s
 
   return (
     <>
-      <div className="flex justify-end mb-2">
-        <Button variant="ghost" size="sm" onClick={() => setShowCustomerNumber(!showCustomerNumber)} className="text-xs gap-1.5">
-          {showCustomerNumber ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-          Customer #
-        </Button>
-      </div>
       <Table>
         <TableHeader>
           <TableRow>
