@@ -73,7 +73,7 @@ export const AssociateCompanyModal = ({ projectId, currentCompanyNames, open, on
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader><DialogTitle>Associate Existing Company</DialogTitle><DialogDescription>Associate an existing company from another project as a subcontractor.</DialogDescription></DialogHeader>
+        <DialogHeader><DialogTitle>Associate Existing Company</DialogTitle><DialogDescription>Associate a known company (prospect or customer) to this project.</DialogDescription></DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             {availableCompanies.length === 0 ? (
