@@ -129,7 +129,7 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
     if (roleId && !companyRoleIds.includes(roleId)) {
       setCompanyRoleIds(prev => [...prev, roleId]);
     }
-    setAddRoleValue('');
+    // role added
   };
 
   const toggleDivision = (code: string) => {
