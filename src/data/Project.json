@@ -625,9 +625,9 @@
                     "roleDescription": "Subcontractor - Steel",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Betsy Owens", "title": "Parts Coordinator", "phone": "309-555-0663", "email": "betsy.owens@stuppbridge.com" },
-                        { "id": 2, "name": "Steven Price", "title": "Project Manager", "phone": "309-555-0664", "email": "s.price@stuppbridge.com" },
-                        { "id": 3, "name": "Tracy Nelson", "title": "Structural Engineer", "phone": "309-555-0665", "email": "t.nelson@stuppbridge.com" }
+                        { "id": 1, "name": "Betsy Owens", "title": "Parts Coordinator", "phone": "309-555-0663", "email": "betsy.owens@stuppbridge.com", "divisionIds": ["G"] },
+                        { "id": 2, "name": "Steven Price", "title": "Project Manager", "phone": "309-555-0664", "email": "s.price@stuppbridge.com", "divisionIds": ["G", "R"] },
+                        { "id": 3, "name": "Tracy Nelson", "title": "Structural Engineer", "phone": "309-555-0665", "email": "t.nelson@stuppbridge.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 },
