@@ -1,39 +1,43 @@
 
 
-# Remove PAR (Planned Annual Rate) from Projects
+## Prospect vs Customer Companies
 
-PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
+### Summary
 
-## Changes
+Update the data and UI so that companies whose `companyId` starts with `$` are treated as "prospects" while others remain "customers." Add a prospect badge and optional Customer Number column to the Companies table, and make the Associate Existing Company dialog search lazily.
 
-### 1. `src/types/index.ts`
-- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
-- Remove `showBehindPAR` from `Filters` interface
+### Data Changes
 
-### 2. `src/data/Project.json`
-- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
+**`src/data/Project.json`** — Change several company IDs to start with `$` to mark them as prospects. Target ~4-5 companies across projects, e.g.:
+- `"1019550"` (Granite Excavation) → `"$1019550"`
+- `"1140350"` (Rosendin Electric) → `"$1140350"`
+- `"1764465"` (Christy Webber Landscapes) → `"$1764465"`
+- `"NON-DBS"` Curran Contracting → `"$NON-DBS-CC"`
 
-### 3. `src/contexts/DataContext.tsx`
-- Remove `showBehindPAR: false` from default filters
-- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
-- Remove changelog entry referencing `plannedAnnualRate` (id 18)
+This keeps the rest as customers for contrast.
 
-### 4. `src/components/FilterBar.tsx`
-- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
+### UI Changes
 
-### 5. `src/components/EditProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove their reset in `useEffect`
-- Remove the PAR validation check
-- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
-- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
+**1. `src/components/ProjectCompaniesTable.tsx`** — Companies table:
+- Add a "Prospect" badge (orange/amber) next to the company name when `companyId` starts with `$`.
+- Add a toggleable "Customer #" column (using the existing `ColumnVisibilitySelector` pattern or a simpler local toggle) that displays `companyId`. Hidden by default; added to the column header row with a visibility option.
 
-### 6. `src/components/CreateProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove PAR validation
-- Remove `plannedAnnualRate` and `parStartDate` from new project object
-- Remove the Planned Annual Rate input and PAR Start Date picker from the form
+**2. `src/components/AssociateCompanyModal.tsx`** — Lazy search:
+- Replace the current pattern that renders all `CommandItem`s immediately.
+- Add a `searchQuery` state tracked from the `CommandInput`.
+- Only show `CommandGroup` with results when `searchQuery.length >= 2`.
+- When query is empty or too short, show a helper message like "Type at least 2 characters to search..."
+- Filter `availableCompanies` by the search query before rendering items (limit to first 20 results for performance).
+- Add the prospect badge in each search result item.
 
-### 7. `src/pages/ProjectDetail.tsx`
-- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
+### Technical Details
+
+**Prospect detection helper** (inline or small util):
+```ts
+const isProspect = (companyId: string) => companyId.startsWith('$');
+```
+
+**Companies table column visibility** — Add a local state `showCustomerNumber` with a small toggle button (eye icon or similar) in the table header area, or reuse the `ColumnVisibilitySelector` component if it fits. The column shows `companyId` (stripped of `$` prefix for prospects, or as-is for customers).
+
+**Lazy search in AssociateCompanyModal** — Override `cmdk`'s built-in filtering by using `shouldFilter={false}` on `<Command>` and manually filtering `availableCompanies` based on the search input state. This prevents all items from rendering on open.
 
