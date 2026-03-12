@@ -936,13 +936,6 @@ const ProjectDetail = () => {
                 isVisible={actColVis.isVisible}
                 moveColumn={actColVis.moveColumn}
               />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowAssociateActivityModal(true)}>
-                <LinkIcon className="h-4 w-4 mr-2" />
-                Associate Existing
-              </Button>
               <Button size="sm" onClick={handleCreateActivity}>
                 <Plus className="h-4 w-4 mr-2" />
                 Create New
