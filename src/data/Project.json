@@ -59,8 +59,8 @@
                     "roleDescription": "Subcontractor - Excavation",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Latisha Tyler", "title": "Fleet Manager", "phone": "312-555-0192", "email": "latisha.tyler@graniteexcavation.com" },
-                        { "id": 2, "name": "Marcus Johnson", "title": "Site Foreman", "phone": "312-555-0193", "email": "m.johnson@graniteexcavation.com" }
+                        { "id": 1, "name": "Latisha Tyler", "title": "Fleet Manager", "phone": "312-555-0192", "email": "latisha.tyler@graniteexcavation.com", "divisionIds": ["G"] },
+                        { "id": 2, "name": "Marcus Johnson", "title": "Site Foreman", "phone": "312-555-0193", "email": "m.johnson@graniteexcavation.com", "divisionIds": ["G", "R"] }
                     ],
                     "primaryContactIndex": 0
                 }
