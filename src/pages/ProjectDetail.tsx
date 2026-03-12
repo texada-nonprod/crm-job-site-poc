@@ -19,6 +19,9 @@ import { AssociateCompanyModal } from '@/components/AssociateCompanyModal';
 import { EditProjectModal } from '@/components/EditProjectModal';
 
 import { ActivityModal } from '@/components/ActivityModal';
+import { ActivityColumnSelector } from '@/components/ActivityColumnSelector';
+import { useActivityColumnVisibility, ACTIVITY_COLUMN_LABELS } from '@/hooks/useActivityColumnVisibility';
+import type { ActivityColumnId } from '@/hooks/useActivityColumnVisibility';
 import { AssociateActivityModal } from '@/components/AssociateActivityModal';
 import { NotesSection } from '@/components/NotesSection';
 import { ProjectCompaniesTable } from '@/components/ProjectCompaniesTable';
