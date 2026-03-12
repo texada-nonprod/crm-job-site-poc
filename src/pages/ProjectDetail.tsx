@@ -1352,11 +1352,6 @@ const ProjectDetail = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AssociateActivityModal
-        projectId={project.id}
-        currentActivityIds={project.activities?.map((a) => a.id) || []}
-        open={showAssociateActivityModal}
-        onOpenChange={setShowAssociateActivityModal} />
 
       <ActivityFilterModal
         open={showActFilterModal}
