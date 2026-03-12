@@ -7,26 +7,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Badge } from '@/components/ui/badge';
-import { Check, ChevronsUpDown, Star, X } from 'lucide-react';
+import { Check, ChevronsUpDown, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-interface AssociateCompanyModalProps {
-  projectId: number;
-  currentCompanyNames: string[];
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-const ROLE_OPTIONS = [
-  { id: 'GC', label: 'General Contractor' },
-  { id: 'SUB-EXC', label: 'Subcontractor - Excavation' },
-  { id: 'SUB-PAV', label: 'Subcontractor - Paving' },
-  { id: 'SUB-ELEC', label: 'Subcontractor - Electrical' },
-  { id: 'SUB-MECH', label: 'Subcontractor - Mechanical' },
-  { id: 'SUB-SPEC', label: 'Subcontractor - Specialized' },
-  { id: 'SUB-STEEL', label: 'Subcontractor - Steel' },
-];
+import { RoleMultiSelect, getRoleLabel } from '@/components/RoleMultiSelect';
 
 const isProspect = (companyId: string) => companyId.startsWith('$');
 
