@@ -51,7 +51,7 @@ export const ManageCompanyContactsModal = ({ company, allCompanyContacts, open, 
   }, [open, company]);
 
   const handleSetPrimary = (index: number) => setPrimaryIndex(index);
-  const handleStartEdit = (contact: CompanyContact) => { setEditingId(contact.id); setEditForm({ name: contact.name, title: contact.title || '', phone: contact.phone, email: contact.email, divisionIds: contact.divisionIds || [] }); };
+  const handleStartEdit = (contact: CompanyContact) => { setEditingId(contact.id); setEditForm({ name: contact.name, title: contact.title || '', phone: contact.phone, email: contact.email, divisionIds: contact.divisionIds || [], mailCodes: contact.mailCodes || [] }); };
   const handleCancelEdit = () => { setEditingId(null); setEditForm(emptyContact); };
   const handleSaveEdit = (contactId: number) => {
     if (!editForm.name.trim() || !editForm.email.trim()) { toast({ title: "Missing Information", description: "Name and email are required.", variant: "destructive" }); return; }
