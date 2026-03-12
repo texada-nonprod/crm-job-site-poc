@@ -6,13 +6,19 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useToast } from '@/hooks/use-toast';
 import { CompanyContact } from '@/types';
 import { getCountryByCode } from '@/data/Countries';
 import { fetchStatesProvinces, hasStatesProvinces, type StateProvince } from '@/data/StatesProvinces';
 import { applyPhoneMask, validatePhone, validateEmail, applyZipMask, validateZip } from '@/utils/phoneValidation';
 import contactTypesData from '@/data/ContactTypes.json';
-import { X, Check, UserPlus } from 'lucide-react';
+import mailCodesData from '@/data/MailCodes.json';
+import { X, Check, UserPlus, ChevronDown, ChevronRight, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface Division {
   code: string;
@@ -40,12 +46,16 @@ export const CreateContactForm = ({ availableDivisions, countryCode, companyId, 
   const [phone, setPhone] = useState('');
   const [fax, setFax] = useState('');
   const [divisionIds, setDivisionIds] = useState<string[]>([]);
+  const [addressType, setAddressType] = useState<'same' | 'different'>('same');
   const [address1, setAddress1] = useState('');
   const [address2, setAddress2] = useState('');
   const [address3, setAddress3] = useState('');
   const [city, setCity] = useState('');
   const [stateCode, setStateCode] = useState('');
   const [zipCode, setZipCode] = useState('');
+  const [mailCodes, setMailCodes] = useState<string[]>([]);
+  const [additionalFieldsOpen, setAdditionalFieldsOpen] = useState(false);
+  const [mailCodesPopoverOpen, setMailCodesPopoverOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const [availableStates, setAvailableStates] = useState<StateProvince[]>([]);
@@ -81,6 +91,14 @@ export const CreateContactForm = ({ availableDivisions, countryCode, companyId, 
     setDivisionIds(prev => prev.includes(code) ? prev.filter(d => d !== code) : [...prev, code]);
   };
 
+  const toggleMailCode = (code: string) => {
+    setMailCodes(prev => prev.includes(code) ? prev.filter(c => c !== code) : [...prev, code]);
+  };
+
+  const removeMailCode = (code: string) => {
+    setMailCodes(prev => prev.filter(c => c !== code));
+  };
+
   const errors = useMemo(() => {
     if (!submitted) return {};
     const e: Record<string, string> = {};
@@ -96,9 +114,9 @@ export const CreateContactForm = ({ availableDivisions, countryCode, companyId, 
     if (divisionIds.length === 0) e.division = 'Select at least one division';
     if (phone.trim() && hasMaskedCountry && !validatePhone(phone, countryCode)) e.phone = 'Invalid format';
     if (fax.trim() && hasMaskedCountry && !validatePhone(fax, countryCode)) e.fax = 'Invalid format';
-    if (zipCode.trim() && hasMaskedCountry && !validateZip(zipCode, countryCode)) e.zip = 'Invalid format';
+    if (addressType === 'different' && zipCode.trim() && hasMaskedCountry && !validateZip(zipCode, countryCode)) e.zip = 'Invalid format';
     return e;
-  }, [submitted, firstName, lastName, title, mobilePhone, businessPhone, email, divisionIds, phone, fax, zipCode, countryCode, hasMaskedCountry]);
+  }, [submitted, firstName, lastName, title, mobilePhone, businessPhone, email, divisionIds, phone, fax, zipCode, countryCode, hasMaskedCountry, addressType]);
 
   const handleSubmit = () => {
     setSubmitted(true);
@@ -109,7 +127,7 @@ export const CreateContactForm = ({ availableDivisions, countryCode, companyId, 
       (hasMaskedCountry && !validatePhone(businessPhone, countryCode)) ||
       (phone.trim() && hasMaskedCountry && !validatePhone(phone, countryCode)) ||
       (fax.trim() && hasMaskedCountry && !validatePhone(fax, countryCode)) ||
-      (zipCode.trim() && hasMaskedCountry && !validateZip(zipCode, countryCode));
+      (addressType === 'different' && zipCode.trim() && hasMaskedCountry && !validateZip(zipCode, countryCode));
 
     if (hasErrors) {
       toast({ title: 'Validation Error', description: 'Please fix the highlighted fields.', variant: 'destructive' });
@@ -118,6 +136,7 @@ export const CreateContactForm = ({ availableDivisions, countryCode, companyId, 
 
     const typeDesc = contactTypesData.find(t => t.code === typeCode)?.description;
     const fullName = `${firstName.trim()} ${lastName.trim()}`;
+    const isDifferentAddress = addressType === 'different';
 
     const newContact: CompanyContact = {
       id: Date.now(),
@@ -132,17 +151,17 @@ export const CreateContactForm = ({ availableDivisions, countryCode, companyId, 
       businessPhone,
       email: email.trim(),
       fax: fax.trim() || undefined,
-      address1: address1.trim() || undefined,
-      address2: address2.trim() || undefined,
-      address3: address3.trim() || undefined,
-      city: city.trim() || undefined,
-      state: stateCode || undefined,
-      zipCode: zipCode.trim() || undefined,
+      address1: isDifferentAddress ? (address1.trim() || undefined) : undefined,
+      address2: isDifferentAddress ? (address2.trim() || undefined) : undefined,
+      address3: isDifferentAddress ? (address3.trim() || undefined) : undefined,
+      city: isDifferentAddress ? (city.trim() || undefined) : undefined,
+      state: isDifferentAddress ? (stateCode || undefined) : undefined,
+      zipCode: isDifferentAddress ? (zipCode.trim() || undefined) : undefined,
       mainDivision: divisionIds[0],
       divisionIds,
+      mailCodes: mailCodes.length > 0 ? mailCodes : undefined,
     };
 
-    // Simulate API call
     console.log('Simulated API payload - Create Contact:', {
       customerId: companyId,
       firstName: newContact.firstName,
@@ -164,6 +183,7 @@ export const CreateContactForm = ({ availableDivisions, countryCode, companyId, 
       city: newContact.city || null,
       state: newContact.state || null,
       zipCode: newContact.zipCode || null,
+      mailCodes: newContact.mailCodes || [],
     });
 
     onSave(newContact);
@@ -273,55 +293,150 @@ export const CreateContactForm = ({ availableDivisions, countryCode, companyId, 
 
         <Separator />
 
-        {/* Address (optional) */}
+        {/* Address Toggle */}
         <div className="space-y-3">
-          <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Address (Optional)</h5>
-          <div>
-            <Label className="text-xs">Address Line 1</Label>
-            <Input value={address1} onChange={e => setAddress1(e.target.value)} placeholder="Street address" className="h-8" />
+          <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Address</h5>
+          <div className="flex rounded-md border border-border overflow-hidden w-fit">
+            <Button
+              type="button"
+              size="sm"
+              variant={addressType === 'same' ? 'default' : 'ghost'}
+              className="rounded-none h-8 text-xs"
+              onClick={() => {
+                setAddressType('same');
+                setAddress1(''); setAddress2(''); setAddress3('');
+                setCity(''); setStateCode(''); setZipCode('');
+              }}
+            >
+              Same as Company
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant={addressType === 'different' ? 'default' : 'ghost'}
+              className="rounded-none h-8 text-xs"
+              onClick={() => setAddressType('different')}
+            >
+              Different Address
+            </Button>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label className="text-xs">Address Line 2</Label>
-              <Input value={address2} onChange={e => setAddress2(e.target.value)} placeholder="Suite, unit, etc." className="h-8" />
-            </div>
-            <div>
-              <Label className="text-xs">Address Line 3</Label>
-              <Input value={address3} onChange={e => setAddress3(e.target.value)} placeholder="Additional info" className="h-8" />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label className="text-xs">City</Label>
-              <Input value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="h-8" />
-            </div>
-            {showStateField ? (
+
+          {addressType === 'different' && (
+            <div className="space-y-3">
               <div>
-                <Label className="text-xs">{stateLabel}</Label>
-                <Select value={stateCode} onValueChange={setStateCode} disabled={statesLoading}>
-                  <SelectTrigger className="h-8"><SelectValue placeholder={`Select ${stateLabel.toLowerCase()}`} /></SelectTrigger>
-                  <SelectContent>
-                    {availableStates.map(s => (
-                      <SelectItem key={s.code} value={s.code}>{s.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label className="text-xs">Address Line 1</Label>
+                <Input value={address1} onChange={e => setAddress1(e.target.value)} placeholder="Street address" className="h-8" />
               </div>
-            ) : (
-              <div>
-                <Label className="text-xs">{stateLabel}</Label>
-                <Input value={stateCode} onChange={e => setStateCode(e.target.value)} placeholder={stateLabel} className="h-8" />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className="text-xs">Address Line 2</Label>
+                  <Input value={address2} onChange={e => setAddress2(e.target.value)} placeholder="Suite, unit, etc." className="h-8" />
+                </div>
+                <div>
+                  <Label className="text-xs">Address Line 3</Label>
+                  <Input value={address3} onChange={e => setAddress3(e.target.value)} placeholder="Additional info" className="h-8" />
+                </div>
               </div>
-            )}
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label className="text-xs">{zipLabel}</Label>
-              <Input value={zipCode} onChange={e => handleZipChange(e.target.value)} placeholder={selectedCountry?.zipMask || zipLabel} className={`h-8 ${errors.zip ? 'border-destructive' : ''}`} />
-              <FieldError error={errors.zip} />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className="text-xs">City</Label>
+                  <Input value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="h-8" />
+                </div>
+                {showStateField ? (
+                  <div>
+                    <Label className="text-xs">{stateLabel}</Label>
+                    <Select value={stateCode} onValueChange={setStateCode} disabled={statesLoading}>
+                      <SelectTrigger className="h-8"><SelectValue placeholder={`Select ${stateLabel.toLowerCase()}`} /></SelectTrigger>
+                      <SelectContent>
+                        {availableStates.map(s => (
+                          <SelectItem key={s.code} value={s.code}>{s.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ) : (
+                  <div>
+                    <Label className="text-xs">{stateLabel}</Label>
+                    <Input value={stateCode} onChange={e => setStateCode(e.target.value)} placeholder={stateLabel} className="h-8" />
+                  </div>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className="text-xs">{zipLabel}</Label>
+                  <Input value={zipCode} onChange={e => handleZipChange(e.target.value)} placeholder={selectedCountry?.zipMask || zipLabel} className={`h-8 ${errors.zip ? 'border-destructive' : ''}`} />
+                  <FieldError error={errors.zip} />
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
+
+        {/* Additional Fields (collapsible) */}
+        <Collapsible open={additionalFieldsOpen} onOpenChange={setAdditionalFieldsOpen}>
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" size="sm" className="w-full justify-start text-xs text-muted-foreground hover:text-foreground px-0">
+              {additionalFieldsOpen ? <ChevronDown className="h-3.5 w-3.5 mr-1.5" /> : <ChevronRight className="h-3.5 w-3.5 mr-1.5" />}
+              Additional Fields
+              {mailCodes.length > 0 && (
+                <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">{mailCodes.length}</Badge>
+              )}
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-3 pt-2">
+            <div>
+              <Label className="text-xs">Mail Codes</Label>
+              <Popover open={mailCodesPopoverOpen} onOpenChange={setMailCodesPopoverOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="w-full justify-between h-8 text-xs font-normal mt-1">
+                    {mailCodes.length === 0 ? 'Select mail codes...' : `${mailCodes.length} selected`}
+                    <ChevronsUpDown className="h-3.5 w-3.5 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[350px] p-0" align="start">
+                  <Command>
+                    <CommandInput placeholder="Search mail codes..." className="h-8" />
+                    <CommandList>
+                      <CommandEmpty>No mail codes found.</CommandEmpty>
+                      <CommandGroup className="max-h-[200px] overflow-y-auto">
+                        {mailCodesData.map(mc => (
+                          <CommandItem
+                            key={mc.code}
+                            value={`${mc.code} ${mc.description}`}
+                            onSelect={() => toggleMailCode(mc.code)}
+                            className="text-xs"
+                          >
+                            <Checkbox
+                              checked={mailCodes.includes(mc.code)}
+                              className="mr-2 h-3.5 w-3.5"
+                            />
+                            <span className="font-mono font-medium mr-2">{mc.code}</span>
+                            <span className="text-muted-foreground truncate">{mc.description}</span>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              {mailCodes.length > 0 && (
+                <div className="flex gap-1 flex-wrap mt-2">
+                  {mailCodes.map(code => {
+                    const mc = mailCodesData.find(m => m.code === code);
+                    return (
+                      <Badge key={code} variant="secondary" className="text-[10px] px-1.5 py-0.5 gap-1">
+                        <span className="font-mono">{code}</span>
+                        <button onClick={() => removeMailCode(code)} className="ml-0.5 hover:text-destructive">
+                          <X className="h-3 w-3" />
+                        </button>
+                      </Badge>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
 
         {/* Actions */}
         <div className="flex justify-end gap-2 pt-2">

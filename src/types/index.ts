@@ -88,6 +88,7 @@ export interface CompanyContact {
   zipCode?: string;
   mainDivision?: string;
   divisionIds?: string[];
+  mailCodes?: string[];
 }
 
 export interface ProjectCompany {
