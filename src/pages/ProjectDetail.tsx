@@ -291,7 +291,32 @@ const ProjectDetail = () => {
     return oppSortDirection === 'asc' ? cmp : -cmp;
   });
 
-  const sortedActivities = [...(project.activities || [])].sort((a, b) => {
+  const filteredActivities = (project.activities || []).filter(activity => {
+    if (actFilters.assigneeIds.length > 0 && !actFilters.assigneeIds.includes(activity.salesRepId.toString())) return false;
+    if (actFilters.companyIds.length > 0 && (!activity.customerId || !actFilters.companyIds.includes(activity.customerId))) return false;
+    if (actFilters.contactNames.length > 0 && (!activity.contactName || !actFilters.contactNames.includes(activity.contactName))) return false;
+    if (actFilters.roleIds.length > 0) {
+      const company = project.projectCompanies?.find(c => c.companyId === activity.customerId);
+      if (!company) return false;
+      const companyRoles = company.roleIds || [company.roleId];
+      if (!actFilters.roleIds.some(r => companyRoles.includes(r))) return false;
+    }
+    if (actFilters.typeIds.length > 0 && !actFilters.typeIds.includes(activity.typeId)) return false;
+    if (actFilters.statuses.length > 0) {
+      const status = activity.statusId === 2 ? 'completed' : 'outstanding';
+      if (!actFilters.statuses.includes(status)) return false;
+    }
+    if (actFilters.dateFrom && new Date(activity.date) < actFilters.dateFrom) return false;
+    if (actFilters.dateTo) {
+      const end = new Date(actFilters.dateTo);
+      end.setHours(23, 59, 59, 999);
+      if (new Date(activity.date) > end) return false;
+    }
+    if (actFilters.hideCompleted && activity.statusId === 2) return false;
+    return true;
+  });
+
+  const sortedActivities = [...filteredActivities].sort((a, b) => {
     if (!actSortColumn || !actSortDirection) return 0;
     let cmp = 0;
     switch (actSortColumn) {
