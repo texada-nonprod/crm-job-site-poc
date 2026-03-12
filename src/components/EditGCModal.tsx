@@ -114,7 +114,7 @@ export const EditGCModal = ({ projectId, currentGC, open, onOpenChange }: EditGC
           </form>
         </DialogContent>
       </Dialog>
-      <ManageCompanyContactsModal company={workingCompany} allCompanyContacts={getAllCompanyContacts(workingCompany.companyName)} open={showManageContacts} onOpenChange={setShowManageContacts} onSave={handleSaveContacts} />
+      <ManageCompanyContactsModal company={workingCompany} allCompanyContacts={getAllCompanyContacts(workingCompany.companyName)} open={showManageContacts} onOpenChange={setShowManageContacts} onSave={handleSaveContacts} countryCode={projects.find(p => p.id === projectId)?.address?.country || 'US'} />
     </>
   );
 };

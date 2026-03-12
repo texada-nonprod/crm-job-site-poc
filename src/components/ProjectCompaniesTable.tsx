@@ -169,7 +169,7 @@ export const ProjectCompaniesTable = ({ projectId, companies, onRemoveCompany, s
         </TableBody>
       </Table>
       {editingCompany && (
-        <ManageCompanyContactsModal company={editingCompany} allCompanyContacts={getAllCompanyContacts(editingCompany.companyName)} open={!!editingCompany} onOpenChange={(open) => !open && setEditingCompany(null)} onSave={handleSaveContacts} />
+        <ManageCompanyContactsModal company={editingCompany} allCompanyContacts={getAllCompanyContacts(editingCompany.companyName)} open={!!editingCompany} onOpenChange={(open) => !open && setEditingCompany(null)} onSave={handleSaveContacts} countryCode={projects.find(p => p.id === projectId)?.address?.country || 'US'} />
       )}
     </>
   );
