@@ -870,9 +870,15 @@ const ProjectDetail = () => {
         </Card>
 
         <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Activities</h2>
             <div className="flex gap-2">
+              <ActivityColumnSelector
+                visibleColumns={actColVis.visibleColumns}
+                toggleColumn={actColVis.toggleColumn}
+                isVisible={actColVis.isVisible}
+                moveColumn={actColVis.moveColumn}
+              />
               <Button
                 variant="outline"
                 size="sm"
