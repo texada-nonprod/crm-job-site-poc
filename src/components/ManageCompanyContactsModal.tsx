@@ -10,7 +10,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { CompanyContact, ProjectCompany } from '@/types';
+import { CompanyContact, ProjectCompany, getCompanyRoles } from '@/types';
 import { Star, Pencil, Trash2, Plus, X, Check, UserPlus, ChevronDown, ChevronRight, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useData } from '@/contexts/DataContext';
