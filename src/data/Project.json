@@ -228,9 +228,9 @@
                     "roleDescription": "Subcontractor - Paving",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Angelia Sexton", "title": "Owner", "phone": "630-555-0441", "email": "angelia.s@currancontracting.com" },
-                        { "id": 2, "name": "Howard Klein", "title": "Operations Manager", "phone": "630-555-0442", "email": "h.klein@currancontracting.com" },
-                        { "id": 3, "name": "Jessica Palmer", "title": "Paving Crew Lead", "phone": "630-555-0443", "email": "j.palmer@currancontracting.com" }
+                        { "id": 1, "name": "Angelia Sexton", "title": "Owner", "phone": "630-555-0441", "email": "angelia.s@currancontracting.com", "divisionIds": ["P"] },
+                        { "id": 2, "name": "Howard Klein", "title": "Operations Manager", "phone": "630-555-0442", "email": "h.klein@currancontracting.com", "divisionIds": ["P", "G"] },
+                        { "id": 3, "name": "Jessica Palmer", "title": "Paving Crew Lead", "phone": "630-555-0443", "email": "j.palmer@currancontracting.com", "divisionIds": ["P"] }
                     ],
                     "primaryContactIndex": 0
                 }
