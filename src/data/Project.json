@@ -534,8 +534,8 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Tom Builders", "title": "Development Manager", "phone": "815-555-7788", "email": "tom@willowcreekdev.com" },
-                        { "id": 2, "name": "Sandra Kowalski", "title": "Land Acquisition VP", "phone": "815-555-7789", "email": "s.kowalski@willowcreekdev.com" }
+                        { "id": 1, "name": "Tom Builders", "title": "Development Manager", "phone": "815-555-7788", "email": "tom@willowcreekdev.com", "divisionIds": ["G"] },
+                        { "id": 2, "name": "Sandra Kowalski", "title": "Land Acquisition VP", "phone": "815-555-7789", "email": "s.kowalski@willowcreekdev.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 },
