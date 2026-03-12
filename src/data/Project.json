@@ -1114,7 +1114,7 @@
                     "roleDescription": "General Contractor",
                     "isPrimaryContact": true,
                     "companyContacts": [
-                        { "id": 1, "name": "Chris Dawson", "title": "Renewables PM", "phone": "815-555-5510", "email": "c.dawson@mortenson.com" }
+                        { "id": 1, "name": "Chris Dawson", "title": "Renewables PM", "phone": "815-555-5510", "email": "c.dawson@mortenson.com", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 }
