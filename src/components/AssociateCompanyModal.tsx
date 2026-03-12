@@ -21,7 +21,6 @@ export const AssociateCompanyModal = ({ projectId, currentCompanyNames, open, on
   const [selectedContactIds, setSelectedContactIds] = useState<number[]>([]);
   const [primaryContactId, setPrimaryContactId] = useState<number | null>(null);
   const [comboboxOpen, setComboboxOpen] = useState(false);
-  const [rolesOpen, setRolesOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const availableCompanies = useMemo(() => {
