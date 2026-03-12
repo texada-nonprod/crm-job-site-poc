@@ -45,6 +45,7 @@ const ProjectDetail = () => {
   const [showAssociateModal, setShowAssociateModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showAssociateCompanyModal, setShowAssociateCompanyModal] = useState(false);
+  const [showCustomerNumber, setShowCustomerNumber] = useState(false);
   const [showRemoveCompanyDialog, setShowRemoveCompanyDialog] = useState(false);
   const [companyToRemove, setCompanyToRemove] = useState<string | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -809,7 +810,11 @@ const ProjectDetail = () => {
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Companies</h2>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Label htmlFor="show-customer-number" className="text-xs text-muted-foreground cursor-pointer">Customer #</Label>
+                <Switch id="show-customer-number" checked={showCustomerNumber} onCheckedChange={setShowCustomerNumber} />
+              </div>
               <Button
                 variant="outline"
                 size="sm"
@@ -833,7 +838,8 @@ const ProjectDetail = () => {
           <ProjectCompaniesTable
             projectId={project.id}
             companies={project.projectCompanies.filter((c) => c.roleId !== 'OWNER')}
-            onRemoveCompany={initiateRemoveCompany} />
+            onRemoveCompany={initiateRemoveCompany}
+            showCustomerNumber={showCustomerNumber} />
 
           }
         </Card>

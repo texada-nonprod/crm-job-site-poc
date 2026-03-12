@@ -6,24 +6,24 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ManageCompanyContactsModal } from './ManageCompanyContactsModal';
-import { ChevronRight, ChevronDown, Star, Pencil, X, Phone, Mail, Users, ArrowUpDown, ArrowUp, ArrowDown, Eye, EyeOff } from 'lucide-react';
+import { ChevronRight, ChevronDown, Star, Pencil, X, Phone, Mail, Users, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ProjectCompaniesTableProps {
   projectId: number;
   companies: ProjectCompany[];
   onRemoveCompany: (companyName: string) => void;
+  showCustomerNumber: boolean;
 }
 
 const isProspect = (companyId: string) => companyId.startsWith('$');
 
-export const ProjectCompaniesTable = ({ projectId, companies, onRemoveCompany }: ProjectCompaniesTableProps) => {
+export const ProjectCompaniesTable = ({ projectId, companies, onRemoveCompany, showCustomerNumber }: ProjectCompaniesTableProps) => {
   const { updateProjectCompany, projects } = useData();
   const [expandedCompanies, setExpandedCompanies] = useState<Set<string>>(new Set());
   const [editingCompany, setEditingCompany] = useState<ProjectCompany | null>(null);
   const [sortColumn, setSortColumn] = useState<'company' | 'role' | 'contacts' | 'customerNumber' | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
-  const [showCustomerNumber, setShowCustomerNumber] = useState(false);
 
   const getAllCompanyContacts = (companyName: string) => {
     const contactsMap = new Map<string, typeof companies[0]['companyContacts'][0]>();
@@ -86,12 +86,6 @@ export const ProjectCompaniesTable = ({ projectId, companies, onRemoveCompany }:
 
   return (
     <>
-      <div className="flex justify-end mb-2">
-        <Button variant="ghost" size="sm" onClick={() => setShowCustomerNumber(!showCustomerNumber)} className="text-xs gap-1.5">
-          {showCustomerNumber ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-          Customer #
-        </Button>
-      </div>
       <Table>
         <TableHeader>
           <TableRow>
