@@ -358,8 +358,8 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Greg Harmon", "title": "Regional Construction Lead", "phone": "206-555-9999", "email": "construction-ord5@amazon.com" },
-                        { "id": 2, "name": "Priya Patel", "title": "Facilities Program Manager", "phone": "206-555-9998", "email": "ppatel@amazon.com" }
+                        { "id": 1, "name": "Greg Harmon", "title": "Regional Construction Lead", "phone": "206-555-9999", "email": "construction-ord5@amazon.com", "divisionIds": ["G", "S"] },
+                        { "id": 2, "name": "Priya Patel", "title": "Facilities Program Manager", "phone": "206-555-9998", "email": "ppatel@amazon.com", "divisionIds": ["S", "X"] }
                     ],
                     "primaryContactIndex": 0
                 },
