@@ -1,39 +1,32 @@
 
 
-# Remove PAR (Planned Annual Rate) from Projects
+## Refinements to Create New Contact Form Plan
 
-PAR consists of three concepts: `plannedAnnualRate`, `parStartDate`, and `showBehindPAR` filter. All must be removed across 6 files + 1 data file.
+Two adjustments to the approved Create Contact plan before implementation:
 
-## Changes
+### 1. Country-Aware Labels and Masking
 
-### 1. `src/types/index.ts`
-- Remove `plannedAnnualRate` and `parStartDate` from `Project` interface
-- Remove `showBehindPAR` from `Filters` interface
+The Create Contact form's address section must use the **project's country** (from `project.address.country`) as context for:
+- **ZIP Code label** — displays "ZIP Code" (US), "Postal Code" (CA), or "Post Code" (AU) using `getCountryByCode()` from `Countries.ts`
+- **State label** — displays "State" (US/AU) or "Province" (CA)
+- **Phone masking** — applies the correct format per country
+- **ZIP masking** — applies the correct format per country
 
-### 2. `src/data/Project.json`
-- Remove `plannedAnnualRate` and `parStartDate` fields from all project records
+The `CreateContactForm` component will receive the project's country code as a prop (passed from `ManageCompanyContactsModal` which receives it from the parent). The `ManageCompanyContactsModal` props will be extended to include `countryCode: string`.
 
-### 3. `src/contexts/DataContext.tsx`
-- Remove `showBehindPAR: false` from default filters
-- Remove the `showBehindPAR` filter logic (lines ~312-315 that check `plannedAnnualRate`)
-- Remove changelog entry referencing `plannedAnnualRate` (id 18)
+In `ProjectDetail.tsx`, when opening the modal, pass the project's `address.country` value.
 
-### 4. `src/components/FilterBar.tsx`
-- Remove the "Behind on PAR only" switch (the entire PAR filter div, lines ~42-45)
+### 2. Division Selection (Already Covered)
 
-### 5. `src/components/EditProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove their reset in `useEffect`
-- Remove the PAR validation check
-- Remove `plannedAnnualRate` and `parStartDate` from the `updateProject` call
-- Remove the Planned Annual Rate input field and PAR Start Date picker from the form
+The existing plan already specifies filtering divisions to the company's `divisionIds`. This is confirmed — the `availableDivisions` pattern already exists in `ManageCompanyContactsModal.tsx` (lines 39-41) and will be passed to `CreateContactForm` as a prop.
 
-### 6. `src/components/CreateProjectModal.tsx`
-- Remove `plannedAnnualRate` state, `parStartDate` state, and `parStartDateOpen` state
-- Remove PAR validation
-- Remove `plannedAnnualRate` and `parStartDate` from new project object
-- Remove the Planned Annual Rate input and PAR Start Date picker from the form
+### Implementation Impact
 
-### 7. `src/pages/ProjectDetail.tsx`
-- Remove the "Planned Annual Rate" and "PAR Start Date" display fields (~lines 474-481)
+| File | Change |
+|------|--------|
+| `src/components/ManageCompanyContactsModal.tsx` | Add `countryCode` prop, pass to `CreateContactForm` |
+| `src/components/CreateContactForm.tsx` | Accept `countryCode` prop, use `getCountryByCode()` for labels/masks on ZIP, State, Phone fields |
+| `src/pages/ProjectDetail.tsx` | Pass `project.address.country` to modal |
+
+No other changes to the previously approved plan.
 
