@@ -206,6 +206,11 @@ const createEquipmentApi = async (data: Record<string, unknown>): Promise<number
   return Math.floor(Math.random() * 10000) + 5000;
 };
 
+const associateEquipmentToProjectApi = async (projectId: number, equipmentId: number): Promise<void> => {
+  console.log('[API STUB] Associating equipment', equipmentId, 'to project', projectId);
+  await new Promise(r => setTimeout(r, 200));
+};
+
 // ── Searchable Combobox ──
 
 interface SearchableSelectProps {
@@ -289,10 +294,11 @@ interface CreateEquipmentModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSave: (equipmentId: number) => void;
+  projectId: number;
   projectCompanies: ProjectCompany[];
 }
 
-export function CreateEquipmentModal({ open, onOpenChange, onSave, projectCompanies }: CreateEquipmentModalProps) {
+export function CreateEquipmentModal({ open, onOpenChange, onSave, projectId, projectCompanies }: CreateEquipmentModalProps) {
   // Company (first required field)
   const [companyId, setCompanyId] = useState('');
 
@@ -445,6 +451,7 @@ export function CreateEquipmentModal({ open, onOpenChange, onSave, projectCompan
       };
 
       const newId = await createEquipmentApi(payload);
+      await associateEquipmentToProjectApi(projectId, newId);
       onSave(newId);
       handleClose(false);
     } finally {

@@ -1388,6 +1388,7 @@ const ProjectDetail = () => {
         open={showCreateEquipmentModal}
         onOpenChange={setShowCreateEquipmentModal}
         onSave={handleSaveNewEquipment}
+        projectId={project.id}
         projectCompanies={project.projectCompanies} />
       
 
