@@ -1042,7 +1042,7 @@
                     "roleDescription": "Property Owner",
                     "isPrimaryContact": false,
                     "companyContacts": [
-                        { "id": 1, "name": "Maria Santos", "title": "Capital Projects Manager", "phone": "773-555-4400", "email": "msantos@cityofchicago.org" }
+                        { "id": 1, "name": "Maria Santos", "title": "Capital Projects Manager", "phone": "773-555-4400", "email": "msantos@cityofchicago.org", "divisionIds": ["G"] }
                     ],
                     "primaryContactIndex": 0
                 },
