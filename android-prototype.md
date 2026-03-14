@@ -263,4 +263,11 @@ Existing web CRM (React/TypeScript) at `Z:\jobsites\`. Android prototype at `Z:\
 
 ## Status
 - Steps 1-3: DONE — Gradle config (version catalog, project build, app build)
-- Steps 4-50: PENDING — ready for implementation
+- Step 4: DONE — JSON mock data copied to assets (12+1 files; added MailCodes.json)
+- Steps 5-10: DONE — Data models: CustomerEquipment, CompanyContact, ProjectCompany, Note/Attachment/NoteModification/NoteTag, Activity, Project/Address/ProjectOwner/AssociatedOpportunity/ExternalReference
+- Steps 11-14: DONE — Data models: Opportunity/Product/ProductGroup, SalesRep, User, OpportunityStage, OpportunityType, LookupOption/LookupsData, ChangeLogEntry, Filters (all compile ✓)
+- Step 15: DONE — JSON wrapper classes (ContentWrapper<T>)
+- Step 16: DONE — Clean build verification passed
+- Step 17: DONE — JsonDataSource.kt + supporting models (ActivityType, Campaign, Issue, ContactType, MailCode) + MailCodes.json asset
+- Step 18: PENDING — CrmRepository.kt
+- Steps 19-50: PENDING — DI, theme, components, navigation, screens
