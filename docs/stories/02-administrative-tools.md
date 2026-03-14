@@ -53,7 +53,7 @@ Feature: 1. Manage Dropdowns
 
     Examples:
       | label_value | error_message                          |
-      |             | Label is required.                     |
+      | (leave blank) | Label is required.                     |
       | Active      | An item with this label already exists. |
 
   Scenario Outline: 1.4. Edit Dropdown Item

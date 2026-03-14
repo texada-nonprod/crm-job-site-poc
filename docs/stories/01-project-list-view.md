@@ -205,10 +205,10 @@ Feature: 5. Create Project Modal
 
     Examples:
       | name_value | assignee_value | address_street | error_message                          |
-      |            | Smith, John    | 123 Main St    | Please enter a project name.           |
-      | Test Proj  |                | 123 Main St    | Please select at least one assignee.   |
+      | (leave blank) | Smith, John    | 123 Main St    | Please enter a project name.           |
+      | Test Proj  | (leave blank)  | 123 Main St    | Please select at least one assignee.   |
       | Test Proj  | Smith, John    | 123 Main St    | Please select a project owner company. |
-      | Test Proj  | Smith, John    |                | Please fill in all address fields.     |
+      | Test Proj  | Smith, John    | (leave blank)  | Please fill in all address fields.     |
 
   Scenario: 5.5. Invalid Coordinates Validation
     When I click the "Coordinates" button

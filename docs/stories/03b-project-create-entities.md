@@ -35,7 +35,7 @@ Feature: 1. Create Project Opportunity
 
     Examples:
       | division_id |
-      |             |
+      | (leave blank) |
       | Power       |
 
 ### **User Story: Create New Prospect Company**

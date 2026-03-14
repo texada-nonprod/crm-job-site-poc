@@ -66,7 +66,7 @@ Feature: 2. Associate Project Company
 
     Examples:
       | company_name |
-      |              |
+      | (leave blank)|
       | Acme Corp    |
 
 ### **User Story: Associate Existing Customer Equipment**
