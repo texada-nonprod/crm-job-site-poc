@@ -269,5 +269,9 @@ Existing web CRM (React/TypeScript) at `Z:\jobsites\`. Android prototype at `Z:\
 - Step 15: DONE — JSON wrapper classes (ContentWrapper<T>)
 - Step 16: DONE — Clean build verification passed
 - Step 17: DONE — JsonDataSource.kt + supporting models (ActivityType, Campaign, Issue, ContactType, MailCode) + MailCodes.json asset
-- Step 18: PENDING — CrmRepository.kt
-- Steps 19-50: PENDING — DI, theme, components, navigation, screens
+- Step 18: DONE — CrmRepository.kt (StateFlows, CRUD, revenue calcs, filtering, change log, lookup helpers) compile ✓
+- Steps 19-21: DONE — Hilt DI: AppModule.kt, CrmApplication.kt, @AndroidEntryPoint on MainActivity, AndroidManifest updated. compile ✓
+- Steps 22-23: DONE — Theme: Color.kt (brand/status/revenue/tag colors), Theme.kt (light+dark schemes, status bar tinting)
+- Steps 24-27: DONE — Components: StatusBadge, EmptyState, LoadingState, ConfirmDialog, DatePickerField, DropdownField, MultiSelectField
+- Steps 28-29: DONE — Navigation: Screen.kt (sealed routes), CrmNavigation.kt (NavHost), MainActivity wired up, 4 stub screens. Clean build ✓
+- Steps 30-50: PENDING — Screens (ProjectList, ProjectDetail, CreateProject, EditProject)

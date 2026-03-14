@@ -58,7 +58,14 @@ Feature: 2. Associate Project Company
     And the modal should close
     And "Turner Construction" should appear in the "Companies" table with the "General Contractor" badge
 
-  Scenario Outline: 2.2. Validation Errors on Association
+  Scenario: 2.2. Set Primary Contact During Association
+    When I select a company that has contacts
+    Then the "Contacts (optional)" list should appear
+    When I click the star icon next to a selected contact
+    Then the star icon should be highlighted
+    And the contact will be designated as the "Primary Contact" for this project upon saving
+
+  Scenario Outline: 2.3. Validation Errors on Association
     When I select "<company_name>" from the Company combobox
     And I click the "Associate Company" button with no roles selected
     Then I should see the error message "Please select a company and at least one role."
@@ -95,14 +102,16 @@ Feature: 3. Associate Customer Equipment
     And the modal should close
     And the "CAT 320" should appear under its owning company in the Equipment table
 
-  Scenario: 3.2. Empty Equipment Selection Error
-    When no equipment is selected in the table
-    Then the "Associate" button should be disabled
+  Scenario: 3.2. Validation Rules and Empty States
+    When I select a company that has no available equipment
+    Then I should see the message "No available equipment for this company."
+    And the "Associate" button should be disabled
 
   Scenario: 3.3. Equipment Conflict Dialog
-    Given the equipment is already assigned to "Another Project"
+    Given I select an equipment record that is currently assigned to another project
     When I click the "Associate" button
-    Then an Alert Dialog titled "Equipment Already Assigned" should open
-    And I should see a warning that it is assigned to "Another Project"
+    Then I should see the "Equipment Already Assigned" confirmation dialog
+    And the dialog should warn me that the equipment is assigned to another explicit project name
+    And the dialog should state that adding it here will NOT remove it from the other project
     When I click "Continue"
-    Then the equipment should be associated with my project
+    Then the equipment should be associated with my project, and remain associated with the previous project as well

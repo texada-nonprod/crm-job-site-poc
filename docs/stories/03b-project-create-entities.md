@@ -81,6 +81,34 @@ Feature: 2. Create Prospect Company
     Then I should see the "Validation Error" toast message "Please fix the highlighted fields."
     And I should see inline error messages below the missing required fields such as "Required", "Select at least one division", and "Select at least one role"
 
+  Scenario Outline: 2.3. Phone Number Validation by Country
+    When I select "<country>" from the "Country *" combobox
+    And I type "<input_phone>" into the "Phone Number *" input
+    And I click the "Create Prospect" button
+    Then the "Phone Number *" input should format the value as "<formatted_phone>"
+    And I should see the error message "<error_msg>" below the "Phone Number *" input
+
+    Examples:
+      | country       | input_phone | formatted_phone | error_msg      |
+      | United States | 555123      | (555) 123       | Invalid format |
+      | United States | 5551234567  | (555) 123-4567  | (leave blank)  |
+      | Australia     | 0412345     | 0412 345        | Invalid format |
+      | Australia     | 0412345678  | 0412 345 678    | (leave blank)  |
+
+  Scenario Outline: 2.4. ZIP/Postal Code Validation by Country
+    When I select "<country>" from the "Country *" combobox
+    And I type "<input_zip>" into the "ZIP/Postal code *" input
+    And I click the "Create Prospect" button
+    Then the "ZIP/Postal code *" input should format the value as "<formatted_zip>"
+    And I should see the error message "<error_msg>" below the "ZIP/Postal code *" input
+
+    Examples:
+      | country       | input_zip | formatted_zip | error_msg      |
+      | United States | 1234      | 1234          | Invalid format |
+      | United States | 12345     | 12345         | (leave blank)  |
+      | Canada        | A1A       | A1A           | Invalid format |
+      | Canada        | A1A1A1    | A1A 1A1       | (leave blank)  |
+
 ### **User Story: Create New Activity**
 
 **Description:**
@@ -121,6 +149,7 @@ Feature: 3. Create Project Activity
     Then the "Create New Activity" modal should open
     And the system should internally link this new activity to the one I clicked
     And I should see a note indicating it is a follow-up near the top of the modal
+    And the "Sales Rep", "Activity Type", "Company (optional)", and "Contact" fields should be pre-populated with data from the original activity
 
 ### **User Story: Add Brand New Customer Equipment**
 
@@ -156,3 +185,21 @@ Feature: 4. Create Customer Equipment
   Scenario: 4.2. Expand Additional Fields
     When I click the "Additional Fields" collapsible button
     Then I should see optional fields become available, including "Equipment Number", "SMU", "SMU Date", "Industry Group", "Engine Make", and "Purchase Date"
+
+  Scenario: 4.3. Cascading Dropdown: Make to Compatibility Code
+    When I open the modal
+    Then the "Family Product Code *" combobox should be disabled with placeholder "Select make first"
+    And the "Compatibility Code *" combobox should be disabled with placeholder "Select FPC first"
+    When I select "Caterpillar" from the "Make *" combobox
+    Then the "Family Product Code *" combobox should be enabled
+    And its options should be filtered to only show FPCs associated with Caterpillar
+    When I select "EXCAVATORS, SHOVELS AND DRAGLINE" from the "Family Product Code *" combobox
+    Then the "Compatibility Code *" combobox should be enabled
+    And its options should be filtered based on the selected FPC
+
+  Scenario: 4.4. Cascading Dropdown: Industry Group to Industry Code
+    When I click the "Additional Fields" collapsible button
+    Then the "Industry Code" combobox should be disabled with placeholder "Select group first"
+    When I select "Construction" from the "Industry Group" combobox
+    Then the "Industry Code" combobox should be enabled
+    And its options should be filtered based on the "Construction" group
