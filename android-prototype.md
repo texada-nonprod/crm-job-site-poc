@@ -274,4 +274,6 @@ Existing web CRM (React/TypeScript) at `Z:\jobsites\`. Android prototype at `Z:\
 - Steps 22-23: DONE — Theme: Color.kt (brand/status/revenue/tag colors), Theme.kt (light+dark schemes, status bar tinting)
 - Steps 24-27: DONE — Components: StatusBadge, EmptyState, LoadingState, ConfirmDialog, DatePickerField, DropdownField, MultiSelectField
 - Steps 28-29: DONE — Navigation: Screen.kt (sealed routes), CrmNavigation.kt (NavHost), MainActivity wired up, 4 stub screens. Clean build ✓
-- Steps 30-50: PENDING — Screens (ProjectList, ProjectDetail, CreateProject, EditProject)
+- Steps 30-36: DONE — ProjectList: ViewModel (search/sort/filter), KpiCard (pipeline+won revenue), ProjectCard (name/status/address/assignee/revenue), FilterSheet (bottom sheet with assignee/division/status/GC/hideCompleted), ProjectListScreen. APK builds ✓ (58MB debug)
+- Steps 37-45: DONE — ProjectDetail: ViewModel, ProjectInfoCard (address/owner/valuation/dates/revenue), OpportunitySection (cards w/ stage/type/rep/revenue), CompanySection (expandable contacts w/ phone/email), ActivitySection (type/date/status/rep/description), EquipmentSection (make/model/serial/SMU), NotesSection (tags/content/history), ChangeLog, CollapsibleSections. APK builds ✓
+- Steps 46-50: PENDING — CreateProject, EditProject screens
