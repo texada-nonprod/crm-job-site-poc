@@ -20,12 +20,14 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -46,10 +48,15 @@ import com.jobsites.crm.ui.components.EmptyState
 import com.jobsites.crm.ui.components.LoadingState
 import com.jobsites.crm.ui.components.StatusBadge
 import com.jobsites.crm.ui.screens.projectdetail.components.ActivitySection
+import com.jobsites.crm.ui.screens.projectdetail.components.AddContactSheet
+import com.jobsites.crm.ui.screens.projectdetail.components.AssociateCompanySheet
+import com.jobsites.crm.ui.screens.projectdetail.components.AssociateEquipmentSheet
 import com.jobsites.crm.ui.screens.projectdetail.components.CompanySection
+import com.jobsites.crm.ui.screens.projectdetail.components.CreateEquipmentSheet
 import com.jobsites.crm.ui.screens.projectdetail.components.EquipmentSection
 import com.jobsites.crm.ui.screens.projectdetail.components.NoteFormSheet
 import com.jobsites.crm.ui.screens.projectdetail.components.NotesSection
+import com.jobsites.crm.ui.screens.projectdetail.components.OpportunityFormSheet
 import com.jobsites.crm.ui.screens.projectdetail.components.OpportunitySection
 import com.jobsites.crm.ui.screens.projectdetail.components.ProjectInfoCard
 
@@ -59,6 +66,7 @@ fun ProjectDetailScreen(
     projectId: Int,
     onBack: () -> Unit,
     onEditClick: (Int) -> Unit,
+    onAddProspect: (Int) -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: ProjectDetailViewModel = hiltViewModel()
 ) {
@@ -78,6 +86,10 @@ fun ProjectDetailScreen(
     var editingOpportunity by remember { mutableStateOf<Opportunity?>(null) }
     var showAddCompanySheet by remember { mutableStateOf(false) }
     var showAddEquipmentSheet by remember { mutableStateOf(false) }
+    var showCreateEquipmentSheet by remember { mutableStateOf(false) }
+    var addContactCompanyName by remember { mutableStateOf<String?>(null) }
+    var showEquipmentMenu by remember { mutableStateOf(false) }
+    var showCompanyMenu by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
@@ -171,7 +183,10 @@ fun ProjectDetailScreen(
                                     fullOpportunities = state.opportunities,
                                     getStageName = { viewModel.getStageName(it) },
                                     getTypeName = { viewModel.getTypeName(it) },
-                                    getSalesRepName = { viewModel.getSalesRepName(it) }
+                                    getSalesRepName = { viewModel.getSalesRepName(it) },
+                                    onEdit = { oppId ->
+                                        editingOpportunity = viewModel.getOpportunityById(oppId)
+                                    }
                                 )
                             }
                         }
@@ -183,12 +198,17 @@ fun ProjectDetailScreen(
                             title = "Companies & Contacts",
                             count = project.projectCompanies.size,
                             initiallyExpanded = true,
-                            onAdd = { showAddCompanySheet = true }
+                            onAdd = { showCompanyMenu = true }
                         ) {
                             if (project.projectCompanies.isEmpty()) {
                                 EmptyState(title = "No companies", subtitle = "")
                             } else {
-                                CompanySection(companies = project.projectCompanies)
+                                CompanySection(
+                                    companies = project.projectCompanies,
+                                    onAddContact = { companyName ->
+                                        addContactCompanyName = companyName
+                                    }
+                                )
                             }
                         }
                     }
@@ -216,7 +236,7 @@ fun ProjectDetailScreen(
                         CollapsibleSection(
                             title = "Equipment",
                             count = state.equipment.size,
-                            onAdd = { showAddEquipmentSheet = true }
+                            onAdd = { showEquipmentMenu = true }
                         ) {
                             if (state.equipment.isEmpty()) {
                                 EmptyState(title = "No equipment", subtitle = "")
@@ -243,6 +263,7 @@ fun ProjectDetailScreen(
                                     notes = project.notes,
                                     noteTags = noteTags,
                                     getUserName = { viewModel.getUserName(it) },
+                                    currentUserId = viewModel.getCurrentUserId(),
                                     onDelete = { viewModel.deleteNote(it) },
                                     onEdit = { editingNote = it }
                                 )
@@ -291,6 +312,148 @@ fun ProjectDetailScreen(
                 }
                 showNoteSheet = false
                 editingNote = null
+            }
+        )
+    }
+
+    // ── Opportunity form bottom sheet ─────────────────────────────
+    if (showOpportunitySheet || editingOpportunity != null) {
+        OpportunityFormSheet(
+            divisions = viewModel.getDivisions(),
+            opportunityTypes = viewModel.getOpportunityTypes(),
+            opportunityStages = viewModel.getOpportunityStages(),
+            editingOpportunity = editingOpportunity,
+            onDismiss = {
+                showOpportunitySheet = false
+                editingOpportunity = null
+            },
+            onSave = { data ->
+                if (editingOpportunity != null) {
+                    viewModel.updateOpportunity(
+                        oppId = editingOpportunity!!.id,
+                        description = data.description,
+                        revenue = data.revenue,
+                        divisionId = data.divisionId,
+                        typeId = data.typeId,
+                        stageId = data.stageId,
+                        estMonth = data.estMonth,
+                        estYear = data.estYear
+                    )
+                } else {
+                    viewModel.createOpportunity(
+                        description = data.description,
+                        revenue = data.revenue,
+                        divisionId = data.divisionId,
+                        typeId = data.typeId,
+                        stageId = data.stageId
+                    )
+                }
+                showOpportunitySheet = false
+                editingOpportunity = null
+            }
+        )
+    }
+
+    // ── Company menu dialog ─────────────────────────────────────────
+    if (showCompanyMenu) {
+        AlertDialog(
+            onDismissRequest = { showCompanyMenu = false },
+            title = { Text("Add Company") },
+            text = { Text("Choose how to add a company to this project.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showCompanyMenu = false
+                    onAddProspect(viewModel.getProjectId())
+                }) { Text("New Prospect") }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showCompanyMenu = false
+                    showAddCompanySheet = true
+                }) { Text("Associate Existing") }
+            }
+        )
+    }
+
+    // ── Associate Company bottom sheet ───────────────────────────────
+    if (showAddCompanySheet) {
+        AssociateCompanySheet(
+            allCompanies = viewModel.getAllKnownCompanies(),
+            existingCompanyIds = project?.projectCompanies?.map { it.companyId } ?: emptyList(),
+            onDismiss = { showAddCompanySheet = false },
+            onSave = { company, roleIds ->
+                viewModel.associateCompany(company, roleIds)
+                showAddCompanySheet = false
+            }
+        )
+    }
+
+    // ── Add Contact bottom sheet ────────────────────────────────────
+    if (addContactCompanyName != null) {
+        AddContactSheet(
+            companyName = addContactCompanyName!!,
+            contactTypes = viewModel.getContactTypes(),
+            onDismiss = { addContactCompanyName = null },
+            onSave = { contact ->
+                viewModel.addContactToCompany(addContactCompanyName!!, contact)
+                addContactCompanyName = null
+            }
+        )
+    }
+
+    // ── Equipment menu dialog ───────────────────────────────────────
+    if (showEquipmentMenu) {
+        AlertDialog(
+            onDismissRequest = { showEquipmentMenu = false },
+            title = { Text("Add Equipment") },
+            text = { Text("Choose how to add equipment to this project.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showEquipmentMenu = false
+                    showCreateEquipmentSheet = true
+                }) { Text("Create New") }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showEquipmentMenu = false
+                    showAddEquipmentSheet = true
+                }) { Text("From Company Fleet") }
+            }
+        )
+    }
+
+    // ── Associate Equipment bottom sheet ─────────────────────────────
+    if (showAddEquipmentSheet) {
+        AssociateEquipmentSheet(
+            projectCompanies = project?.projectCompanies ?: emptyList(),
+            getCompanyEquipment = { viewModel.getCompanyEquipment(it) },
+            existingEquipmentIds = project?.customerEquipment ?: emptyList(),
+            getEquipmentProjectAssignment = { viewModel.getEquipmentProjectAssignment(it) },
+            onDismiss = { showAddEquipmentSheet = false },
+            onSave = { equipmentId ->
+                viewModel.addEquipment(equipmentId)
+                showAddEquipmentSheet = false
+            }
+        )
+    }
+
+    // ── Create Equipment bottom sheet ────────────────────────────────
+    if (showCreateEquipmentSheet) {
+        CreateEquipmentSheet(
+            projectCompanies = project?.projectCompanies ?: emptyList(),
+            onDismiss = { showCreateEquipmentSheet = false },
+            onSave = { data ->
+                viewModel.createEquipment(
+                    companyId = data.companyId,
+                    equipmentType = data.equipmentType,
+                    make = data.make,
+                    model = data.model,
+                    serialNumber = data.serialNumber,
+                    year = data.year,
+                    ownershipStatus = data.ownershipStatus,
+                    smu = data.smu
+                )
+                showCreateEquipmentSheet = false
             }
         )
     }

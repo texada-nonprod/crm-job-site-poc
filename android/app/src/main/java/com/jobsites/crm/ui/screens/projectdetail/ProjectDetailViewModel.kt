@@ -4,12 +4,19 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.jobsites.crm.data.model.Activity
 import com.jobsites.crm.data.model.ChangeLogEntry
+import com.jobsites.crm.data.model.CompanyContact
+import com.jobsites.crm.data.model.ContactType
 import com.jobsites.crm.data.model.CustomerEquipment
 import com.jobsites.crm.data.model.Note
 import com.jobsites.crm.data.model.Opportunity
+import com.jobsites.crm.data.model.OpportunityStage
+import com.jobsites.crm.data.model.OpportunityType
 import com.jobsites.crm.data.model.Project
 import com.jobsites.crm.data.model.ProjectCompany
 import com.jobsites.crm.data.repository.CrmRepository
+import com.jobsites.crm.data.repository.DIVISIONS
+import com.jobsites.crm.data.repository.Division
+import java.time.Instant
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -121,6 +128,159 @@ class ProjectDetailViewModel @Inject constructor(
         repository.updateNote(projectId, noteId) { existing ->
             existing.copy(content = content, tagIds = tagIds)
         }
+        refresh()
+    }
+
+    // ── Opportunity CRUD ──────────────────────────────────────────
+
+    fun getDivisions(): List<Division> = DIVISIONS
+
+    fun getOpportunityStages(): List<OpportunityStage> =
+        repository.opportunityStages.value
+
+    fun getOpportunityTypes(): List<OpportunityType> =
+        repository.opportunityTypes.value
+
+    fun getOpportunityById(id: Int): Opportunity? =
+        repository.opportunities.value.find { it.id == id }
+
+    fun createOpportunity(
+        description: String,
+        revenue: Double,
+        divisionId: String,
+        typeId: Int,
+        stageId: Int
+    ) {
+        val now = Instant.now().toString()
+        val stages = repository.opportunityStages.value
+        val stage = stages.find { it.stageId == stageId }
+        val newId = (repository.opportunities.value.maxOfOrNull { it.id } ?: 0) + 1
+        val currentUser = repository.currentUserId.value
+        val firstRep = repository.salesReps.value.firstOrNull()?.salesRepId ?: currentUser
+
+        val opp = Opportunity(
+            id = newId,
+            description = description,
+            estimateRevenue = revenue,
+            divisionId = divisionId,
+            typeId = typeId,
+            stageId = stageId,
+            phaseId = stage?.phaseId ?: 1,
+            projectId = projectId,
+            salesRepId = firstRep,
+            ownerUserId = currentUser,
+            originatorUserId = currentUser,
+            enterDate = now,
+            changeDate = now
+        )
+        repository.createNewOpportunity(opp)
+        refresh()
+    }
+
+    fun updateOpportunity(
+        oppId: Int,
+        description: String,
+        revenue: Double,
+        divisionId: String,
+        typeId: Int,
+        stageId: Int,
+        estMonth: Int?,
+        estYear: Int?
+    ) {
+        val stages = repository.opportunityStages.value
+        val stage = stages.find { it.stageId == stageId }
+        repository.updateOpportunity(oppId) { existing ->
+            existing.copy(
+                description = description,
+                estimateRevenue = revenue,
+                divisionId = divisionId,
+                typeId = typeId,
+                stageId = stageId,
+                phaseId = stage?.phaseId ?: existing.phaseId,
+                estimateDeliveryMonth = estMonth,
+                estimateDeliveryYear = estYear,
+                changeDate = Instant.now().toString()
+            )
+        }
+        refresh()
+    }
+
+    // ── Company CRUD ────────────────────────────────────────────────
+
+    fun getAllKnownCompanies(): List<ProjectCompany> =
+        repository.getAllKnownCompanies()
+
+    fun associateCompany(company: ProjectCompany, roleIds: List<String>) {
+        val roleDescriptions = roleIds.map { roleId ->
+            com.jobsites.crm.ui.screens.projectdetail.components.ROLE_OPTIONS
+                .find { it.id == roleId }?.label ?: roleId
+        }
+        val updated = company.copy(
+            roleIds = roleIds,
+            roleDescriptions = roleDescriptions,
+            roleId = roleIds.firstOrNull() ?: "",
+            roleDescription = roleDescriptions.firstOrNull() ?: ""
+        )
+        repository.addProjectCompany(projectId, updated)
+        refresh()
+    }
+
+    fun addContactToCompany(companyName: String, contact: CompanyContact) {
+        val project = _uiState.value.project ?: return
+        val company = project.projectCompanies.find { it.companyName == companyName } ?: return
+        val maxId = company.companyContacts.maxOfOrNull { it.id } ?: 0
+        val newContact = contact.copy(id = maxId + 1)
+        val updatedCompany = company.copy(
+            companyContacts = company.companyContacts + newContact
+        )
+        repository.updateProjectCompany(projectId, companyName, updatedCompany)
+        refresh()
+    }
+
+    fun getContactTypes(): List<ContactType> =
+        repository.contactTypes.value
+
+    fun getProjectId(): Int = projectId
+
+    fun getCurrentUserId(): Int = repository.currentUserId.value
+
+    // ── Equipment CRUD ──────────────────────────────────────────────
+
+    fun getCompanyEquipment(companyId: String): List<CustomerEquipment> =
+        repository.getCompanyEquipment(companyId)
+
+    fun addEquipment(equipmentId: Int) {
+        repository.addCustomerEquipment(projectId, equipmentId)
+        refresh()
+    }
+
+    fun getEquipmentProjectAssignment(equipmentId: Int): Pair<Int, String>? =
+        repository.getEquipmentProjectAssignment(equipmentId, excludeProjectId = projectId)
+
+    fun createEquipment(
+        companyId: String,
+        equipmentType: String,
+        make: String,
+        model: String,
+        serialNumber: String,
+        year: Int,
+        ownershipStatus: String,
+        smu: Int?
+    ) {
+        val newId = (repository.masterEquipment.value.maxOfOrNull { it.id } ?: 0) + 1
+        val equipment = CustomerEquipment(
+            id = newId,
+            companyId = companyId,
+            equipmentType = equipmentType,
+            make = make,
+            model = model,
+            year = year,
+            serialNumber = serialNumber,
+            smu = smu,
+            ownershipStatus = ownershipStatus
+        )
+        repository.addEquipmentToMaster(equipment)
+        repository.addCustomerEquipment(projectId, newId)
         refresh()
     }
 }

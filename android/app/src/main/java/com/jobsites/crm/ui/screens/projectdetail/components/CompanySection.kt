@@ -16,11 +16,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,11 +42,15 @@ import com.jobsites.crm.data.model.ProjectCompany
 @Composable
 fun CompanySection(
     companies: List<ProjectCompany>,
+    onAddContact: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         companies.forEach { company ->
-            CompanyCard(company = company)
+            CompanyCard(
+                company = company,
+                onAddContact = { onAddContact(company.companyName) }
+            )
         }
     }
 }
@@ -52,6 +58,7 @@ fun CompanySection(
 @Composable
 private fun CompanyCard(
     company: ProjectCompany,
+    onAddContact: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -106,7 +113,7 @@ private fun CompanyCard(
             }
 
             // Expandable contacts
-            AnimatedVisibility(visible = expanded && company.companyContacts.isNotEmpty()) {
+            AnimatedVisibility(visible = expanded) {
                 Column {
                     Spacer(Modifier.height(8.dp))
                     HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
@@ -118,6 +125,28 @@ private fun CompanyCard(
                                 modifier = Modifier.padding(vertical = 2.dp)
                             )
                         }
+                    }
+                    // Add contact button
+                    Spacer(Modifier.height(4.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onAddContact() }
+                            .padding(vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Outlined.PersonAdd, "Add Contact",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.height(16.dp)
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            text = "Add Contact",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Medium
+                        )
                     }
                 }
             }

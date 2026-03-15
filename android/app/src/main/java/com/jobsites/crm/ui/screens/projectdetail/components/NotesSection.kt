@@ -49,6 +49,7 @@ fun NotesSection(
     notes: List<Note>,
     noteTags: List<NoteTag>,
     getUserName: (Int) -> String,
+    currentUserId: Int,
     onDelete: (Int) -> Unit,
     onEdit: (Note) -> Unit = {},
     modifier: Modifier = Modifier
@@ -59,6 +60,7 @@ fun NotesSection(
                 note = note,
                 noteTags = noteTags,
                 getUserName = getUserName,
+                canEdit = note.createdById == currentUserId,
                 onEdit = { onEdit(note) },
                 onDelete = { onDelete(note.id) }
             )
@@ -71,6 +73,7 @@ private fun NoteCard(
     note: Note,
     noteTags: List<NoteTag>,
     getUserName: (Int) -> String,
+    canEdit: Boolean,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
@@ -117,9 +120,11 @@ private fun NoteCard(
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
                         }
                     }
-                    IconButton(onClick = onEdit) {
-                        Icon(Icons.Outlined.Edit, "Edit",
-                            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f))
+                    if (canEdit) {
+                        IconButton(onClick = onEdit) {
+                            Icon(Icons.Outlined.Edit, "Edit",
+                                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f))
+                        }
                     }
                     IconButton(onClick = onDelete) {
                         Icon(Icons.Outlined.Delete, "Delete",

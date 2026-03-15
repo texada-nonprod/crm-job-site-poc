@@ -1,5 +1,6 @@
 package com.jobsites.crm.ui.screens.projectdetail.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,6 +38,7 @@ fun OpportunitySection(
     getStageName: (Int) -> String,
     getTypeName: (Int) -> String,
     getSalesRepName: (Int) -> String,
+    onEdit: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -47,7 +49,8 @@ fun OpportunitySection(
                 fullOpp = fullOpp,
                 getStageName = getStageName,
                 getTypeName = getTypeName,
-                getSalesRepName = getSalesRepName
+                getSalesRepName = getSalesRepName,
+                onClick = { onEdit(ao.id) }
             )
             if (index < associatedOpportunities.lastIndex) {
                 Spacer(Modifier.height(8.dp))
@@ -63,13 +66,16 @@ private fun OpportunityCard(
     getStageName: (Int) -> String,
     getTypeName: (Int) -> String,
     getSalesRepName: (Int) -> String,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val isWon = ao.stageId == 16
     val revenueColor = if (isWon) RevenueWon else RevenuePipeline
 
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {

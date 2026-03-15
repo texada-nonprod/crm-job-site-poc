@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.jobsites.crm.ui.screens.addprospect.AddProspectScreen
 import com.jobsites.crm.ui.screens.createproject.CreateProjectScreen
 import com.jobsites.crm.ui.screens.editproject.EditProjectScreen
 import com.jobsites.crm.ui.screens.projectdetail.ProjectDetailScreen
@@ -43,6 +44,9 @@ fun CrmNavigation(
                 onBack = { navController.popBackStack() },
                 onEditClick = { id ->
                     navController.navigate(Screen.EditProject.createRoute(id))
+                },
+                onAddProspect = { id ->
+                    navController.navigate(Screen.AddProspect.createRoute(id))
                 }
             )
         }
@@ -63,6 +67,18 @@ fun CrmNavigation(
         ) { backStackEntry ->
             val projectId = backStackEntry.arguments?.getInt("projectId") ?: return@composable
             EditProjectScreen(
+                projectId = projectId,
+                onBack = { navController.popBackStack() },
+                onSaved = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Screen.AddProspect.route,
+            arguments = listOf(navArgument("projectId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getInt("projectId") ?: return@composable
+            AddProspectScreen(
                 projectId = projectId,
                 onBack = { navController.popBackStack() },
                 onSaved = { navController.popBackStack() }

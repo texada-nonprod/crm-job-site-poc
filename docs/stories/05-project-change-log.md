@@ -70,3 +70,104 @@ Feature: 1. Project Change Log
     Then I should see a "Project Not Found" message
     When I click the "Return to List" button
     Then I should be navigated to the "Project List" page (`/`)
+
+---
+
+### **User Story: Automatic Change Log Generation**
+
+**Description:**
+
+As Management or an Admin,
+I want the system to automatically generate timestamped change log entries whenever project data is modified,
+So that I don't have to rely on users manually tracking their changes, ensuring a reliable audit trail.
+
+**Acceptance Criteria:**
+
+Feature: 2. Automatic Change Log Generation
+
+  Background:
+    Given I am authenticated in the CRM system
+    And I have an existing project open
+
+  Scenario Outline: 2.1. Generate Logs for Entity Association and Disassociation
+    When I perform the "<action>" action for a "<entity_type>" on the project
+    Then the system should automatically generate a change log entry
+    And the entry "Category" should be "<category>"
+    And the entry "Summary" should read "<expected_summary_format>"
+
+    Examples:
+      | action                  | entity_type | category    | expected_summary_format                                |
+      | Associate Opportunity   | Opportunity | Opportunity | Opportunity "[description]" associated                 |
+      | Add Company             | Company     | Company     | Company "[name]" added as [role]                       |
+      | Remove Company          | Company     | Company     | Company "[name]" disassociated                         |
+      | Add Customer Equipment  | Equipment   | Equipment   | Equipment "[make] [model]" added                       |
+      | Remove Customer Equip.  | Equipment   | Equipment   | Equipment "[make] [model]" removed                     |
+
+  Scenario Outline: 2.2. Generate Logs for Entity Creation and Deletion
+    When I completely fill out and submit the "<modal_name>"
+    Then the system should automatically generate a change log entry
+    And the entry "Category" should be "<category>"
+    And the entry "Summary" should read "<expected_summary_format>"
+
+    Examples:
+      | modal_name               | category    | expected_summary_format                                |
+      | Create New Project       | Project     | Project "[name]" created                               |
+      | Create Opportunity       | Opportunity | Opportunity "[description]" created                    |
+      | Add Activity             | Activity    | Activity "[type]" added                                |
+      | Delete Activity          | Activity    | Activity "[description]" deleted                       |
+      | Add Note                 | Note        | Note added                                             |
+      | Delete Note              | Note        | Note deleted                                           |
+
+  Scenario Outline: 2.3. Generate Logs for Entity Updates
+    When I update an existing "<entity_type>" record and save the changes
+    Then the system should automatically generate a change log entry
+    And the entry "Category" should be "<category>"
+    And the entry "Summary" should read "<expected_summary_format>"
+    And the JSON details payload should capture the specific fields that were changed
+
+    Examples:
+      | entity_type | category    | expected_summary_format                                  |
+      | Project     | Project     | Project details updated ([changed_fields])               |
+      | Opportunity | Opportunity | Opportunity "[description]" updated ([changed_fields])   |
+      | Company     | Company     | Company "[name]" updated                                 |
+      | Activity    | Activity    | Activity updated                                         |
+      | Note        | Note        | Note updated                                             |
+
+---
+
+### **User Story: View Note Edit History**
+
+**Description:**
+
+As a Sales Rep or Admin,
+I want to view the edit history of an individual note,
+So that I can see the original context and how the note has evolved over time.
+
+**Acceptance Criteria:**
+
+Feature: 3. Note Edit History
+
+  Scenario: 3.1. View Note Edit History Inline
+    Given a note has a modification history
+    When I view the note in the "Notes" section of the Project Detail page 
+    Then I should see a "View history" link containing the number of edits (e.g., "(1 edit)")
+    When I click the "View history" Collapsible trigger
+    Then the history should expand to show the latest 3 edits
+    And each entry should display the timestamp, the author's name, a summary of changes, and the previous content in italics
+    
+  Scenario: 3.2. Show All Edits Inline
+    Given a note has more than 3 edits in its history
+    And I have clicked "View history" to expand the latest 3 edits
+    When I click the "Show all X edits" button
+    Then the block should expand into a scrollable area displaying all past edits
+    And the button text should change to "Show less"
+    When I click the "Show less" button
+    Then the block should collapse back to showing only the top 3 edits
+
+  Scenario: 3.3. View Edit History Inside Note Modal
+    Given a note has a modification history
+    When I click the "Edit" button for that note
+    Then I should see an "Edit History" block at the top of the "Edit Note" modal
+    And it should display the latest 3 edits with the timestamp, author, and previous content
+    When I click "Show all X edits"
+    Then the area should become scrollable and display all historical edits
