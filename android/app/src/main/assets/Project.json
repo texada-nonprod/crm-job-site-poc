@@ -15,7 +15,7 @@
             "targetCompletionDate": "2026-12-31",
             "projectOwner": {
                 "companyId": "OWN-STMARYS",
-                "contactIds": [1]
+                "contactIds": [1, 2]
             },
             "address": {
                 "street": "1200 Medical Center Dr",
@@ -76,7 +76,7 @@
             "notes": [
                 { "id": 1, "content": "Strict noise ordinances after 6 PM. All equipment must be shut down by 5:45 PM to allow for proper wind-down.", "createdAt": "2025-01-15T09:30:00.000Z", "createdById": 313, "tagIds": ["COMPLIANCE"], "attachments": [], "lastModifiedAt": "2025-01-18T10:15:00.000Z", "lastModifiedById": 313, "modificationHistory": [{ "modifiedAt": "2025-01-17T14:00:00.000Z", "modifiedById": 313, "summary": "Content updated", "previousContent": "Strict noise ordinances after 6 PM. All equipment must be shut down by 6 PM." }, { "modifiedAt": "2025-01-18T10:15:00.000Z", "modifiedById": 313, "summary": "Content updated, Tags changed", "previousContent": "Strict noise ordinances after 6 PM. All equipment must be shut down by 5:45 PM.", "previousTagIds": ["GENERAL"] }] },
                 { "id": 2, "content": "Badging required for site access. All personnel must check in at the security trailer before entering the construction zone.", "createdAt": "2025-01-16T14:22:00.000Z", "createdById": 313, "tagIds": ["SECURITY"], "attachments": [], "lastModifiedAt": "2025-01-19T11:30:00.000Z", "lastModifiedById": 305, "modificationHistory": [{ "modifiedAt": "2025-01-19T11:30:00.000Z", "modifiedById": 305, "summary": "Content updated", "previousContent": "Badging required for site access." }] },
-                { "id": 3, "content": "Hard hats and steel-toed boots mandatory at all times. High-visibility vests required in active construction areas.", "createdAt": "2025-01-20T11:00:00.000Z", "createdById": 313, "tagIds": ["SAFETY"], "attachments": [] },
+                { "id": 3, "content": "Hard hats and steel-toed boots mandatory at all times. High-visibility vests required in active construction areas.", "createdAt": "2025-01-20T11:00:00.000Z", "createdById": 313, "tagIds": ["SAFETY"], "attachments": [{"id": 1, "fileName": "site-safety-plan.pdf", "fileUrl": "https://example.com/docs/site-safety-plan.pdf", "fileType": "application/pdf", "fileSize": 245760, "uploadedAt": "2025-01-20T11:05:00.000Z"}, {"id": 2, "fileName": "ppe-requirements-sign.jpg", "fileUrl": "https://example.com/photos/ppe-requirements-sign.jpg", "fileType": "image/jpeg", "fileSize": 1048576, "uploadedAt": "2025-01-20T11:06:00.000Z"}, {"id": 3, "fileName": "safety-checklist.xlsx", "fileUrl": "https://example.com/docs/safety-checklist.xlsx", "fileType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "fileSize": 87040, "uploadedAt": "2025-01-20T11:07:00.000Z"}] },
                 { "id": 4, "content": "Hospital loading dock available for equipment deliveries on Tuesdays and Thursdays only.", "createdAt": "2025-02-01T08:45:00.000Z", "createdById": 313, "tagIds": ["GENERAL"], "attachments": [] }
             ],
             "activities": [

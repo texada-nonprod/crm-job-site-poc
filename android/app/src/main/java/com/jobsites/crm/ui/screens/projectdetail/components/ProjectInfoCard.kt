@@ -2,6 +2,7 @@ package com.jobsites.crm.ui.screens.projectdetail.components
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +11,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Phone
@@ -23,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -80,9 +84,11 @@ fun ProjectInfoCard(
             if (ownerCompanyName != null) {
                 InfoRow("Owner", ownerCompanyName)
                 if (ownerContacts.isNotEmpty()) {
+                    Spacer(Modifier.height(2.dp))
                     ownerContacts.forEach { contact ->
                         OwnerContactRow(contact)
                     }
+                    Spacer(Modifier.height(2.dp))
                 }
             }
 
@@ -106,13 +112,6 @@ fun ProjectInfoCard(
             project.bidDate?.let { InfoRow("Bid Date", formatDate(it)) }
             project.targetStartDate?.let { InfoRow("Target Start", formatDate(it)) }
             project.targetCompletionDate?.let { InfoRow("Target Completion", formatDate(it)) }
-
-            // External reference
-            project.externalReference?.let { ref ->
-                if (ref.name.isNotBlank()) {
-                    InfoRow("External Ref", "${ref.source}: ${ref.name}")
-                }
-            }
 
             // Revenue summary
             if (wonRevenue > 0 || pipelineRevenue > 0) {
@@ -175,69 +174,78 @@ private fun OwnerContactRow(contact: CompanyContact) {
     val context = LocalContext.current
     val phone = contact.mobilePhone ?: contact.businessPhone ?: contact.phone
 
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, top = 2.dp, bottom = 2.dp)
+            .padding(start = 12.dp, bottom = 4.dp)
+            .clip(RoundedCornerShape(6.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f))
+            .padding(horizontal = 10.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        // Name + title
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = contact.name,
-                style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.Medium
-            )
-            contact.title?.takeIf { it.isNotBlank() }?.let {
+        // Name + title column
+        Column(modifier = Modifier.weight(1f)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = " · $it",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = contact.name,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Medium
                 )
-            }
-        }
-        // Phone + Email
-        Row(
-            modifier = Modifier.padding(top = 1.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            if (phone.isNotBlank()) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable {
-                        context.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phone")))
-                    }
-                ) {
-                    Icon(
-                        Icons.Outlined.Phone, null,
-                        modifier = Modifier.height(12.dp),
-                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
-                    )
-                    Spacer(Modifier.width(2.dp))
+                contact.title?.takeIf { it.isNotBlank() }?.let {
                     Text(
-                        text = phone,
+                        text = " — $it",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 11.sp
                     )
                 }
             }
-            if (contact.email.isNotBlank()) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable {
-                        context.startActivity(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:${contact.email}")))
+            // Phone + Email inline
+            Row(
+                modifier = Modifier.padding(top = 2.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (phone.isNotBlank()) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable {
+                            context.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phone")))
+                        }
+                    ) {
+                        Icon(
+                            Icons.Outlined.Phone, null,
+                            modifier = Modifier.size(13.dp),
+                            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                        )
+                        Spacer(Modifier.width(3.dp))
+                        Text(
+                            text = phone,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 11.sp
+                        )
                     }
-                ) {
-                    Icon(
-                        Icons.Outlined.Email, null,
-                        modifier = Modifier.height(12.dp),
-                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
-                    )
-                    Spacer(Modifier.width(2.dp))
-                    Text(
-                        text = contact.email,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                }
+                if (contact.email.isNotBlank()) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable {
+                            context.startActivity(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:${contact.email}")))
+                        }
+                    ) {
+                        Icon(
+                            Icons.Outlined.Email, null,
+                            modifier = Modifier.size(13.dp),
+                            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                        )
+                        Spacer(Modifier.width(3.dp))
+                        Text(
+                            text = contact.email,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 11.sp
+                        )
+                    }
                 }
             }
         }

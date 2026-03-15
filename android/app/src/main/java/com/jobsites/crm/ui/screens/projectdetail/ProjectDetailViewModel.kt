@@ -3,16 +3,21 @@ package com.jobsites.crm.ui.screens.projectdetail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.jobsites.crm.data.model.Activity
+import com.jobsites.crm.data.model.ActivityType
+import com.jobsites.crm.data.model.Attachment
+import com.jobsites.crm.data.model.Campaign
 import com.jobsites.crm.data.model.ChangeLogEntry
 import com.jobsites.crm.data.model.CompanyContact
 import com.jobsites.crm.data.model.ContactType
 import com.jobsites.crm.data.model.CustomerEquipment
+import com.jobsites.crm.data.model.Issue
 import com.jobsites.crm.data.model.Note
 import com.jobsites.crm.data.model.Opportunity
 import com.jobsites.crm.data.model.OpportunityStage
 import com.jobsites.crm.data.model.OpportunityType
 import com.jobsites.crm.data.model.Project
 import com.jobsites.crm.data.model.ProjectCompany
+import com.jobsites.crm.data.model.SalesRep
 import com.jobsites.crm.data.repository.CrmRepository
 import com.jobsites.crm.data.repository.DIVISIONS
 import com.jobsites.crm.data.repository.Division
@@ -72,6 +77,8 @@ class ProjectDetailViewModel @Inject constructor(
     fun getTypeName(typeId: Int): String = repository.getTypeName(typeId)
     fun getLookupLabel(type: String, id: String): String = repository.getLookupLabel(type, id)
     fun getCompanyById(companyId: String): ProjectCompany? = repository.getCompanyById(companyId)
+    fun getCompanyNameById(companyId: String): String =
+        repository.getCompanyById(companyId)?.companyName ?: companyId
 
     // ── Revenue helpers ─────────────────────────────────────────────
 
@@ -95,6 +102,86 @@ class ProjectDetailViewModel @Inject constructor(
         refresh()
     }
 
+    // ── Activity CRUD ───────────────────────────────────────────────
+
+    fun getSalesReps(): List<SalesRep> = repository.salesReps.value
+
+    fun getActivityTypes(): List<ActivityType> = repository.activityTypes.value
+
+    fun getCampaigns(): List<Campaign> = repository.campaigns.value
+
+    fun getIssues(): List<Issue> = repository.issues.value
+
+    fun getProjectContactNames(): List<String> {
+        val project = _uiState.value.project ?: return emptyList()
+        return project.projectCompanies.flatMap { company ->
+            company.companyContacts.map { "${it.firstName} ${it.lastName}".trim() }
+        }.distinct().sorted()
+    }
+
+    fun addActivity(
+        salesRepId: Int,
+        typeId: String,
+        date: String,
+        description: String,
+        contactName: String,
+        notes: String,
+        campaignId: Int?,
+        customerId: String?,
+        issueId: Int?
+    ) {
+        val isPast = runCatching {
+            java.time.LocalDate.parse(date.take(10)).isBefore(java.time.LocalDate.now())
+        }.getOrDefault(false)
+        val activity = Activity(
+            id = 0,
+            statusId = if (isPast) 2 else 1,
+            salesRepId = salesRepId,
+            typeId = typeId,
+            date = "${date.take(10)}T00:00:00.000Z",
+            description = description,
+            contactName = contactName,
+            notes = notes,
+            campaignId = campaignId,
+            customerId = customerId,
+            issueId = issueId
+        )
+        repository.addActivity(projectId, activity)
+        refresh()
+    }
+
+    fun updateActivity(
+        activityId: Int,
+        salesRepId: Int,
+        typeId: String,
+        date: String,
+        description: String,
+        contactName: String,
+        notes: String,
+        campaignId: Int?,
+        customerId: String?,
+        issueId: Int?
+    ) {
+        val isPast = runCatching {
+            java.time.LocalDate.parse(date.take(10)).isBefore(java.time.LocalDate.now())
+        }.getOrDefault(false)
+        repository.updateActivity(projectId, activityId) { existing ->
+            existing.copy(
+                salesRepId = salesRepId,
+                typeId = typeId,
+                date = "${date.take(10)}T00:00:00.000Z",
+                statusId = if (isPast) 2 else 1,
+                description = description,
+                contactName = contactName,
+                notes = notes,
+                campaignId = campaignId,
+                customerId = customerId,
+                issueId = issueId
+            )
+        }
+        refresh()
+    }
+
     fun deleteNote(noteId: Int) {
         repository.deleteNote(projectId, noteId)
         refresh()
@@ -112,21 +199,22 @@ class ProjectDetailViewModel @Inject constructor(
 
     // ── Note CRUD ─────────────────────────────────────────────────
 
-    fun addNote(content: String, tagIds: List<String>) {
+    fun addNote(content: String, tagIds: List<String>, attachments: List<Attachment> = emptyList()) {
         val note = Note(
             id = 0,
             content = content,
             createdAt = "",
             createdById = 0,
-            tagIds = tagIds
+            tagIds = tagIds,
+            attachments = attachments
         )
         repository.addNote(projectId, note)
         refresh()
     }
 
-    fun updateNote(noteId: Int, content: String, tagIds: List<String>) {
+    fun updateNote(noteId: Int, content: String, tagIds: List<String>, attachments: List<Attachment> = emptyList()) {
         repository.updateNote(projectId, noteId) { existing ->
-            existing.copy(content = content, tagIds = tagIds)
+            existing.copy(content = content, tagIds = tagIds, attachments = attachments)
         }
         refresh()
     }

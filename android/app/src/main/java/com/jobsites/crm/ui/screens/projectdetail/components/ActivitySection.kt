@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -37,6 +38,9 @@ private val activityTypeLabels = mapOf(
 fun ActivitySection(
     activities: List<Activity>,
     getSalesRepName: (Int) -> String,
+    getCompanyName: (String) -> String = { it },
+    currentUserId: Int,
+    onEdit: (Activity) -> Unit = {},
     onDelete: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -45,6 +49,9 @@ fun ActivitySection(
             ActivityCard(
                 activity = activity,
                 getSalesRepName = getSalesRepName,
+                getCompanyName = getCompanyName,
+                canEdit = activity.salesRepId == currentUserId,
+                onEdit = { onEdit(activity) },
                 onDelete = { onDelete(activity.id) }
             )
         }
@@ -55,6 +62,9 @@ fun ActivitySection(
 private fun ActivityCard(
     activity: Activity,
     getSalesRepName: (Int) -> String,
+    getCompanyName: (String) -> String,
+    canEdit: Boolean,
+    onEdit: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -97,24 +107,43 @@ private fun ActivityCard(
                             MaterialTheme.colorScheme.primary
                     )
                 }
-                IconButton(onClick = onDelete) {
-                    Icon(
-                        Icons.Outlined.Delete, "Delete",
-                        tint = MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
-                    )
+                Row {
+                    if (canEdit) {
+                        IconButton(onClick = onEdit) {
+                            Icon(
+                                Icons.Outlined.Edit, "Edit",
+                                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                            )
+                        }
+                    }
+                    IconButton(onClick = onDelete) {
+                        Icon(
+                            Icons.Outlined.Delete, "Delete",
+                            tint = MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+                        )
+                    }
                 }
             }
 
-            // Row 2: Assignee + Contact
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            // Row 2: Assignee + Company + Contact
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
                     text = "Rep: ${getSalesRepName(activity.salesRepId)}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                activity.customerId?.takeIf { it.isNotBlank() }?.let { custId ->
+                    Text(
+                        text = getCompanyName(custId),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
                 if (activity.contactName.isNotBlank()) {
                     Text(
-                        text = "Contact: ${activity.contactName}",
+                        text = activity.contactName,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

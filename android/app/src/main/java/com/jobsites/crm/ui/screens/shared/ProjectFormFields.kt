@@ -143,14 +143,19 @@ fun ProjectFormFields(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SectionHeader("Location")
+            Text(
+                text = "Location",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "Coordinates",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Spacer(Modifier.width(6.dp))
+                Spacer(Modifier.width(4.dp))
                 Switch(
                     checked = form.useCoordinates,
                     onCheckedChange = { onFormChange(form.copy(useCoordinates = it)) }

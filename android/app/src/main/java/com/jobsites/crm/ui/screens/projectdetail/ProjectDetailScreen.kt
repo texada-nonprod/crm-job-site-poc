@@ -42,11 +42,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.jobsites.crm.data.model.Activity
 import com.jobsites.crm.data.model.Note
 import com.jobsites.crm.data.model.Opportunity
 import com.jobsites.crm.ui.components.EmptyState
 import com.jobsites.crm.ui.components.LoadingState
 import com.jobsites.crm.ui.components.StatusBadge
+import com.jobsites.crm.ui.screens.projectdetail.components.ActivityFormSheet
 import com.jobsites.crm.ui.screens.projectdetail.components.ActivitySection
 import com.jobsites.crm.ui.screens.projectdetail.components.AddContactSheet
 import com.jobsites.crm.ui.screens.projectdetail.components.AssociateCompanySheet
@@ -84,6 +86,8 @@ fun ProjectDetailScreen(
     var editingNote by remember { mutableStateOf<Note?>(null) }
     var showOpportunitySheet by remember { mutableStateOf(false) }
     var editingOpportunity by remember { mutableStateOf<Opportunity?>(null) }
+    var showActivitySheet by remember { mutableStateOf(false) }
+    var editingActivity by remember { mutableStateOf<Activity?>(null) }
     var showAddCompanySheet by remember { mutableStateOf(false) }
     var showAddEquipmentSheet by remember { mutableStateOf(false) }
     var showCreateEquipmentSheet by remember { mutableStateOf(false) }
@@ -217,7 +221,8 @@ fun ProjectDetailScreen(
                     item {
                         CollapsibleSection(
                             title = "Activities",
-                            count = project.activities.size
+                            count = project.activities.size,
+                            onAdd = { showActivitySheet = true }
                         ) {
                             if (project.activities.isEmpty()) {
                                 EmptyState(title = "No activities", subtitle = "")
@@ -225,6 +230,9 @@ fun ProjectDetailScreen(
                                 ActivitySection(
                                     activities = project.activities,
                                     getSalesRepName = { viewModel.getSalesRepName(it) },
+                                    getCompanyName = { viewModel.getCompanyNameById(it) },
+                                    currentUserId = viewModel.getCurrentUserId(),
+                                    onEdit = { editingActivity = it },
                                     onDelete = { viewModel.deleteActivity(it) }
                                 )
                             }
@@ -304,14 +312,61 @@ fun ProjectDetailScreen(
                 showNoteSheet = false
                 editingNote = null
             },
-            onSave = { content, tagIds ->
+            onSave = { content, tagIds, attachments ->
                 if (editingNote != null) {
-                    viewModel.updateNote(editingNote!!.id, content, tagIds)
+                    viewModel.updateNote(editingNote!!.id, content, tagIds, attachments)
                 } else {
-                    viewModel.addNote(content, tagIds)
+                    viewModel.addNote(content, tagIds, attachments)
                 }
                 showNoteSheet = false
                 editingNote = null
+            }
+        )
+    }
+
+    // ── Activity form bottom sheet ─────────────────────────────────
+    if (showActivitySheet || editingActivity != null) {
+        ActivityFormSheet(
+            editingActivity = editingActivity,
+            currentUserId = viewModel.getCurrentUserId(),
+            salesReps = viewModel.getSalesReps(),
+            activityTypes = viewModel.getActivityTypes(),
+            campaigns = viewModel.getCampaigns(),
+            issues = viewModel.getIssues(),
+            contactNames = viewModel.getProjectContactNames(),
+            onDismiss = {
+                showActivitySheet = false
+                editingActivity = null
+            },
+            onSave = { data ->
+                if (editingActivity != null) {
+                    viewModel.updateActivity(
+                        activityId = editingActivity!!.id,
+                        salesRepId = data.salesRepId,
+                        typeId = data.typeId,
+                        date = data.date,
+                        description = data.description,
+                        contactName = data.contactName,
+                        notes = data.notes,
+                        campaignId = data.campaignId,
+                        customerId = data.customerId,
+                        issueId = data.issueId
+                    )
+                } else {
+                    viewModel.addActivity(
+                        salesRepId = data.salesRepId,
+                        typeId = data.typeId,
+                        date = data.date,
+                        description = data.description,
+                        contactName = data.contactName,
+                        notes = data.notes,
+                        campaignId = data.campaignId,
+                        customerId = data.customerId,
+                        issueId = data.issueId
+                    )
+                }
+                showActivitySheet = false
+                editingActivity = null
             }
         )
     }
