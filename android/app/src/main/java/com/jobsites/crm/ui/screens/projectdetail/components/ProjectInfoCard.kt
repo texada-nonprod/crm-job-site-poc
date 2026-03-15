@@ -75,6 +75,14 @@ fun ProjectInfoCard(
                 InfoRow("Address", address)
             }
 
+            // Map card — tap to navigate
+            ProjectMapCard(
+                latitude = project.address.latitude,
+                longitude = project.address.longitude,
+                address = address,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+
             // Description
             if (project.description.isNotBlank()) {
                 InfoRow("Description", project.description)
