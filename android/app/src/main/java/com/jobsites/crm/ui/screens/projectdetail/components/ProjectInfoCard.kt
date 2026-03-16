@@ -23,6 +23,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -204,7 +205,9 @@ private fun OwnerContactRow(contact: CompanyContact) {
                         text = " — $it",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 11.sp
+                        fontSize = 13.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
@@ -222,7 +225,7 @@ private fun OwnerContactRow(contact: CompanyContact) {
                     ) {
                         Icon(
                             Icons.Outlined.Phone, null,
-                            modifier = Modifier.size(13.dp),
+                            modifier = Modifier.size(15.dp),
                             tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
                         )
                         Spacer(Modifier.width(3.dp))
@@ -230,7 +233,8 @@ private fun OwnerContactRow(contact: CompanyContact) {
                             text = phone,
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.primary,
-                            fontSize = 11.sp
+                            fontSize = 13.sp,
+                            maxLines = 1
                         )
                     }
                 }
@@ -243,7 +247,7 @@ private fun OwnerContactRow(contact: CompanyContact) {
                     ) {
                         Icon(
                             Icons.Outlined.Email, null,
-                            modifier = Modifier.size(13.dp),
+                            modifier = Modifier.size(15.dp),
                             tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
                         )
                         Spacer(Modifier.width(3.dp))
@@ -251,7 +255,9 @@ private fun OwnerContactRow(contact: CompanyContact) {
                             text = contact.email,
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.primary,
-                            fontSize = 11.sp
+                            fontSize = 13.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }

@@ -2,6 +2,8 @@ package com.jobsites.crm.ui.screens.projectdetail.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,7 +38,7 @@ import com.jobsites.crm.data.model.ProjectCompany
 import com.jobsites.crm.ui.components.DropdownField
 import com.jobsites.crm.ui.components.DropdownOption
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun AssociateEquipmentSheet(
     projectCompanies: List<ProjectCompany>,
@@ -153,23 +155,26 @@ fun AssociateEquipmentSheet(
                                         Text(
                                             text = eq.ownershipStatus.replaceFirstChar { it.uppercase() },
                                             style = MaterialTheme.typography.labelSmall,
-                                            fontSize = 10.sp,
+                                            fontSize = 12.sp,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
-                                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    FlowRow(
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                                    ) {
                                         Text(
                                             text = eq.equipmentType,
                                             style = MaterialTheme.typography.labelSmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            fontSize = 10.sp
+                                            fontSize = 12.sp
                                         )
                                         eq.year?.let {
                                             Text(
                                                 text = it.toString(),
                                                 style = MaterialTheme.typography.labelSmall,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                fontSize = 10.sp
+                                                fontSize = 12.sp
                                             )
                                         }
                                         eq.serialNumber?.let {
@@ -178,7 +183,7 @@ fun AssociateEquipmentSheet(
                                                     text = "S/N: $it",
                                                     style = MaterialTheme.typography.labelSmall,
                                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                    fontSize = 10.sp
+                                                    fontSize = 12.sp
                                                 )
                                             }
                                         }
@@ -188,14 +193,14 @@ fun AssociateEquipmentSheet(
                                             text = "Already on this project",
                                             style = MaterialTheme.typography.labelSmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            fontSize = 10.sp
+                                            fontSize = 12.sp
                                         )
                                     } else if (otherProject != null) {
                                         Text(
                                             text = "On project: ${otherProject.second}",
                                             style = MaterialTheme.typography.labelSmall,
                                             color = MaterialTheme.colorScheme.error.copy(alpha = 0.8f),
-                                            fontSize = 10.sp
+                                            fontSize = 12.sp
                                         )
                                     }
                                 }

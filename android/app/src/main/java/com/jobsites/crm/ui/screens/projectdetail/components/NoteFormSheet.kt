@@ -234,7 +234,7 @@ fun NoteFormSheet(
                 ) {
                     Icon(Icons.Outlined.AttachFile, null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text("File", fontSize = 13.sp)
+                    Text("File", fontSize = 15.sp)
                 }
                 OutlinedButton(
                     onClick = {
@@ -246,7 +246,7 @@ fun NoteFormSheet(
                 ) {
                     Icon(Icons.Outlined.Photo, null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text("Gallery", fontSize = 13.sp)
+                    Text("Gallery", fontSize = 15.sp)
                 }
                 OutlinedButton(
                     onClick = {
@@ -256,7 +256,7 @@ fun NoteFormSheet(
                 ) {
                     Icon(Icons.Outlined.CameraAlt, null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text("Camera", fontSize = 13.sp)
+                    Text("Camera", fontSize = 15.sp)
                 }
             }
 
@@ -343,7 +343,7 @@ private fun AttachmentRow(
                 text = formatFileSize(attachment.fileSize),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 10.sp
+                fontSize = 12.sp
             )
         }
         IconButton(onClick = onRemove, modifier = Modifier.size(28.dp)) {

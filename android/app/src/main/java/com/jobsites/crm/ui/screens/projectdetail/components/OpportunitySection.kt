@@ -15,6 +15,7 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jobsites.crm.data.model.AssociatedOpportunity
 import com.jobsites.crm.data.model.Opportunity
-import com.jobsites.crm.ui.components.StatusBadge
 import com.jobsites.crm.ui.theme.RevenuePipeline
 import com.jobsites.crm.ui.theme.RevenueWon
 import java.text.NumberFormat
@@ -48,15 +48,37 @@ fun OpportunitySection(
     associatedOpportunities: List<AssociatedOpportunity>,
     fullOpportunities: List<Opportunity>,
     getStageName: (Int) -> String,
+    getStagePhaseId: (Int) -> Int?,
     getTypeName: (Int) -> String,
     getSalesRepName: (Int) -> String,
+    currentUserId: Int,
+    initialShowOpenOnly: Boolean = false,
+    initialShowMineOnly: Boolean = false,
+    onFilterChange: (showOpenOnly: Boolean, showMineOnly: Boolean) -> Unit = { _, _ -> },
     onEdit: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var searchQuery by remember { mutableStateOf("") }
-    val filtered = if (searchQuery.isBlank()) associatedOpportunities else {
+    var showOpenOnly by remember { mutableStateOf(initialShowOpenOnly) }
+    var showMineOnly by remember { mutableStateOf(initialShowMineOnly) }
+
+    // Apply toggle filters first
+    val toggled = associatedOpportunities.filter { ao ->
+        val fullOpp = fullOpportunities.find { it.id == ao.id }
+        val matchesOpen = if (showOpenOnly) {
+            val phaseId = getStagePhaseId(ao.stageId)
+            phaseId == 1 || phaseId == 2
+        } else true
+        val matchesMine = if (showMineOnly) {
+            fullOpp?.salesRepId == currentUserId
+        } else true
+        matchesOpen && matchesMine
+    }
+
+    // Then apply search
+    val filtered = if (searchQuery.isBlank()) toggled else {
         val q = searchQuery.lowercase()
-        associatedOpportunities.filter { ao ->
+        toggled.filter { ao ->
             val fullOpp = fullOpportunities.find { it.id == ao.id }
             ao.description.lowercase().contains(q) ||
             ao.type.lowercase().contains(q) ||
@@ -68,6 +90,27 @@ fun OpportunitySection(
     }
 
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        // Filter toggles
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(
+                selected = showOpenOnly,
+                onClick = {
+                    showOpenOnly = !showOpenOnly
+                    onFilterChange(showOpenOnly, showMineOnly)
+                },
+                label = { Text("Open Only") }
+            )
+            FilterChip(
+                selected = showMineOnly,
+                onClick = {
+                    showMineOnly = !showMineOnly
+                    onFilterChange(showOpenOnly, showMineOnly)
+                },
+                label = { Text("My Opportunities") }
+            )
+        }
+
+        // Search bar
         if (associatedOpportunities.size > 3) {
             OutlinedTextField(
                 value = searchQuery,
@@ -90,9 +133,10 @@ fun OpportunitySection(
             )
         }
 
-        if (filtered.isEmpty() && searchQuery.isNotBlank()) {
+        if (filtered.isEmpty() && (searchQuery.isNotBlank() || showOpenOnly || showMineOnly)) {
             Text(
-                text = "No opportunities match \"$searchQuery\"",
+                text = if (searchQuery.isNotBlank()) "No opportunities match \"$searchQuery\""
+                       else "No opportunities match current filters",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(vertical = 8.dp)
@@ -154,7 +198,7 @@ private fun OpportunityCard(
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     color = revenueColor,
-                    fontSize = 14.sp
+                    fontSize = 16.sp
                 )
             }
 

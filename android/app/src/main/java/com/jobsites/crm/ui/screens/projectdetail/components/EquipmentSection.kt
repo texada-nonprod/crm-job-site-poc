@@ -128,21 +128,21 @@ private fun EquipmentCard(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                // Type + Year
+                // Year + Type
                 Row {
-                    Text(
-                        text = item.equipmentType,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
                     item.year?.let {
-                        Spacer(Modifier.width(8.dp))
                         Text(
                             text = it.toString(),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                        Spacer(Modifier.width(8.dp))
                     }
+                    Text(
+                        text = item.equipmentType,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
                 // Serial + SMU + Ownership
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -152,7 +152,7 @@ private fun EquipmentCard(
                                 text = "S/N: $it",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontSize = 10.sp
+                                fontSize = 12.sp
                             )
                         }
                     }
@@ -161,7 +161,7 @@ private fun EquipmentCard(
                             text = "SMU: $it",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontSize = 10.sp
+                            fontSize = 12.sp
                         )
                     }
                     val ownershipColor = when (item.ownershipStatus.lowercase()) {
@@ -174,7 +174,7 @@ private fun EquipmentCard(
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Medium,
                         color = ownershipColor,
-                        fontSize = 10.sp
+                        fontSize = 12.sp
                     )
                 }
             }

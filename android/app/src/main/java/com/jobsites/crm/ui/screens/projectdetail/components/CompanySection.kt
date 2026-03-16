@@ -6,25 +6,36 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material.icons.outlined.Phone
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,31 +50,82 @@ import androidx.compose.ui.unit.sp
 import com.jobsites.crm.data.model.CompanyContact
 import com.jobsites.crm.data.model.ProjectCompany
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CompanySection(
     companies: List<ProjectCompany>,
     onAddContact: (String) -> Unit = {},
+    onEditRole: (ProjectCompany) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    var searchQuery by remember { mutableStateOf("") }
+    val filtered = if (searchQuery.isBlank()) companies else {
+        val q = searchQuery.lowercase()
+        companies.filter { company ->
+            company.companyName.lowercase().contains(q) ||
+            company.companyContacts.any { contact ->
+                contact.name.lowercase().contains(q) ||
+                (contact.firstName?.lowercase()?.contains(q) == true) ||
+                (contact.lastName?.lowercase()?.contains(q) == true) ||
+                contact.email.lowercase().contains(q)
+            }
+        }
+    }
+
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        companies.forEach { company ->
+        // Search bar (shown when > 3 companies)
+        if (companies.size > 3) {
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                placeholder = { Text("Search companies/contacts…", style = MaterialTheme.typography.bodySmall) },
+                leadingIcon = { Icon(Icons.Outlined.Search, null, modifier = Modifier.size(18.dp)) },
+                trailingIcon = {
+                    if (searchQuery.isNotBlank()) {
+                        IconButton(onClick = { searchQuery = "" }, modifier = Modifier.size(24.dp)) {
+                            Icon(Icons.Outlined.Close, "Clear", modifier = Modifier.size(16.dp))
+                        }
+                    }
+                },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                textStyle = MaterialTheme.typography.bodySmall,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+                )
+            )
+        }
+
+        if (filtered.isEmpty() && searchQuery.isNotBlank()) {
+            Text(
+                text = "No companies or contacts match \"$searchQuery\"",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
+
+        filtered.forEach { company ->
             CompanyCard(
                 company = company,
-                onAddContact = { onAddContact(company.companyName) }
+                onAddContact = { onAddContact(company.companyName) },
+                onEditRole = { onEditRole(company) }
             )
         }
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CompanyCard(
     company: ProjectCompany,
     onAddContact: () -> Unit = {},
+    onEditRole: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val roles = company.getAllRoleDescriptions().joinToString(", ").ifBlank {
-        company.getAllRoleIds().joinToString(", ")
+    val roleDescriptions = company.getAllRoleDescriptions().ifEmpty {
+        company.getAllRoleIds()
     }
 
     Card(
@@ -81,39 +143,46 @@ private fun CompanyCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = company.companyName,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Text(
-                            text = "#${company.companyId}",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontSize = 10.sp
-                        )
-                    }
-                    if (roles.isNotBlank()) {
-                        Text(
-                            text = roles,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontSize = 11.sp
-                        )
+                    Text(
+                        text = company.companyName,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = "#${company.companyId}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 12.sp
+                    )
+                    if (roleDescriptions.isNotEmpty()) {
+                        Spacer(Modifier.height(2.dp))
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalArrangement = Arrangement.spacedBy(2.dp)
+                        ) {
+                            roleDescriptions.forEach { role ->
+                                FilterChip(
+                                    selected = true,
+                                    onClick = {},
+                                    enabled = false,
+                                    label = { Text(role, style = MaterialTheme.typography.labelSmall) },
+                                    colors = FilterChipDefaults.filterChipColors(
+                                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                        selectedLabelColor = MaterialTheme.colorScheme.primary
+                                    )
+                                )
+                            }
+                        }
                     }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (company.companyContacts.isNotEmpty()) {
-                        Text(
-                            text = "${company.companyContacts.size} contact${if (company.companyContacts.size != 1) "s" else ""}",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                    IconButton(onClick = onEditRole) {
+                        Icon(
+                            Icons.Outlined.Edit, "Edit Roles",
+                            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                         )
-                        Spacer(Modifier.width(4.dp))
                     }
                     Icon(
                         imageVector = if (expanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
@@ -184,7 +253,7 @@ private fun ContactRow(
                     text = "Primary",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
-                    fontSize = 10.sp
+                    fontSize = 12.sp
                 )
             }
         }

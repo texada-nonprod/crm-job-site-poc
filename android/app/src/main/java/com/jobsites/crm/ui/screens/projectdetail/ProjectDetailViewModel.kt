@@ -74,6 +74,7 @@ class ProjectDetailViewModel @Inject constructor(
     fun getUserName(id: Int): String = repository.getUserName(id)
     fun getSalesRepName(id: Int): String = repository.getSalesRepName(id)
     fun getStageName(id: Int): String = repository.getStageName(id)
+    fun getStagePhaseId(stageId: Int): Int? = repository.getStage(stageId)?.phaseId
     fun getTypeName(typeId: Int): String = repository.getTypeName(typeId)
     fun getLookupLabel(type: String, id: String): String = repository.getLookupLabel(type, id)
     fun getCompanyById(companyId: String): ProjectCompany? = repository.getCompanyById(companyId)
@@ -319,6 +320,21 @@ class ProjectDetailViewModel @Inject constructor(
         refresh()
     }
 
+    fun updateCompanyRoles(company: ProjectCompany, roleIds: List<String>) {
+        val roleDescriptions = roleIds.map { roleId ->
+            com.jobsites.crm.ui.screens.projectdetail.components.ROLE_OPTIONS
+                .find { it.id == roleId }?.label ?: roleId
+        }
+        val updated = company.copy(
+            roleIds = roleIds,
+            roleDescriptions = roleDescriptions,
+            roleId = roleIds.firstOrNull() ?: "",
+            roleDescription = roleDescriptions.firstOrNull() ?: ""
+        )
+        repository.updateProjectCompany(projectId, company.companyName, updated)
+        refresh()
+    }
+
     fun addContactToCompany(companyName: String, contact: CompanyContact) {
         val project = _uiState.value.project ?: return
         val company = project.projectCompanies.find { it.companyName == companyName } ?: return
@@ -350,6 +366,16 @@ class ProjectDetailViewModel @Inject constructor(
 
     fun getEquipmentProjectAssignment(equipmentId: Int): Pair<Int, String>? =
         repository.getEquipmentProjectAssignment(equipmentId, excludeProjectId = projectId)
+
+    // ── Opportunity filter persistence ──────────────────────────────
+
+    fun getOppShowOpenOnly(): Boolean = repository.filters.value.oppShowOpenOnly
+    fun getOppShowMineOnly(): Boolean = repository.filters.value.oppShowMineOnly
+
+    fun setOppFilters(showOpenOnly: Boolean, showMineOnly: Boolean) {
+        val current = repository.filters.value
+        repository.setFilters(current.copy(oppShowOpenOnly = showOpenOnly, oppShowMineOnly = showMineOnly))
+    }
 
     fun createEquipment(
         companyId: String,

@@ -161,7 +161,7 @@ fun ProjectMapCard(
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    fontSize = 11.sp
+                    fontSize = 13.sp
                 )
             }
         }

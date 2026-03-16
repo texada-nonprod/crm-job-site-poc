@@ -6,6 +6,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,17 +17,23 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AttachFile
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,6 +61,7 @@ import java.time.format.DateTimeFormatter
 
 private val timestampFmt = DateTimeFormatter.ofPattern("MMM d, yyyy h:mm a")
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NotesSection(
     notes: List<Note>,
@@ -63,8 +72,85 @@ fun NotesSection(
     onEdit: (Note) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    var searchQuery by remember { mutableStateOf("") }
+    var selectedTagIds by remember { mutableStateOf<Set<String>>(emptySet()) }
+
+    val sorted = notes.sortedByDescending { it.createdAt }
+    val filtered = sorted.filter { note ->
+        val matchesSearch = searchQuery.isBlank() ||
+                note.content.lowercase().contains(searchQuery.lowercase())
+        val matchesTags = selectedTagIds.isEmpty() ||
+                note.tagIds.any { it in selectedTagIds }
+        matchesSearch && matchesTags
+    }
+
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        notes.sortedByDescending { it.createdAt }.forEach { note ->
+        // Search bar (shown when > 3 notes)
+        if (notes.size > 3) {
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                placeholder = { Text("Search notes…", style = MaterialTheme.typography.bodySmall) },
+                leadingIcon = { Icon(Icons.Outlined.Search, null, modifier = Modifier.size(18.dp)) },
+                trailingIcon = {
+                    if (searchQuery.isNotBlank()) {
+                        IconButton(onClick = { searchQuery = "" }, modifier = Modifier.size(24.dp)) {
+                            Icon(Icons.Outlined.Close, "Clear", modifier = Modifier.size(16.dp))
+                        }
+                    }
+                },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                textStyle = MaterialTheme.typography.bodySmall,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+                )
+            )
+        }
+
+        // Tag filter chips
+        if (noteTags.isNotEmpty()) {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                noteTags.forEach { tag ->
+                    val selected = tag.id in selectedTagIds
+                    val chipColor = when (tag.color) {
+                        "red" -> TagRed
+                        "amber" -> TagAmber
+                        "sky" -> TagSky
+                        else -> TagSlate
+                    }
+                    FilterChip(
+                        selected = selected,
+                        onClick = {
+                            selectedTagIds = if (selected)
+                                selectedTagIds - tag.id
+                            else
+                                selectedTagIds + tag.id
+                        },
+                        label = { Text(tag.label) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = chipColor.copy(alpha = 0.15f),
+                            selectedLabelColor = chipColor
+                        )
+                    )
+                }
+            }
+        }
+
+        // Filtered note list
+        if (filtered.isEmpty() && notes.isNotEmpty()) {
+            Text(
+                text = "No notes match your filters",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
+
+        filtered.forEach { note ->
             NoteCard(
                 note = note,
                 noteTags = noteTags,
@@ -117,7 +203,7 @@ private fun NoteCard(
                             style = MaterialTheme.typography.labelSmall,
                             color = color,
                             fontWeight = FontWeight.SemiBold,
-                            fontSize = 10.sp
+                            fontSize = 12.sp
                         )
                     }
                 }
@@ -166,7 +252,7 @@ private fun NoteCard(
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 11.sp
+                        fontSize = 13.sp
                     )
                 }
                 Spacer(Modifier.height(2.dp))
@@ -183,20 +269,20 @@ private fun NoteCard(
                     text = getUserName(note.createdById),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 10.sp
+                    fontSize = 12.sp
                 )
                 Text(
                     text = createdStr,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 10.sp
+                    fontSize = 12.sp
                 )
                 note.lastModifiedAt?.let {
                     Text(
                         text = "(edited)",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                        fontSize = 10.sp
+                        fontSize = 12.sp
                     )
                 }
             }
@@ -214,28 +300,14 @@ private fun NoteCard(
                     )
                     note.modificationHistory?.sortedByDescending { it.modifiedAt }?.forEach { mod ->
                         Spacer(Modifier.height(4.dp))
-                        Row {
-                            Text(
-                                text = formatTimestamp(mod.modifiedAt),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontSize = 10.sp
-                            )
-                            Spacer(Modifier.width(6.dp))
-                            Text(
-                                text = getUserName(mod.modifiedById),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontSize = 10.sp
-                            )
-                            Spacer(Modifier.width(6.dp))
-                            Text(
-                                text = mod.summary,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontSize = 10.sp
-                            )
-                        }
+                        Text(
+                            text = "${formatTimestamp(mod.modifiedAt)}  ${getUserName(mod.modifiedById)} — ${mod.summary}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 12.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
             }
@@ -281,7 +353,7 @@ private fun AttachmentFileRow(attachment: Attachment) {
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),
-            fontSize = 11.sp
+            fontSize = 13.sp
         )
         if (attachment.fileSize > 0) {
             Spacer(Modifier.width(6.dp))
@@ -289,7 +361,7 @@ private fun AttachmentFileRow(attachment: Attachment) {
                 text = formatFileSize(attachment.fileSize),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 10.sp
+                fontSize = 12.sp
             )
         }
     }

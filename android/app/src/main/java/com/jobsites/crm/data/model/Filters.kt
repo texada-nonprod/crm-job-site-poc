@@ -9,7 +9,10 @@ data class Filters(
     val divisions: List<String> = emptyList(),
     val generalContractor: String = "",
     val statuses: List<String> = emptyList(),
-    val hideCompleted: Boolean = false
+    val hideCompleted: Boolean = false,
+    // Opportunity detail-level filters (persisted across sessions)
+    val oppShowOpenOnly: Boolean = false,
+    val oppShowMineOnly: Boolean = false
 ) {
     val isActive: Boolean
         get() = assigneeIds.isNotEmpty() ||

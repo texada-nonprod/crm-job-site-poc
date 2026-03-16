@@ -55,6 +55,8 @@ import com.jobsites.crm.ui.screens.projectdetail.components.AssociateCompanyShee
 import com.jobsites.crm.ui.screens.projectdetail.components.AssociateEquipmentSheet
 import com.jobsites.crm.ui.screens.projectdetail.components.CompanySection
 import com.jobsites.crm.ui.screens.projectdetail.components.CreateEquipmentSheet
+import com.jobsites.crm.data.model.ProjectCompany
+import com.jobsites.crm.ui.screens.projectdetail.components.EditRoleSheet
 import com.jobsites.crm.ui.screens.projectdetail.components.EquipmentSection
 import com.jobsites.crm.ui.screens.projectdetail.components.NoteFormSheet
 import com.jobsites.crm.ui.screens.projectdetail.components.NotesSection
@@ -94,6 +96,7 @@ fun ProjectDetailScreen(
     var addContactCompanyName by remember { mutableStateOf<String?>(null) }
     var showEquipmentMenu by remember { mutableStateOf(false) }
     var showCompanyMenu by remember { mutableStateOf(false) }
+    var editRoleCompany by remember { mutableStateOf<ProjectCompany?>(null) }
 
     Scaffold(
         modifier = modifier,
@@ -104,7 +107,7 @@ fun ProjectDetailScreen(
                         Text(
                             text = project?.name ?: "Project",
                             fontWeight = FontWeight.Bold,
-                            maxLines = 1,
+                            maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f, fill = false)
                         )
@@ -186,8 +189,13 @@ fun ProjectDetailScreen(
                                     associatedOpportunities = project.associatedOpportunities,
                                     fullOpportunities = state.opportunities,
                                     getStageName = { viewModel.getStageName(it) },
+                                    getStagePhaseId = { viewModel.getStagePhaseId(it) },
                                     getTypeName = { viewModel.getTypeName(it) },
                                     getSalesRepName = { viewModel.getSalesRepName(it) },
+                                    currentUserId = viewModel.getCurrentUserId(),
+                                    initialShowOpenOnly = viewModel.getOppShowOpenOnly(),
+                                    initialShowMineOnly = viewModel.getOppShowMineOnly(),
+                                    onFilterChange = { open, mine -> viewModel.setOppFilters(open, mine) },
                                     onEdit = { oppId ->
                                         editingOpportunity = viewModel.getOpportunityById(oppId)
                                     }
@@ -211,7 +219,8 @@ fun ProjectDetailScreen(
                                     companies = project.projectCompanies,
                                     onAddContact = { companyName ->
                                         addContactCompanyName = companyName
-                                    }
+                                    },
+                                    onEditRole = { editRoleCompany = it }
                                 )
                             }
                         }
@@ -472,6 +481,17 @@ fun ProjectDetailScreen(
     // TODO: In production, adding/editing a contact within a company will
     // navigate to the existing CRM Contact record screen instead of this local
     // ModalBottomSheet. This prototype form is a stand-in for that.
+    if (editRoleCompany != null) {
+        EditRoleSheet(
+            company = editRoleCompany!!,
+            onSave = { roleIds ->
+                viewModel.updateCompanyRoles(editRoleCompany!!, roleIds)
+                editRoleCompany = null
+            },
+            onDismiss = { editRoleCompany = null }
+        )
+    }
+
     if (addContactCompanyName != null) {
         AddContactSheet(
             companyName = addContactCompanyName!!,

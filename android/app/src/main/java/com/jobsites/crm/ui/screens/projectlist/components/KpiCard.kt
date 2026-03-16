@@ -104,7 +104,7 @@ private fun RevenueColumn(
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = accentColor,
-            fontSize = 16.sp
+            fontSize = 18.sp
         )
         if (byType.isNotEmpty()) {
             Spacer(Modifier.height(4.dp))

@@ -1,10 +1,17 @@
 package com.jobsites.crm.data.repository
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.jobsites.crm.data.model.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
@@ -55,12 +62,14 @@ val DEFAULT_NOTE_TAGS = listOf(
  *
  * Excluded from the mobile prototype:
  *   - DodgeMappings (admin-only, desktop feature)
- *   - DataStore persistence (future enhancement)
  */
 @Singleton
 class CrmRepository @Inject constructor(
-    private val dataSource: JsonDataSource
+    private val dataSource: JsonDataSource,
+    private val filterDataStore: DataStore<Preferences>
 ) {
+
+    private val ioScope = CoroutineScope(Dispatchers.IO)
 
     // ═══════════════════════════════════════════════════════════════════
     //  State flows
@@ -87,7 +96,9 @@ class CrmRepository @Inject constructor(
     private val _masterEquipment = MutableStateFlow<List<CustomerEquipment>>(emptyList())
     val masterEquipment: StateFlow<List<CustomerEquipment>> = _masterEquipment.asStateFlow()
 
-    private val _filters = MutableStateFlow(Filters(hideCompleted = true))
+    private val _filters = MutableStateFlow(
+        runBlocking { filterDataStore.filtersFlow().first() }
+    )
     val filters: StateFlow<Filters> = _filters.asStateFlow()
 
     private val _noteTags = MutableStateFlow(DEFAULT_NOTE_TAGS)
@@ -186,6 +197,7 @@ class CrmRepository @Inject constructor(
 
     fun setFilters(newFilters: Filters) {
         _filters.value = newFilters
+        ioScope.launch { filterDataStore.saveFilters(newFilters) }
     }
 
     fun getFilteredProjects(): List<Project> {

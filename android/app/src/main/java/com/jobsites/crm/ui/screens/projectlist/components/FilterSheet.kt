@@ -24,28 +24,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jobsites.crm.data.model.Filters
-import com.jobsites.crm.data.model.User
 import com.jobsites.crm.data.repository.DIVISIONS
 import com.jobsites.crm.ui.components.DropdownOption
 import com.jobsites.crm.ui.components.MultiSelectField
+import com.jobsites.crm.ui.components.SearchableMultiSelectField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterSheet(
     currentFilters: Filters,
-    users: List<User>,
     statuses: List<String>,
     onApply: (Filters) -> Unit,
     onClear: () -> Unit,
     onDismiss: () -> Unit,
+    searchUsers: suspend (String) -> List<DropdownOption>,
+    userLabelMap: Map<String, String>,
     modifier: Modifier = Modifier
 ) {
     var filters by remember { mutableStateOf(currentFilters) }
 
-    val userOptions = remember(users) {
-        users.sortedBy { it.lastName }
-            .map { DropdownOption(it.id.toString(), "${it.lastName}, ${it.firstName}") }
-    }
     val divisionOptions = remember {
         DIVISIONS.map { DropdownOption(it.code, "${it.code} - ${it.name}") }
     }
@@ -89,12 +86,13 @@ fun FilterSheet(
 
             Spacer(Modifier.height(16.dp))
 
-            // Assignee
-            MultiSelectField(
+            // Assignee — searchable multi-select (same as project create/edit form)
+            SearchableMultiSelectField(
                 label = "Assignee",
-                options = userOptions,
                 selectedKeys = filters.assigneeIds,
+                selectedLabels = userLabelMap,
                 onSelectionChange = { filters = filters.copy(assigneeIds = it) },
+                onSearch = searchUsers,
                 modifier = Modifier.fillMaxWidth()
             )
 

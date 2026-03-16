@@ -1,8 +1,11 @@
 package com.jobsites.crm.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.jobsites.crm.data.network.NominatimService
 import com.jobsites.crm.data.repository.JsonDataSource
+import com.jobsites.crm.data.repository.filterDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,4 +31,9 @@ object AppModule {
     @Singleton
     fun provideNominatimService(client: OkHttpClient): NominatimService =
         NominatimService(client)
+
+    @Provides
+    @Singleton
+    fun provideFilterDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+        context.filterDataStore
 }

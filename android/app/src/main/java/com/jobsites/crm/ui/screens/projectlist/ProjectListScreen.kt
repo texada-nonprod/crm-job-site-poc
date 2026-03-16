@@ -42,7 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.jobsites.crm.data.repository.CrmRepository
 import com.jobsites.crm.ui.components.EmptyState
 import com.jobsites.crm.ui.components.LoadingState
 import com.jobsites.crm.ui.screens.projectlist.components.FilterSheet
@@ -61,12 +60,6 @@ fun ProjectListScreen(
     var showFilters by remember { mutableStateOf(false) }
     var showSortMenu by remember { mutableStateOf(false) }
     var showSearch by remember { mutableStateOf(false) }
-
-    // Gather users and statuses for the filter sheet
-    val repository = viewModel.let {
-        // Access users through the ViewModel helper
-        null // handled in FilterSheet via passed lists
-    }
 
     Scaffold(
         modifier = modifier,
@@ -210,7 +203,6 @@ fun ProjectListScreen(
     if (showFilters) {
         FilterSheet(
             currentFilters = state.filters,
-            users = emptyList(), // TODO: pass from repository in later step
             statuses = listOf("Active", "Planning", "On Hold", "Completed"),
             onApply = { filters ->
                 viewModel.onFiltersChange(filters)
@@ -220,7 +212,9 @@ fun ProjectListScreen(
                 viewModel.clearFilters()
                 showFilters = false
             },
-            onDismiss = { showFilters = false }
+            onDismiss = { showFilters = false },
+            searchUsers = { viewModel.searchUsers(it) },
+            userLabelMap = viewModel.getUserLabelMap()
         )
     }
 }

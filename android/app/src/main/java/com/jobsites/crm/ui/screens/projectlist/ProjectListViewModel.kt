@@ -3,7 +3,9 @@ package com.jobsites.crm.ui.screens.projectlist
 import androidx.lifecycle.ViewModel
 import com.jobsites.crm.data.model.Filters
 import com.jobsites.crm.data.model.Project
+import com.jobsites.crm.data.model.User
 import com.jobsites.crm.data.repository.CrmRepository
+import com.jobsites.crm.ui.components.DropdownOption
 import com.jobsites.crm.data.repository.RevenueByType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -93,6 +95,15 @@ class ProjectListViewModel @Inject constructor(
     }
 
     // ── Helpers ──────────────────────────────────────────────────────
+
+    // TODO: In production, this should call the user search API endpoint
+    suspend fun searchUsers(query: String): List<DropdownOption> =
+        repository.searchUsers(query).map {
+            DropdownOption(it.id.toString(), "${it.lastName}, ${it.firstName}")
+        }
+
+    fun getUserLabelMap(): Map<String, String> =
+        repository.users.value.associate { it.id.toString() to "${it.lastName}, ${it.firstName}" }
 
     fun getAssigneeName(id: Int): String = repository.getUserName(id)
     fun getWonRevenue(project: Project): Double = repository.calculateProjectWonRevenue(project)

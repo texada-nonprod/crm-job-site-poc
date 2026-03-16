@@ -141,7 +141,8 @@ fun ProjectCard(
                             style = MaterialTheme.typography.labelSmall,
                             color = RevenuePipeline,
                             fontWeight = FontWeight.Medium,
-                            fontSize = 11.sp
+                            fontSize = 13.sp,
+                            maxLines = 1
                         )
                     }
                     if (wonRevenue > 0) {
@@ -150,7 +151,8 @@ fun ProjectCard(
                             style = MaterialTheme.typography.labelSmall,
                             color = RevenueWon,
                             fontWeight = FontWeight.Medium,
-                            fontSize = 11.sp
+                            fontSize = 13.sp,
+                            maxLines = 1
                         )
                     }
                 }
