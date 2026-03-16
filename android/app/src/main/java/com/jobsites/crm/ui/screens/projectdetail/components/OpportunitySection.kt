@@ -8,13 +8,25 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -41,8 +53,53 @@ fun OpportunitySection(
     onEdit: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
-        associatedOpportunities.forEachIndexed { index, ao ->
+    var searchQuery by remember { mutableStateOf("") }
+    val filtered = if (searchQuery.isBlank()) associatedOpportunities else {
+        val q = searchQuery.lowercase()
+        associatedOpportunities.filter { ao ->
+            val fullOpp = fullOpportunities.find { it.id == ao.id }
+            ao.description.lowercase().contains(q) ||
+            ao.type.lowercase().contains(q) ||
+            getStageName(ao.stageId).lowercase().contains(q) ||
+            (fullOpp?.customerName?.lowercase()?.contains(q) == true) ||
+            (fullOpp?.let { getSalesRepName(it.salesRepId).lowercase().contains(q) } == true) ||
+            (fullOpp?.let { getTypeName(it.typeId).lowercase().contains(q) } == true)
+        }
+    }
+
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        if (associatedOpportunities.size > 3) {
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                placeholder = { Text("Search opportunities…", style = MaterialTheme.typography.bodySmall) },
+                leadingIcon = { Icon(Icons.Outlined.Search, null, modifier = Modifier.size(18.dp)) },
+                trailingIcon = {
+                    if (searchQuery.isNotBlank()) {
+                        IconButton(onClick = { searchQuery = "" }, modifier = Modifier.size(24.dp)) {
+                            Icon(Icons.Outlined.Close, "Clear", modifier = Modifier.size(16.dp))
+                        }
+                    }
+                },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                textStyle = MaterialTheme.typography.bodySmall,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+                )
+            )
+        }
+
+        if (filtered.isEmpty() && searchQuery.isNotBlank()) {
+            Text(
+                text = "No opportunities match \"$searchQuery\"",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
+
+        filtered.forEachIndexed { index, ao ->
             val fullOpp = fullOpportunities.find { it.id == ao.id }
             OpportunityCard(
                 ao = ao,
@@ -52,9 +109,6 @@ fun OpportunitySection(
                 getSalesRepName = getSalesRepName,
                 onClick = { onEdit(ao.id) }
             )
-            if (index < associatedOpportunities.lastIndex) {
-                Spacer(Modifier.height(8.dp))
-            }
         }
     }
 }

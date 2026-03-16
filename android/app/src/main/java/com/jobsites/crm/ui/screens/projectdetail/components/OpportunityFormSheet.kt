@@ -1,3 +1,7 @@
+// TODO: In production, this prototype ModalBottomSheet form will be replaced by
+// navigating to the existing CRM Lead/Opportunity create/edit record screen
+// (e.g. via deep link or API intent). All field mappings here mirror the
+// production form.
 package com.jobsites.crm.ui.screens.projectdetail.components
 
 import androidx.compose.foundation.layout.Column

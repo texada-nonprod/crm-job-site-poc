@@ -524,15 +524,18 @@ class CrmRepository @Inject constructor(
     //  CRUD — Activities
     // ═══════════════════════════════════════════════════════════════════
 
-    fun addActivity(projectId: Int, activity: Activity) {
+    fun addActivity(projectId: Int, activity: Activity): Int {
+        var newId = 0
         _projects.value = _projects.value.map { p ->
             if (p.id == projectId) {
                 val maxId = p.activities.maxOfOrNull { it.id } ?: 0
-                val newActivity = activity.copy(id = maxId + 1)
+                newId = maxId + 1
+                val newActivity = activity.copy(id = newId)
                 p.copy(activities = p.activities + newActivity)
             } else p
         }
         logChange(projectId, "ACTIVITY_ADDED", "Activity", "Activity \"${activity.typeId}\" added")
+        return newId
     }
 
     fun updateActivity(projectId: Int, activityId: Int, transform: (Activity) -> Activity) {

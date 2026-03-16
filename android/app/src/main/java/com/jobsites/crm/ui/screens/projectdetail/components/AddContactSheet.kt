@@ -1,3 +1,7 @@
+// TODO: In production, this prototype ModalBottomSheet form will be replaced by
+// navigating to the existing CRM Contact create/edit record screen within the
+// company context (e.g. via deep link or API intent). This prototype form is a
+// stand-in for adding contacts to a company on a project.
 package com.jobsites.crm.ui.screens.projectdetail.components
 
 import androidx.compose.foundation.layout.Column

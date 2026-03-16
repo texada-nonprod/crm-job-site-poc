@@ -326,6 +326,9 @@ fun ProjectDetailScreen(
     }
 
     // ── Activity form bottom sheet ─────────────────────────────────
+    // TODO: In production, creating/editing an activity will navigate to the
+    // existing CRM Activity record screen (e.g. via deep link or intent) instead
+    // of this local ModalBottomSheet. This prototype form is a stand-in for that.
     if (showActivitySheet || editingActivity != null) {
         ActivityFormSheet(
             editingActivity = editingActivity,
@@ -334,7 +337,7 @@ fun ProjectDetailScreen(
             activityTypes = viewModel.getActivityTypes(),
             campaigns = viewModel.getCampaigns(),
             issues = viewModel.getIssues(),
-            contactNames = viewModel.getProjectContactNames(),
+            projectCompanies = viewModel.getProjectCompanies(),
             onDismiss = {
                 showActivitySheet = false
                 editingActivity = null
@@ -354,7 +357,7 @@ fun ProjectDetailScreen(
                         issueId = data.issueId
                     )
                 } else {
-                    viewModel.addActivity(
+                    val parentId = viewModel.addActivity(
                         salesRepId = data.salesRepId,
                         typeId = data.typeId,
                         date = data.date,
@@ -365,6 +368,21 @@ fun ProjectDetailScreen(
                         customerId = data.customerId,
                         issueId = data.issueId
                     )
+                    // Create follow-up activity if included
+                    data.followUp?.let { fu ->
+                        viewModel.addActivity(
+                            salesRepId = fu.salesRepId,
+                            typeId = fu.typeId,
+                            date = fu.date,
+                            description = fu.description,
+                            contactName = fu.contactName,
+                            notes = fu.notes,
+                            campaignId = fu.campaignId,
+                            customerId = fu.customerId,
+                            issueId = fu.issueId,
+                            previousRelatedActivityId = parentId
+                        )
+                    }
                 }
                 showActivitySheet = false
                 editingActivity = null
@@ -373,6 +391,9 @@ fun ProjectDetailScreen(
     }
 
     // ── Opportunity form bottom sheet ─────────────────────────────
+    // TODO: In production, creating/editing a lead/opportunity will navigate to
+    // the existing CRM Opportunity record screen instead of this local
+    // ModalBottomSheet. This prototype form is a stand-in for that.
     if (showOpportunitySheet || editingOpportunity != null) {
         OpportunityFormSheet(
             divisions = viewModel.getDivisions(),
@@ -432,6 +453,9 @@ fun ProjectDetailScreen(
     }
 
     // ── Associate Company bottom sheet ───────────────────────────────
+    // TODO: In production, associating or creating a company/prospect will
+    // navigate to the existing CRM Company record screen instead of this local
+    // ModalBottomSheet. This prototype form is a stand-in for that.
     if (showAddCompanySheet) {
         AssociateCompanySheet(
             allCompanies = viewModel.getAllKnownCompanies(),
@@ -445,6 +469,9 @@ fun ProjectDetailScreen(
     }
 
     // ── Add Contact bottom sheet ────────────────────────────────────
+    // TODO: In production, adding/editing a contact within a company will
+    // navigate to the existing CRM Contact record screen instead of this local
+    // ModalBottomSheet. This prototype form is a stand-in for that.
     if (addContactCompanyName != null) {
         AddContactSheet(
             companyName = addContactCompanyName!!,

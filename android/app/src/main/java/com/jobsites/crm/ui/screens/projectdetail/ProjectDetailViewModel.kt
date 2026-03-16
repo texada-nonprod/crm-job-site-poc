@@ -112,6 +112,9 @@ class ProjectDetailViewModel @Inject constructor(
 
     fun getIssues(): List<Issue> = repository.issues.value
 
+    fun getProjectCompanies(): List<ProjectCompany> =
+        _uiState.value.project?.projectCompanies ?: emptyList()
+
     fun getProjectContactNames(): List<String> {
         val project = _uiState.value.project ?: return emptyList()
         return project.projectCompanies.flatMap { company ->
@@ -128,8 +131,9 @@ class ProjectDetailViewModel @Inject constructor(
         notes: String,
         campaignId: Int?,
         customerId: String?,
-        issueId: Int?
-    ) {
+        issueId: Int?,
+        previousRelatedActivityId: Int? = null
+    ): Int {
         val isPast = runCatching {
             java.time.LocalDate.parse(date.take(10)).isBefore(java.time.LocalDate.now())
         }.getOrDefault(false)
@@ -144,10 +148,12 @@ class ProjectDetailViewModel @Inject constructor(
             notes = notes,
             campaignId = campaignId,
             customerId = customerId,
-            issueId = issueId
+            issueId = issueId,
+            previousRelatedActivityId = previousRelatedActivityId
         )
-        repository.addActivity(projectId, activity)
+        val newId = repository.addActivity(projectId, activity)
         refresh()
+        return newId
     }
 
     fun updateActivity(
